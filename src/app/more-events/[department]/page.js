@@ -2,6 +2,7 @@ import MoreEventsClient from '@/components/MoreEventsClient';
 import { connectToDatabase } from '@/lib/mongodb';
 import Event from '@/lib/models/Event';
 
+{/* */}
 export default async function MoreEventsPage({ params }) {
   const { department } = params;
   await connectToDatabase();
