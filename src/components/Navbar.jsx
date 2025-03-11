@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
-import { Link as ScrollLink, Events, scrollSpy, scroller } from "react-scroll";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useRouter, usePathname } from "next/navigation"
+import { Link as ScrollLink, Events, scrollSpy, scroller } from "react-scroll"
 
 const Navbar = ({ authenticated }) => {
-  const [isLoginHovered, setIsLoginHovered] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("home");
-  const router = useRouter();
-  const pathname = usePathname();
-  const [isHomePage, setIsHomePage] = useState(false);
+  const [isLoginHovered, setIsLoginHovered] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [activeLink, setActiveLink] = useState("home")
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isHomePage, setIsHomePage] = useState(false)
 
   // Dark theme colors
   const theme = {
@@ -21,88 +21,91 @@ const Navbar = ({ authenticated }) => {
     uclaBlue: "#3373B0",
     columbiaBlue: "#BED4E9",
     aliceBlue: "#E7F1FB",
-  };
+  }
 
   const Links = [
     { name: "Home", link: "home" },
     { name: "About", link: "about" },
     { name: "Events", link: "events" },
     { name: "Memories", link: "past-year-highlights" }, // Updated for clarity
-    { name: "FAQs", link: "faq" }, 
+    { name: "FAQs", link: "faq" },
+    { name: "Guidelines", link: "/guidelines" }, // Add this new link
     { name: "Contact", link: "contact" },
-  ];
-  
+  ]
 
   // Check if we're on the home page
   useEffect(() => {
-    setIsHomePage(pathname === "/" || pathname === "/#home");
-  }, [pathname]);
+    setIsHomePage(pathname === "/" || pathname === "/#home")
+  }, [pathname])
 
   // Set up scrollSpy
   useEffect(() => {
     if (isHomePage) {
-      Events.scrollEvent.register('begin', () => {});
-      Events.scrollEvent.register('end', () => {});
-      scrollSpy.update();
+      Events.scrollEvent.register("begin", () => {})
+      Events.scrollEvent.register("end", () => {})
+      scrollSpy.update()
 
       return () => {
-        Events.scrollEvent.remove('begin');
-        Events.scrollEvent.remove('end');
-      };
+        Events.scrollEvent.remove("begin")
+        Events.scrollEvent.remove("end")
+      }
     }
-  }, [isHomePage]);
+  }, [isHomePage])
 
   // Handle navigation from non-home pages
   const handleNavigation = (linkId) => {
-    if (!isHomePage) {
+    if (linkId.startsWith("/")) {
+      // Direct link to a page
+      router.push(linkId)
+    } else if (!isHomePage) {
       // Navigate to home page with hash
-      router.push(`/#${linkId}`);
+      router.push(`/#${linkId}`)
     } else {
       // Use react-scroll to scroll to the section
       scroller.scrollTo(linkId, {
         duration: 800,
         delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -70 // Adjust for navbar height
-      });
+        smooth: "easeInOutQuart",
+        offset: -70, // Adjust for navbar height
+      })
     }
 
     // Close mobile menu if open
-    if (open) setOpen(false);
-    
+    if (open) setOpen(false)
+
     // Update active link
-    setActiveLink(linkId);
-  };
+    setActiveLink(linkId)
+  }
 
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/auth/logout", {
         method: "GET",
-      });
+      })
       if (res.ok) {
-        router.refresh();
+        router.refresh()
       } else {
-        console.error("Logout failed");
+        console.error("Logout failed")
       }
     } catch (err) {
-      console.error("Logout error:", err);
+      console.error("Logout error:", err)
     }
-  };
+  }
 
   const handleProfile = async () => {
     try {
       const res = await fetch("/api/profile/getProfile", {
         method: "GET",
-      });
+      })
       if (res.ok) {
-        router.push("/profile");
+        router.push("/profile")
       } else {
-        router.push("/login");
+        router.push("/login")
       }
     } catch (err) {
-      router.push("/login");
+      router.push("/login")
     }
-  };
+  }
 
   return (
     <div className="w-full top-0 left-0 sticky z-40">
@@ -122,32 +125,16 @@ const Navbar = ({ authenticated }) => {
               duration={800}
               offset={-70}
               onClick={() => {
-                setActiveLink("home");
-                if (open) setOpen(false);
+                setActiveLink("home")
+                if (open) setOpen(false)
               }}
               className="transition-transform hover:scale-105 cursor-pointer"
             >
-              <Image
-                src="/logo.png"
-                alt="TCE"
-                width={50}
-                height={50}
-                className="max-h-12"
-              />
+              <Image src="/logo.png" alt="TCE" width={50} height={50} className="max-h-12" />
             </ScrollLink>
           ) : (
-            <Link
-              href="/#home"
-              onClick={() => setActiveLink("home")}
-              className="transition-transform hover:scale-105"
-            >
-              <Image
-                src="/logo.png"
-                alt="TCE"
-                width={50}
-                height={50}
-                className="max-h-12"
-              />
+            <Link href="/#home" onClick={() => setActiveLink("home")} className="transition-transform hover:scale-105">
+              <Image src="/logo.png" alt="TCE" width={50} height={50} className="max-h-12" />
             </Link>
           )}
         </div>
@@ -158,10 +145,7 @@ const Navbar = ({ authenticated }) => {
           style={{ color: theme.aliceBlue }}
         >
           {open ? (
-            <button
-              className="transition-all duration-300 hover:text-uclaBlue"
-              style={{ color: theme.columbiaBlue }}
-            >
+            <button className="transition-all duration-300 hover:text-uclaBlue" style={{ color: theme.columbiaBlue }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -174,10 +158,7 @@ const Navbar = ({ authenticated }) => {
               </svg>
             </button>
           ) : (
-            <button
-              className="transition-all duration-300 hover:text-uclaBlue"
-              style={{ color: theme.columbiaBlue }}
-            >
+            <button className="transition-all duration-300 hover:text-uclaBlue" style={{ color: theme.columbiaBlue }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -186,20 +167,25 @@ const Navbar = ({ authenticated }) => {
                 stroke="currentColor"
                 className="w-7 h-7"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+                />
               </svg>
             </button>
           )}
         </div>
 
         <ul
-          className={`lg:flex lg:items-center lg:pb-0 pb-9 absolute lg:static md:z-auto z-[-1] left-0 w-full lg:w-auto lg:pl-0 pl-9 transition-all duration-500 ease-in ${open ? "top-20" : "top-[-490px]"
-            }`}
+          className={`lg:flex lg:items-center lg:pb-0 pb-9 absolute lg:static md:z-auto z-[-1] left-0 w-full lg:w-auto lg:pl-0 pl-9 transition-all duration-500 ease-in ${
+            open ? "top-20" : "top-[-490px]"
+          }`}
           style={{ backgroundColor: theme.eerieBlack }}
         >
           {Links.map((link) => (
             <li key={link.name} className="lg:ml-8 text-xl lg:my-0 my-7 cursor-pointer">
-              {isHomePage ? (
+              {isHomePage && !link.link.startsWith("/") ? (
                 <ScrollLink
                   to={link.link}
                   spy={true}
@@ -209,8 +195,8 @@ const Navbar = ({ authenticated }) => {
                   activeClass="active"
                   onSetActive={() => setActiveLink(link.link)}
                   onClick={() => {
-                    setActiveLink(link.link);
-                    if (open) setOpen(false);
+                    setActiveLink(link.link)
+                    if (open) setOpen(false)
                   }}
                   className="font-semibold text-base tracking-wider px-4 py-2 rounded-md transition-all duration-300 relative cursor-pointer"
                   style={{
@@ -222,10 +208,10 @@ const Navbar = ({ authenticated }) => {
                 </ScrollLink>
               ) : (
                 <a
-                  href={`/#${link.link}`}
+                  href={link.link.startsWith("/") ? link.link : `/#${link.link}`}
                   onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigation(link.link);
+                    e.preventDefault()
+                    handleNavigation(link.link)
                   }}
                   className="font-semibold text-base tracking-wider px-4 py-2 rounded-md transition-all duration-300 relative"
                   style={{
@@ -272,7 +258,8 @@ const Navbar = ({ authenticated }) => {
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
+
