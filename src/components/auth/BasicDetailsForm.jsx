@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
+import SnackbarComponent from "@/components/SnackbarComponent";
+import { handleError } from "./errorHelper"; // Import the error helper
 
 const theme = {
   eerieBlack: "#1C2127",
@@ -80,9 +82,14 @@ const Button = styled.button`
   &:hover {
     background-color: ${(props) => props.theme.berkeleyBlue};
   }
+
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
 `;
 
-const BasicDetailsForm = ({ onSuccess, setError }) => {
+const BasicDetailsForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -93,27 +100,36 @@ const BasicDetailsForm = ({ onSuccess, setError }) => {
     selectedDepartment: "",
   });
 
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", messageBack: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent duplicate submissions
+
+    setIsSubmitting(true);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       if (res.status === 201) {
         onSuccess(formData.email, formData.selectedDepartment);
+        setSnackbar({ open: true, message: "Registration successful!", messageBack: "#388E3C" });
       } else {
         const data = await res.json();
-        setError(data.error || "Registration failed");
+        handleError({ response: { data } }, setSnackbar);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      setError("Registration failed");
+      handleError(error, setSnackbar);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -135,9 +151,19 @@ const BasicDetailsForm = ({ onSuccess, setError }) => {
             <option value="CSBS">CSBS</option>
             <option value="DS">DS</option>
           </StyledSelect>
-          <Button type="submit">Register</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Registering..." : "Register"}
+          </Button>
         </form>
       </FormContainer>
+
+      {/* Snackbar for Error Messages */}
+      <SnackbarComponent
+        open={snackbar.open}
+        message={snackbar.message}
+        messageBack={snackbar.messageBack}
+        setOpen={(open) => setSnackbar((prev) => ({ ...prev, open }))}
+      />
     </ThemeProvider>
   );
 };

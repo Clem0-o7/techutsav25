@@ -110,6 +110,7 @@ const PaymentDetailsForm = ({ email, selectedDepartment, onSuccess, setError }) 
       const res = await fetch("/api/auth/complete-registration", {
         method: "POST",
         body: formDataToSend,
+        credentials: "include",
       });
       if (res.status === 200) {
         onSuccess();

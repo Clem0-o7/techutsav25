@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
 const theme = {
@@ -65,17 +65,38 @@ const Button = styled.button`
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: 0.5rem;
 
   &:hover {
     background-color: ${(props) => props.theme.berkeleyBlue};
+  }
+
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
   }
 `;
 
 const OTPVerificationForm = ({ email, onSuccess, setError }) => {
   const [otp, setOtp] = useState("");
+  const [resendTimer, setResendTimer] = useState(60);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let timer;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    } else {
+      setIsResendDisabled(false);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const res = await fetch("/api/auth/verify-email", {
         method: "POST",
@@ -91,6 +112,31 @@ const OTPVerificationForm = ({ email, onSuccess, setError }) => {
     } catch (error) {
       console.error("OTP Verification error:", error);
       setError("OTP Verification failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    setIsResendDisabled(true);
+    setResendTimer(60); // Reset timer to 60 seconds
+
+    try {
+      const res = await fetch("/api/auth/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (res.status === 200) {
+        setError("New OTP sent to your email");
+      } else {
+        setError(data.error || "Failed to resend OTP");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      setError("Failed to resend OTP");
     }
   };
 
@@ -107,7 +153,12 @@ const OTPVerificationForm = ({ email, onSuccess, setError }) => {
             onChange={(e) => setOtp(e.target.value)}
             required
           />
-          <Button type="submit">Verify Email</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Verifying..." : "Verify Email"}
+          </Button>
+          <Button type="button" onClick={handleResendOTP} disabled={isResendDisabled}>
+            {isResendDisabled ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+          </Button>
         </form>
       </FormContainer>
     </ThemeProvider>
