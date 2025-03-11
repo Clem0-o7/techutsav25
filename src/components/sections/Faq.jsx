@@ -127,81 +127,83 @@ const Faq = () => {
   };
 
   return (
-    <div
-      className="relative h-full bg-sky-100 flex items-center justify-center overflow-auto w-full px-3 py-4 sm:px-6 sm:py-8 lg:py-10"
-      ref={faqRef}
-    >
-      <div className="absolute inset-0 w-full h-full">
-        <Particles
-          particleCount={200}
-          particleSpread={10}
-          speed={0.1}
-          particleColors={["#ffffff", "#a2d2ff", "#bde0fe"]}
-          moveParticlesOnHover={true}
-          particleHoverFactor={2}
-          alphaParticles={true}
-          particleBaseSize={120}
-          sizeRandomness={1}
-          cameraDistance={20}
-          disableRotation={false}
-          className="w-full h-full"
-        />
-      </div>
-
-      {/* FAQ Content */}
+    <section id="faq" className="h-screen flex items-center justify-center bg-gray-600">
       <div
-        className={`relative z-10 transition-all duration-1000 ease-in-out w-full max-w-4xl px-3 sm:px-6 lg:px-8 ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-        }`}
+        className="relative h-full bg-sky-100 flex items-center justify-center overflow-auto w-full px-3 py-4 sm:px-6 sm:py-8 lg:py-10"
+        ref={faqRef}
       >
-        <h1
-          className="text-center text-3xl sm:text-5xl font-extrabold tracking-tight"
-          style={{
-            background: `linear-gradient(to right, ${theme.eerieBlack}, ${theme.berkeleyBlue})`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          FAQs
-        </h1>
-        <div
-          className="h-1 w-20 sm:w-28 mx-auto mt-2 sm:mt-3 rounded-full"
-          style={{
-            background: `linear-gradient(to right, ${theme.uclaBlue}, ${theme.columbiaBlue})`,
-          }}
-        ></div>
-
-        {/* Category Buttons */}
-        <div className="flex flex-wrap gap-2 justify-center mt-3 sm:mt-5">
-          {faqSections.map((section, index) => (
-            <button
-              key={index}
-              onClick={() => setOpenSection(index)}
-              className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-semibold text-white text-sm sm:text-base transition-all duration-500 shadow-md ${
-                openSection === index ? "bg-[#0b385f] scale-105" : "bg-[#3373b0]"
-              }`}
-            >
-              {section.title}
-            </button>
-          ))}
+        <div className="absolute inset-0 w-full h-full">
+          <Particles
+            particleCount={200}
+            particleSpread={10}
+            speed={0.1}
+            particleColors={["#ffffff", "#a2d2ff", "#bde0fe"]}
+            moveParticlesOnHover={true}
+            particleHoverFactor={2}
+            alphaParticles={true}
+            particleBaseSize={120}
+            sizeRandomness={1}
+            cameraDistance={20}
+            disableRotation={false}
+            className="w-full h-full"
+          />
         </div>
 
-        {/* Questions Section */}
-        {openSection !== null && (
-          <div className="mt-4 sm:mt-5 bg-white p-3 sm:p-5 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
-            {faqSections[openSection].faqs.map((faq, idx) => (
-              <Question
-                key={idx}
-                question={faq.question}
-                answer={faq.answer}
-                isOpen={openQuestion[openSection] === idx}
-                onClick={() => toggleQuestion(openSection, idx)}
-              />
+        {/* FAQ Content */}
+        <div
+          className={`relative z-10 transition-all duration-1000 ease-in-out w-full max-w-4xl px-3 sm:px-6 lg:px-8 ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
+        >
+          <h1
+            className="text-center text-3xl sm:text-5xl font-extrabold tracking-tight"
+            style={{
+              background: `linear-gradient(to right, ${theme.eerieBlack}, ${theme.berkeleyBlue})`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            FAQs
+          </h1>
+          <div
+            className="h-1 w-20 sm:w-28 mx-auto mt-2 sm:mt-3 rounded-full"
+            style={{
+              background: `linear-gradient(to right, ${theme.uclaBlue}, ${theme.columbiaBlue})`,
+            }}
+          ></div>
+
+          {/* Category Buttons */}
+          <div className="flex flex-wrap gap-2 justify-center mt-3 sm:mt-5">
+            {faqSections.map((section, index) => (
+              <button
+                key={index}
+                onClick={() => setOpenSection(index)}
+                className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-semibold text-white text-sm sm:text-base transition-all duration-500 shadow-md ${
+                  openSection === index ? "bg-[#0b385f] scale-105" : "bg-[#3373b0]"
+                }`}
+              >
+                {section.title}
+              </button>
             ))}
           </div>
-        )}
+
+          {/* Questions Section */}
+          {openSection !== null && (
+            <div className="mt-4 sm:mt-5 bg-white p-3 sm:p-5 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+              {faqSections[openSection].faqs.map((faq, idx) => (
+                <Question
+                  key={idx}
+                  question={faq.question}
+                  answer={faq.answer}
+                  isOpen={openQuestion[openSection] === idx}
+                  onClick={() => toggleQuestion(openSection, idx)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

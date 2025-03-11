@@ -33,7 +33,7 @@ const Events = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-[#c7e7fc] px-4 md:px-8">
+    <section id="events" className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-[#c7e7fc] px-4 md:px-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -138,7 +138,7 @@ const Events = () => {
           ))}
         </div>
       </motion.div>
-    </div>
+    </section>
   );
 };
 

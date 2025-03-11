@@ -53,7 +53,8 @@ const PastYearHighlights = () => {
   }, [sectionRefs]);
 
   return (
-    <div
+    <section
+      id="past-year-highlights"
       className="relative min-h-screen overflow-hidden bg-gray-50"
       style={{
         background: `linear-gradient(135deg, ${theme.aliceBlue} 0%, ${theme.columbiaBlue} 100%)`,
@@ -82,7 +83,7 @@ const PastYearHighlights = () => {
 
         {/* Category Timeline Container */}
         <div className="relative max-w-4xl mx-auto">
-          {/* Vertical Timeline Line - Hidden on smallest screens */}
+          {/* Vertical Timeline Line */}
           <div
             className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 hidden sm:block"
             style={{
@@ -114,23 +115,11 @@ const PastYearHighlights = () => {
                     Multi-College Participation
                   </h2>
                   <p className="text-sm sm:text-base text-gray-600 text-justify">
-                    TECHUTSAV 2024 witnessed an unprecedented level of inter-collegiate engagement, bringing together over 25 engineering colleges from across Tamil Nadu. Students from diverse backgrounds collaborated, shared insights, and pushed the boundaries of technological innovation.
+                    TECHUTSAV 2024 witnessed an unprecedented level of inter-collegiate engagement, bringing together over 25 engineering colleges from across Tamil Nadu.
                   </p>
                 </div>
               </div>
-              {/* Mobile Version */}
-              <div className="w-full sm:hidden px-4 mb-6">
-                <Image
-                  src= "/pyq/image.png"
-                  alt="Multi-College Participation"
-                  className="rounded-xl shadow-lg"
-                  quality={90}
-                  width={500}
-                  height={500}
-                />
-              </div>
-              {/* Desktop Version with Animation */}
-              <div className="hidden sm:block w-1/2 pl-8">
+              <div className="w-full sm:w-1/2 flex justify-center">
                 <MotionImage
                   src="/pyq/image.png"
                   alt="Multi-College Participation"
@@ -166,78 +155,14 @@ const PastYearHighlights = () => {
                     Innovative Tech Workshops
                   </h2>
                   <p className="text-sm sm:text-base text-gray-600 text-justify">
-                    We curated a series of cutting-edge technology workshops focusing on emerging domains. These hands-on sessions provided students with practical skills and insights from industry experts.
+                    We curated a series of cutting-edge technology workshops focusing on emerging domains, providing students with practical skills and insights from industry experts.
                   </p>
                 </div>
               </div>
-              {/* Mobile Version */}
-              <div className="w-full sm:hidden px-4 mb-6">
-                <Image
-                  src="/pyq/workshop.png"
-                  alt="Tech Workshops"
-                  className="rounded-xl shadow-lg"
-                  quality={90}
-                  width={500}
-                  height={500}
-                />
-              </div>
-              {/* Desktop Version with Animation */}
-              <div className="hidden sm:block w-1/2 pr-8">
+              <div className="w-full sm:w-1/2 flex justify-center">
                 <MotionImage
                   src="/pyq/workshop.png"
                   alt="Tech Workshops"
-                  className="rounded-xl shadow-lg"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  quality={90}
-                  width={500}
-                  height={500}
-                />
-              </div>
-            </div>
-
-            {/* Third Timeline Entry */}
-            <div
-              ref={sectionRefs[2]}
-              className={`flex flex-col sm:flex-row items-center w-full transition-all duration-1000 ${
-                activeEntries[2]
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-10"
-              }`}
-            >
-              <div className="w-full sm:w-1/2 sm:pr-8 mb-4 sm:mb-0">
-                <div
-                  className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-transparent hover:border-neon-blue transition-all"
-                  style={{
-                    borderColor: theme.neonBlue,
-                    boxShadow: `0 0 15px 0 ${theme.neonBlue}40`,
-                  }}
-                >
-                  <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 text-gray-800">
-                    Industry-Academia Collaboration
-                  </h2>
-                  <p className="text-sm sm:text-base text-gray-600 text-justify">
-                    TECHUTSAV 2024 bridged the gap between academic learning and industry requirements. We hosted engaging tech events fostering innovation and collaboration between students.
-                  </p>
-                </div>
-              </div>
-              {/* Mobile Version */}
-              <div className="w-full sm:hidden px-4 mb-6">
-                <Image
-                  src="/pyq/event.png"
-                  alt="Industry Collaboration"
-                  className="rounded-xl shadow-lg"
-                  quality={90}
-                  width={500}
-                  height={500}
-                />
-              </div>
-              {/* Desktop Version with Animation */}
-              <div className="hidden sm:block w-1/2 pl-8">
-                <MotionImage
-                  src="/pyq/event.png"
-                  alt="Industry Collaboration"
                   className="rounded-xl shadow-lg"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -251,7 +176,7 @@ const PastYearHighlights = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

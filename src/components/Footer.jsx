@@ -1,6 +1,6 @@
 "use client";
 
-import { FaLinkedinIn, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaLinkedinIn, FaInstagram, FaTwitter, FaEnvelope } from "react-icons/fa";
 
 const Footer = () => {
   const theme = {
@@ -10,29 +10,32 @@ const Footer = () => {
   };
 
   return (
-    <div className="w-full" style={{ backgroundColor: theme.eerieBlack }}>
-      <div className="py-6 text-base sm:text-lg text-center text-[#BED4E9]">
-        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center px-4 sm:px-8 lg:px-16">
+    <div className="w-full bg-[#1C2127]">
+      <div className="py-6 px-6 sm:px-10 lg:px-16 text-center text-[#BED4E9]">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          
           {/* Title Section */}
-          <div className="mb-4 sm:mb-0">
-            <h1 className="font-bold text-xl sm:text-2xl" style={{ color: theme.aliceBlue }}>
+          <div className="text-center md:text-left">
+            <h1 className="font-bold text-xl sm:text-2xl text-[#E7F1FB]">
               PANORAMA&apos;25
             </h1>
-            <p className="text-sm sm:text-base">THIAGARAJAR COLLEGE OF ENGINEERING, MADURAI</p>
+            <p className="text-sm sm:text-base">
+              THIAGARAJAR COLLEGE OF ENGINEERING, MADURAI
+            </p>
           </div>
 
           {/* Copyright Section */}
-          <div className="mb-4 sm:mb-0 text-sm sm:text-base">
+          <div className="text-sm sm:text-base">
             <p>© 2025. All rights reserved by TCE</p>
           </div>
 
-          {/* Social Media Icons */}
-          <div className="flex gap-5 sm:gap-6">
+          {/* Social Media & Email Icons */}
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6">
             <a
               href="https://www.linkedin.com/school/thiagarajar-college-of-engineering/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-white transition-colors"
+              className="text-2xl hover:text-white transition-all duration-300"
               style={{ color: theme.columbiaBlue }}
             >
               <FaLinkedinIn />
@@ -41,7 +44,7 @@ const Footer = () => {
               href="https://www.instagram.com/tce_madurai?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-white transition-colors"
+              className="text-2xl hover:text-white transition-all duration-300"
               style={{ color: theme.columbiaBlue }}
             >
               <FaInstagram />
@@ -50,10 +53,17 @@ const Footer = () => {
               href="https://twitter.com/tceofficialpage"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-white transition-colors"
+              className="text-2xl hover:text-white transition-all duration-300"
               style={{ color: theme.columbiaBlue }}
             >
               <FaTwitter />
+            </a>
+            <a
+              href="mailto:admin@techutsavtce.tech"
+              className="text-2xl hover:text-white transition-all duration-300"
+              style={{ color: theme.columbiaBlue }}
+            >
+              <FaEnvelope />
             </a>
           </div>
         </div>

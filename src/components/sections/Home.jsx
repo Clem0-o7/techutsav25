@@ -41,7 +41,7 @@ const Home = ({ authenticated }) => {
   }, [currentIndex, fullText]);
 
   return (
-    <div className="relative w-full min-h-screen bg-white">
+    <section id="home" className="relative w-full min-h-screen bg-white">
       {/* Particles background */}
       <div className="absolute inset-0 w-full h-full z-0">
         <Particles
@@ -269,7 +269,7 @@ const Home = ({ authenticated }) => {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
