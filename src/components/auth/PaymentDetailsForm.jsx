@@ -131,7 +131,7 @@ const PaymentDetailsForm = ({ email, selectedDepartment, onSuccess, setError }) 
     <ThemeProvider theme={theme}>
       <FormContainer suppressHydrationWarning>
         <a
-          href="https://clement2004.blob.core.windows.net/techutsav25/Payment_process_techutsav2025.pdf"
+          href="https://clement2004.blob.core.windows.net/techutsav25/Payment_process2025.pdf"
           target="_blank"
           rel="noopener noreferrer"
           style={{ textDecoration: "none", color: theme.berkeleyBlue, marginBottom: "1rem" }}

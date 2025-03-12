@@ -233,10 +233,10 @@ export default function Guidelines() {
                   className="mb-4 text-lg md:text-xl"
                   style={{ color: theme.columbiaBlue }}
                 >
-                  Or click to download payment instructions
+                  Or click to download payment instructions 
                 </p>
                 <a 
-                  href="https://clement2004.blob.core.windows.net/techutsav25/Payment_process_techutsav2025.pdf" 
+                  href="https://clement2004.blob.core.windows.net/techutsav25/Payment_process2025.pdf" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all duration-300 group"
