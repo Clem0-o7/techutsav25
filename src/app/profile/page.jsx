@@ -21,6 +21,8 @@ import {
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import WarningIcon from "@mui/icons-material/Warning";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Footer from "@/components/Footer";
 import MainLoader from "@/components/MainLoader";
 import { SnackbarComponent } from "@/components/SnackbarComponent";
@@ -48,6 +50,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [transactionNumber, setTransactionNumber] = useState("");
+  const [transactionScreenshot, setTransactionScreenshot] = useState(null);
   const [disabledState, setDisabledState] = useState(false);
   const [isLogoutHovered, setLogoutHover] = useState(false);
   const [isVerifyHovered, setVerifyHovered] = useState(false);
@@ -57,8 +60,10 @@ const Profile = () => {
   const mobileCheck = useMediaQuery("(min-width: 900px)");
   const router = useRouter();
 
+  // Payment status calculation based on profile data
   const verifyRequest = () => {
     if (profile?.paid) return "Payment Successful";
+    if (profile?.paymentRejected) return "Payment Verification Failed";
     if (!profile?.paid && profile?.transactionNumber?.trim() !== "") return "Requested for Verification";
     return "Not Verified";
   };
@@ -72,6 +77,14 @@ const Profile = () => {
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   };
 
+  // Find the selected department index
+  useEffect(() => {
+    if (profile && profile.selectedDepartment) {
+      const index = original.findIndex(dept => dept === profile.selectedDepartment);
+      if (index !== -1) setSelectedIndex(index);
+    }
+  }, [profile]);
+
   // Fetch profile data using native fetch (cookies are sent automatically)
   useEffect(() => {
     setLoading(true);
@@ -83,9 +96,12 @@ const Profile = () => {
       .then((data) => {
         setProfile(data);
         setTransactionNumber(data.transactionNumber || "");
-        if (data.transactionNumber && data.transactionNumber.trim() !== "") {
-          setDisabledState(true);
-        }
+        
+        // Determine if form fields should be disabled based on profile state
+        const shouldDisable = data.paid || 
+          (data.transactionNumber && data.transactionNumber.trim() !== "" && !data.paymentRejected);
+        
+        setDisabledState(shouldDisable);
         setLoading(false);
       })
       .catch((err) => {
@@ -105,40 +121,71 @@ const Profile = () => {
     setOpen(false);
   };
 
+  const handleFileChange = (e) => {
+    setTransactionScreenshot(e.target.files[0]);
+  };
+
   const handlePaymentSubmit = async () => {
     if (selectedIndex === 0) {
       setSnackbarOpen(true);
       setMessage("Select any one Department");
       setMessageBack("red");
-    } else if (transactionNumber.trim() === "") {
+      return;
+    } 
+    
+    if (transactionNumber.trim() === "") {
       setSnackbarOpen(true);
       setMessage("Enter your Transaction Number");
       setMessageBack("red");
-    } else {
-      setIsVerifyLoading(true);
-      setMessage("Submitting...");
-      setMessageBack("green");
-      try {
-        const res = await fetch("/api/auth/complete-registration", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: profile.email,
-            transactionNumber,
-            selectedDepartment: original[selectedIndex],
-          }),
-        });
-        if (!res.ok) throw new Error("Submission failed");
-        setVerify(!verify);
-        setMessage("Submitted");
-        setMessageBack("green");
-      } catch (err) {
-        console.error(err);
-        setMessage("Submission failed");
-        setMessageBack("red");
-      } finally {
-        setIsVerifyLoading(false);
+      return;
+    }
+    
+    // Check if screenshot is required and present
+    if (!profile?.transactionScreenshot && !transactionScreenshot) {
+      setSnackbarOpen(true);
+      setMessage("Please upload your transaction screenshot");
+      setMessageBack("red");
+      return;
+    }
+
+    setIsVerifyLoading(true);
+    setSnackbarOpen(true);
+    setMessage("Submitting...");
+    setMessageBack("green");
+    
+    try {
+      // Create FormData to handle file upload
+      const formData = new FormData();
+      formData.append("email", profile.email);
+      formData.append("transactionNumber", transactionNumber);
+      formData.append("selectedDepartment", original[selectedIndex]);
+      
+      // Only append file if it exists (for resubmission case)
+      if (transactionScreenshot) {
+        formData.append("transactionScreenshot", transactionScreenshot);
       }
+      
+      const res = await fetch("/api/auth/complete-registration", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Submission failed");
+      }
+      
+      setVerify(!verify);
+      setSnackbarOpen(true);
+      setMessage("Payment details submitted successfully");
+      setMessageBack("green");
+    } catch (err) {
+      console.error(err);
+      setSnackbarOpen(true);
+      setMessage(err.message || "Submission failed");
+      setMessageBack("red");
+    } finally {
+      setIsVerifyLoading(false);
     }
   };
 
@@ -185,12 +232,20 @@ const Profile = () => {
                 </tr>
                 <tr>
                   <td className="font-semibold text-lg">Payment Status:</td>
-                  <td>{verifyRequest()}</td>
+                  <td className="flex items-center">
+                    {verifyRequest()}
+                    {profile?.paid && (
+                      <CheckCircleIcon sx={{ color: 'green', marginLeft: '5px' }} />
+                    )}
+                    {profile?.paymentRejected && (
+                      <WarningIcon sx={{ color: 'red', marginLeft: '5px' }} />
+                    )}
+                  </td>
                 </tr>
                 <tr>
                   <td className="font-semibold pr-9 text-lg">Interested Department:</td>
                   <td>
-                    {disabledState ? (
+                    {disabledState && profile.selectedDepartment ? (
                       profile.selectedDepartment
                     ) : (
                       <div className="border-2 w-full rounded-lg inline py-2">
@@ -252,6 +307,8 @@ const Profile = () => {
               <Lottie options={defaultOptions} height={400} width={400} />
             </div>
           )}
+          
+          {/* Conditional rendering based on payment status */}
           {verifyRequest() !== "Payment Successful" && (
             <div>
               <div className="text-1xl mt-3 flex items-center font-bold">
@@ -263,6 +320,16 @@ const Profile = () => {
                   <CloudDownloadIcon />
                 </Button>
               </div>
+              
+              {profile?.paymentRejected && (
+                <div className="mt-3 p-3 bg-red-100 border border-red-400 rounded">
+                  <p className="text-red-700 font-medium">Your payment verification was rejected. Please resubmit your payment details.</p>
+                  {profile?.rejectionReason && (
+                    <p className="text-red-700 mt-1">Reason: {profile.rejectionReason}</p>
+                  )}
+                </div>
+              )}
+              
               <div className="mt-3">
                 <p>Please Enter your Transaction Number after Payment</p>
                 <input
@@ -274,22 +341,41 @@ const Profile = () => {
                   onChange={(event) => setTransactionNumber(event.target.value)}
                 />
               </div>
+              
+              {/* File upload section */}
+              {(!profile?.transactionScreenshot || profile?.paymentRejected) && (
+                <div className="mt-3">
+                  <p>Upload Transaction Screenshot</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="mt-2"
+                    onChange={handleFileChange}
+                    disabled={disabledState}
+                  />
+                </div>
+              )}
+              
               <div className="flex items-end flex-row justify-center gap-3 mt-5">
-                <button
-                  onClick={handlePaymentSubmit}
-                  className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
-                  onMouseEnter={() => setVerifyHovered(true)}
-                  onMouseLeave={() => setVerifyHovered(false)}
-                >
-                  Verify Payment
-                </button>
+                {(!disabledState || profile?.paymentRejected) && (
+                  <button
+                    onClick={handlePaymentSubmit}
+                    className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
+                    onMouseEnter={() => setVerifyHovered(true)}
+                    onMouseLeave={() => setVerifyHovered(false)}
+                  >
+                    {profile?.paymentRejected ? "Resubmit Payment" : "Verify Payment"}
+                  </button>
+                )}
+                
                 {isVerifyLoading && (
                   <Box sx={{ display: "flex" }}>
                     <CircularProgress />
                   </Box>
                 )}
+                
                 {!mobileCheck && (
-                  <div>
+                  <div className="flex gap-2 mt-3">
                     <button
                       onClick={async () => {
                         await fetch("/api/auth/logout");
@@ -299,17 +385,10 @@ const Profile = () => {
                     >
                       Logout
                     </button>
-                    <Link
-                      href="/"
-                      className="px-7 py-1 hover:text-white border-2 border-black rounded-md fixed md:block"
-                      onMouseEnter={() => setIsSeeMoreHovered(true)}
-                      onMouseLeave={() => setIsSeeMoreHovered(false)}
-                    >
-                      Back
-                    </Link>
                   </div>
                 )}
               </div>
+              
               {verifyRequest() === "Requested for Verification" && (
                 <p className="max-w-[400px] mt-[20px] text-[#FF1717]">
                   Your Verification request has been sent. Please wait for the admin to update your profile. If the profile is not updated within 36 Hours please contact using the number provided on the site.
@@ -317,6 +396,7 @@ const Profile = () => {
               )}
             </div>
           )}
+          
           {displayButton() && (
             <div className="w-full mt-5">
               <button
