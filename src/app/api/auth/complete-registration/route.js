@@ -126,4 +126,5 @@ export async function POST(request) {
     console.error("Error completing registration:", error);
     return new Response(JSON.stringify({ error: "Failed to process payment details" }), { status: 500 });
   }
+  
 }

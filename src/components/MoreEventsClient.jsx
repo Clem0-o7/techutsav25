@@ -9,7 +9,7 @@ import Footer from './Footer';
 import MainLoader from '../components/MainLoader';
 import Typography from '@mui/material/Typography';
 import '@/styles/globals.css';
-import Cookies from 'js-cookie';
+
 
 const theme = {
   eerieBlack: '#1C2127',
