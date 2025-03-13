@@ -9,6 +9,11 @@
   --text-color: #1e293b; /* Dark text */
   --card-bg: #f1f5f9; /* Soft light grayish blue cards */
   --light-blue-bg: #e0f2fe; /* Light blue section background */
+  
+  /* New variables for our components */
+  --flagship-primary: #3373B0;
+  --flagship-dark: #0B385F;
+  --flagship-light: #BED4E9;
 }
 
 @theme inline {
@@ -124,4 +129,101 @@ body {
 
 .event-box:hover {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* New styles for Flagship component */
+.flagship-card {
+  background: var(--secondary-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.flagship-card:hover {
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+.flagship-badge {
+  background: linear-gradient(to right, var(--flagship-primary), var(--flagship-light));
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.flagship-title {
+  color: var(--flagship-dark);
+  font-weight: bold;
+}
+
+.flagship-divider {
+  height: 0.25rem;
+  width: 4rem;
+  background: linear-gradient(to right, var(--flagship-primary), var(--flagship-light));
+  border-radius: 9999px;
+}
+
+.flagship-button {
+  background: linear-gradient(to right, var(--flagship-primary), var(--flagship-dark));
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.flagship-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Spotlight effect */
+.bg-gradient-radial {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+}
+
+/* Event page styles */
+.event-hero {
+  background: linear-gradient(to right, var(--flagship-dark), var(--flagship-primary));
+  position: relative;
+}
+
+.event-hero-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  inset: 0;
+}
+
+.event-section {
+  background: var(--secondary-color);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.speaker-card {
+  background: var(--secondary-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+  background: var(--secondary-color);
+  color: var(--flagship-primary);
+  border: 1px solid var(--flagship-primary);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: var(--flagship-primary);
+  color: white;
 }

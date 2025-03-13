@@ -1,127 +1,82 @@
-"use client";
-import React, { useState, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import styled from "styled-components";
+"use client"
+import { useState, useRef } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 
-const Card = styled.div`
-  position: relative;
-  overflow: hidden;
-  border: 2px solid #3373B0;
-  border-radius: 16px;
-  padding: 1.5rem;
-  background: #fff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 700px;
-  margin: 2rem auto;
-  
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Spotlight effect using a pseudo-element */
-  &::before {
-    content: "";
-    position: absolute;
-    top: var(--mouse-y, 50%);
-    left: var(--mouse-x, 50%);
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 80%);
-    transition: width 0.3s ease, height 0.3s ease;
-    pointer-events: none;
-  }
-
-  &:hover::before {
-    width: 300px;
-    height: 300px;
-  }
-`;
-
-const BannerImageWrapper = styled.div`
-  width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  overflow: hidden;
-  img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-  ${Card}:hover & img {
-    transform: scale(1.05);
-  }
-`;
-
-const Title = styled.h2`
-  font-size: 2.5rem;
-  color: #0B385F;
-  margin-bottom: 0.5rem;
-`;
-
-const Description = styled.p`
-  font-size: 1.2rem;
-  color: #1C2127;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-`;
-
-const Button = styled.button`
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  background: #3373B0;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  &:hover {
-    background: #0B385F;
-  }
-`;
-
-const Flagship = ({ uniqueName, eventName, eventDescription, image }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef(null);
+const Flagship = ({ uniqueName, eventName, eventDescription, image, onError }) => {
+  const cardRef = useRef(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
 
   const handleMouseMove = (e) => {
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    cardRef.current.style.setProperty("--mouse-x", `${x}px`);
-    cardRef.current.style.setProperty("--mouse-y", `${y}px`);
-  };
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
 
   return (
-    <Card
+    <motion.div
       ref={cardRef}
+      className="relative overflow-hidden bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
-      <BannerImageWrapper>
-        <Image
-          src={image}
-          alt={eventName}
-          width={700}
-          height={400}
-          style={{ borderRadius: "12px" }}
-          onError={(e) => {
-            e.currentTarget.src = "/images/placeholder.png";
+      {/* Spotlight effect */}
+      {isHovering && (
+        <div
+          className="absolute pointer-events-none bg-gradient-radial from-white/30 to-transparent opacity-70 w-[300px] h-[300px] rounded-full z-10 transition-all duration-300"
+          style={{
+            top: mousePosition.y,
+            left: mousePosition.x,
+            transform: "translate(-50%, -50%)",
           }}
         />
-      </BannerImageWrapper>
-      <Title>{eventName} 🎉</Title>
-      <Description>{eventDescription}</Description>
-      <Link href={`/${uniqueName}`} passHref legacyBehavior>
-        <Button>See More ➡</Button>
-      </Link>
-    </Card>
-  );
-};
+      )}
 
-export default Flagship;
+      <div className="flex flex-col md:flex-row">
+        {/* Image section */}
+        <div className="w-full md:w-2/5 overflow-hidden">
+          <div className="relative h-64 md:h-full">
+            <Image
+              src={image || "/placeholder.svg"}
+              alt={eventName}
+              fill
+              className="object-scale-down transition-transform duration-500 hover:scale-105"
+              onError={onError}
+            />
+          </div>
+        </div>
+
+        {/* Content section */}
+        <div className="w-full md:w-3/5 p-6 md:p-8">
+          <div className="mb-2 inline-block px-3 py-1 bg-gradient-to-r from-[#3373B0] to-[#BED4E9] text-white text-sm rounded-full">
+            Flagship Event
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#0B385F] mb-3">{eventName}</h2>
+          <div className="w-16 h-1 bg-gradient-to-r from-[#3373B0] to-[#BED4E9] rounded-full mb-4"></div>
+          <p className="text-gray-700 mb-6 line-clamp-3 md:line-clamp-4">{eventDescription}</p>
+
+          <Link
+            href="/events/cyber-secure-digital-twins"
+            className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-[#3373B0] to-[#0B385F] text-white rounded-lg font-medium transition-all hover:shadow-lg hover:-translate-y-0.5"
+          >
+            See More
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+export default Flagship
+
