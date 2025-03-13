@@ -32,10 +32,10 @@ const Profile = () => {
   const options = ["Not Selected", "CSE", "IT", "CSBS", "DS"];
   const original = [
     "",
-    "Computer Science and Engineering",
-    "Information Technology",
-    "Computer Science and Business Systems",
-    "Applied Mathematics and Computational Science",
+    "CSE",
+    "IT",
+    "CSBS",
+    "DS",
   ];
 
   const [open, setOpen] = useState(false);

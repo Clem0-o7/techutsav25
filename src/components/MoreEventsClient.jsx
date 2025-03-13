@@ -9,6 +9,7 @@ import Footer from './Footer';
 import MainLoader from '../components/MainLoader';
 import Typography from '@mui/material/Typography';
 import '@/styles/globals.css';
+import Cookies from 'js-cookie';
 
 const theme = {
   eerieBlack: '#1C2127',
@@ -61,6 +62,24 @@ const MoreEventsClient = ({ events, department }) => {
       e.currentTarget.src = "/images/placeholder.png";
     }
   };
+
+  const handleRegisterClick = async () => {
+    try {
+      const response = await fetch("/api/auth/me", { credentials: "include" });
+  
+      if (response.ok) {
+
+        router.push("/profile");
+      } else {
+
+        router.push("/signup");
+      }
+    } catch (error) {
+ 
+      router.push("/signup");
+    }
+  };
+  
 
   return (
     <div>
@@ -181,7 +200,10 @@ const MoreEventsClient = ({ events, department }) => {
                   </div>
 
                   <div className="flex justify-between mt-5">
-                    <button className="px-5 py-2 bg-blue-500 rounded-lg text-white font-semibold hover:bg-blue-700 transition-all duration-300">
+                    <button
+                      className="px-5 py-2 bg-blue-500 rounded-lg text-white font-semibold hover:bg-blue-700 transition-all duration-300"
+                      onClick={handleRegisterClick}
+                    >
                       Register Now
                     </button>
                     <button
