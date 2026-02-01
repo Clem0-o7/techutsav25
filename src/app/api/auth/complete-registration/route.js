@@ -115,7 +115,7 @@ export async function POST(request) {
           _id: user._id,
           email: user.email,
           transactionNumber: user.transactionNumber,
-          transactionScreenshot: user.transactionScreenshotUrl,
+          transactionScreenshot: user.transactionScreenshot,
           selectedDepartment: user.selectedDepartment,
           verified: user.verified,
           paid: user.paid,

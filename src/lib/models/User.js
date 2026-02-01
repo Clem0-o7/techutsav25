@@ -63,6 +63,22 @@ const userSchema = new mongoose.Schema({
   emailOTPExpires: {
     type: Date,
   },
+  // Password reset fields
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: Date,
+  },
+  // Payment rejection tracking
+  paymentRejected: {
+    type: Boolean,
+    default: false,
+  },
+  rejectionReason: {
+    type: String,
+    default: "",
+  },
 });
 
 // Hash password only if modified or new
