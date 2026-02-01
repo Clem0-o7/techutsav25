@@ -4,7 +4,15 @@
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import MainLoader from "@/components/MainLoader";
+import { Analytics } from '@vercel/analytics/next';
 import { useEffect, useState } from "react";
+import { Poppins } from 'next/font/google';
+
+const poppins = Poppins({ 
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins"
+});
 
 export default function RootLayout({ children }) {
   const [loading, setLoading] = useState(false);
@@ -31,8 +39,8 @@ export default function RootLayout({ children }) {
 
   if (loading) {
     return (
-      <html>
-        <body>
+      <html lang="en" className={poppins.variable}>
+        <body className="font-sans antialiased">
           <MainLoader />
         </body>
       </html>
@@ -40,13 +48,18 @@ export default function RootLayout({ children }) {
   }
 
   return (
-    <html>
+    <html lang="en" className={poppins.variable}>
       <head>
-        <title>Techutsav</title>
+        <title>TechUtsav - National Level Tech Symposium</title>
+        <meta name="description" content="TechUtsav  2026 - National Level Tech Symposium hosted by CSE, IT, CSBS, AMCS, MCA" />
+        <link rel="icon" href="/icon-light-32x32.png" media="(prefers-color-scheme: light)" />
+        <link rel="icon" href="/icon-dark-32x32.png" media="(prefers-color-scheme: dark)" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
-      <body className="font-poppins">
-        
+      <body className={`${poppins.className} font-sans antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );

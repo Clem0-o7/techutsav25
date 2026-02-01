@@ -3,8 +3,9 @@ import EventPageContent from './EventPageContent';
 import { connectToDatabase } from '@/lib/mongodb';
 
 export default async function EventPage({ params }) {
+  const { uniqueName } = await params;
   await connectToDatabase();
-  const event = await Event.findOne({ uniqueName: params.uniqueName }).lean();
+  const event = await Event.findOne({ uniqueName }).lean();
 
   if (!event) {
     return <div>Event not found</div>;

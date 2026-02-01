@@ -12,7 +12,7 @@ const Particles = dynamic(() => import("@/components/Particles"), { ssr: false }
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#3373B0",
+      main: "#06b6d4",
     },
   },
 });
@@ -37,38 +37,38 @@ export default function MainLoader() {
   }, []);
 
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-[#32383F] font-poppins relative overflow-hidden">
+    <div className="h-screen w-full flex items-center justify-center bg-black font-poppins relative overflow-hidden">
       
       {/* Particles Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 opacity-40">
         <Particles
-          particleCount={150}
-          particleSpread={10}
-          speed={0.1}
-          particleColors={["#ffffff", "#a2d2ff", "#bde0fe"]}
-          moveParticlesOnHover={true}
-          particleHoverFactor={2}
+          particleCount={80}
+          particleSpread={8}
+          speed={0.05}
+          particleColors={["#06b6d4", "#0d9488", "#ffffff"]}
+          moveParticlesOnHover={false}
+          particleHoverFactor={1}
           alphaParticles={true}
-          particleBaseSize={80}
-          sizeRandomness={1}
-          cameraDistance={20}
-          disableRotation={false}
+          particleBaseSize={60}
+          sizeRandomness={0.8}
+          cameraDistance={25}
+          disableRotation={true}
           className="w-full h-full"
         />
       </div>
 
-      <div className="flex flex-col gap-5 relative z-10">
-        <h1 className="text-xl sm:text-3xl text-[#E7F1FB] text-center">
-          Loading....
+      <div className="flex flex-col gap-6 relative z-10">
+        <h1 className="text-xl sm:text-2xl text-white text-center font-light tracking-wider opacity-80">
+          Initializing
         </h1>
-        <div className="flex gap-3 items-center w-80 sm:w-[30rem]">
+        <div className="flex gap-3 items-center w-72 sm:w-96">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-5 h-5 text-[#BED4E9]"
+            className="w-4 h-4 text-gray-500"
           >
             <path
               strokeLinecap="round"
@@ -82,25 +82,26 @@ export default function MainLoader() {
                 variant="determinate"
                 value={progress}
                 sx={{
-                  height: 12, 
-                  borderRadius: 6,
-                  backgroundColor: "#E7F1FB",
+                  height: 2, 
+                  borderRadius: 1,
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                   "& .MuiLinearProgress-bar": {
-                    backgroundColor: "#3373B0",
+                    backgroundColor: "#06b6d4",
+                    boxShadow: "0 0 10px rgba(6, 182, 212, 0.5)",
                   },
                 }}
               />
             </Box>
           </ThemeProvider>
           <div className="flex items-center">
-            <p className="text-[#BED4E9]">/</p>
+            <p className="text-gray-500 text-xs">/</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-5 h-5 text-[#BED4E9]"
+              className="w-4 h-4 text-gray-500"
             >
               <path
                 strokeLinecap="round"
@@ -112,12 +113,12 @@ export default function MainLoader() {
         </div>
 
         <h1
-          className="text-2xl sm:text-4xl text-[#E7F1FB] text-center"
+          className="text-3xl sm:text-5xl text-white text-center font-bold tracking-tighter"
           style={{
-            textShadow: "0px 0px 5px rgba(231, 241, 251, 0.5)",
+            textShadow: "0 0 20px rgba(6, 182, 212, 0.2)",
           }}
         >
-          PANORAMA'25
+          TechUtsav '26
         </h1>
       </div>
     </div>
