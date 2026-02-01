@@ -1,3 +1,5 @@
+//@/api/auth/logout
+
 import { serialize } from "cookie";
 
 export async function GET() {

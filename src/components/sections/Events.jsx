@@ -1,39 +1,39 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Flagship from "@/components/Flagship"
-import SpotlightCard from "@/components/SpotLightCard"
-import { motion } from "framer-motion"
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Flagship from "@/components/Flagship";
+import SpotlightCard from "@/components/SpotLightCard";
+import { motion } from "framer-motion";
 
 const Events = () => {
-  const router = useRouter()
-  const [flagShipEvents, setFlagShipEvents] = useState([])
-  const [loading, setLoading] = useState(true)
-  const departments = ["CSE", "IT", "CSBS", "DS"]
+  const router = useRouter();
+  const [flagShipEvents, setFlagShipEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const departments = ["CSE", "IT", "CSBS", "DS"];
 
   useEffect(() => {
     const fetchFlagshipEvents = async () => {
       try {
-        setLoading(true)
-        const res = await fetch("/api/event/flagship")
-        const data = await res.json()
-        setFlagShipEvents(data)
+        setLoading(true);
+        const res = await fetch("/api/event/flagship");
+        const data = await res.json();
+        setFlagShipEvents(data);
       } catch (err) {
-        console.error("Error fetching flagship events:", err)
+        console.error("Error fetching flagship events:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchFlagshipEvents()
-  }, [])
+    fetchFlagshipEvents();
+  }, []);
 
   const handleDepartmentClick = (dept) => {
-    router.push(`/events/${dept}`)
-  }
+    router.push(`/events/${dept}`);
+  };
 
   return (
-    <section id="events" className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-[#c7e7fc] px-4 md:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-[#c7e7fc] px-4 md:px-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -73,22 +73,25 @@ const Events = () => {
             </div>
           </div>
         ) : flagShipEvents.length === 0 ? (
-          <p className="text-gray-600 py-10 text-center">No flagship events available at the moment.</p>
+          <p className="text-gray-600 py-10 text-center">
+            No flagship events available at the moment.
+          </p>
         ) : (
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {flagShipEvents.map((event, index) => {
-              const baseUrl = "https://clement2004.blob.core.windows.net/techutsav25"
-              const jpgUrl = `${baseUrl}/${event.uniqueName}.jpg`
-              const pngUrl = `${baseUrl}/${event.uniqueName}.png`
+              const baseUrl =
+                "https://clement2004.blob.core.windows.net/techutsav25";
+              const jpgUrl = `${baseUrl}/${event.uniqueName}.jpg`;
+              const pngUrl = `${baseUrl}/${event.uniqueName}.png`;
 
               // Start with JPG; if it fails, switch to PNG, else fallback to placeholder.
               const handleImageError = (e) => {
                 if (e.currentTarget.src === jpgUrl) {
-                  e.currentTarget.src = pngUrl
+                  e.currentTarget.src = pngUrl;
                 } else {
-                  e.currentTarget.src = "/images/placeholder.png"
+                  e.currentTarget.src = "/images/placeholder.png";
                 }
-              }
+              };
 
               return (
                 <motion.div
@@ -96,7 +99,7 @@ const Events = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full"
+                  className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%] mx-auto"
                 >
                   <Flagship
                     uniqueName={event.uniqueName}
@@ -106,7 +109,7 @@ const Events = () => {
                     onError={handleImageError}
                   />
                 </motion.div>
-              )
+              );
             })}
           </div>
         )}
@@ -127,14 +130,16 @@ const Events = () => {
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <SpotlightCard name={dept} onClick={() => handleDepartmentClick(dept)} />
+              <SpotlightCard
+                name={dept}
+                onClick={() => handleDepartmentClick(dept)}
+              />
             </motion.div>
           ))}
         </div>
       </motion.div>
-    </section>
-  )
-}
+    </div>
+  );
+};
 
-export default Events
-
+export default Events;

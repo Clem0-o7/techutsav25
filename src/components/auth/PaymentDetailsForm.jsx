@@ -1,4 +1,6 @@
-"use client";  // Ensures this component runs only on the client
+//@/components/auth/PaymentDetailsForm.jsx
+
+"use client"; 
 
 import { useState, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";

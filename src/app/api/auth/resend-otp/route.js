@@ -1,3 +1,5 @@
+//@/app/api/auth/resend-otp/route.js
+
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import { sendVerificationEmail } from "@/lib/email";

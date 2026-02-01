@@ -1,3 +1,5 @@
+//@/components/auth/errorHelper.js
+
 export const handleError = (error, setSnackbar) => {
     let errorMessage = "An error occurred. Please try again.";
     let backgroundColor = "#D32F2F"; // Red for errors

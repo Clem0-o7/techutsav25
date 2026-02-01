@@ -1,3 +1,5 @@
+//@/app/api/auth/complete-registration/route.js
+
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import { cookies } from "next/headers";

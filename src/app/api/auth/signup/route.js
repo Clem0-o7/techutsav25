@@ -1,4 +1,4 @@
-/*auth/signup/route.js*/
+//@/app/api/auth/signup/route.js
 
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";

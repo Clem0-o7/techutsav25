@@ -1,9 +1,11 @@
+//@/components/auth/BasicDetailsForm.jsx
+
 "use client";
 
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { handleError } from "./errorHelper"; // Import the error helper
+import { handleError } from "./errorHelper"; 
 
 const theme = {
   eerieBlack: "#1C2127",

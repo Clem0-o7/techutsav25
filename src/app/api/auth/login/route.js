@@ -1,3 +1,5 @@
+//@/app/api/auth/login/route.js
+
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import jwt from "jsonwebtoken";

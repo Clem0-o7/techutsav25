@@ -12,11 +12,11 @@ import Navbar from '@/components/Navbar';
 import { useEffect, useState } from 'react';
 
 export default function LandingPage() {
-  // (Authentication logic can remain if needed)
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For example, you might check auth here.
+
     setLoading(false);
   }, []);
 
