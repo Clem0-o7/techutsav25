@@ -35,12 +35,25 @@ export default function ComingSoonPage() {
             TechUtsav
           </h1>
 
-          <h2 className="text-base sm:text-lg md:text-xl font-medium text-cyan-400 drop-shadow-xl tracking-wider [text-shadow:0_0_25px_rgba(0,212,212,0.35)]">
-            PARADIGM '26
+          <h2 className="text-sm sm:text-base md:text-lg 
+                   font-medium text-cyan-300 tracking-widest mb-2
+                   [text-shadow:0_0_18px_rgba(0,212,212,0.3)]">
+            PARADIGM ’26
           </h2>
-          <h2 className="text-base sm:text-lg md:text-xl font-medium text-cyan-400 drop-shadow-xl tracking-wider [text-shadow:0_0_25px_rgba(0,212,212,0.35)]">
-            A NEW PARADIGM BEGINS...
+
+          <h2 className="text-xs sm:text-sm md:text-base 
+                   font-medium text-cyan-300 tracking-wider opacity-90
+                   [text-shadow:0_0_12px_rgba(0,212,212,0.25)]">
+            A NEW PARADIGM BEGINS…
           </h2>
+          <p className="hidden md:block mt-6 
+              text-xs lg:text-sm 
+              text-cyan-200/80 
+              tracking-widest
+              [text-shadow:0_0_10px_rgba(0,212,212,0.2)]">
+  HACKATHONS · TECH EVENTS  <br />NON-TECH EVENTS · ONLINE EVENTS
+</p>
+
 
         </div>
       </div>
