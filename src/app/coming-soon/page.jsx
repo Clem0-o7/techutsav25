@@ -36,10 +36,10 @@ export default function ComingSoonPage() {
           </h1>
 
           <h2 className="text-base sm:text-lg md:text-xl font-medium text-cyan-400 drop-shadow-xl tracking-wider [text-shadow:0_0_25px_rgba(0,212,212,0.35)]">
-            [TBD] 2026
+            PARADIGM '26
           </h2>
           <h2 className="text-base sm:text-lg md:text-xl font-medium text-cyan-400 drop-shadow-xl tracking-wider [text-shadow:0_0_25px_rgba(0,212,212,0.35)]">
-            Coming Soon...
+            A NEW PARADIGM BEGINS...
           </h2>
 
         </div>
