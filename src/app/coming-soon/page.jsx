@@ -51,8 +51,8 @@ export default function ComingSoonPage() {
               text-cyan-200/80 
               tracking-widest
               [text-shadow:0_0_10px_rgba(0,212,212,0.2)]">
-  HACKATHONS · TECH EVENTS  <br />NON-TECH EVENTS · ONLINE EVENTS
-</p>
+            PAPER PRESENTATIONS · IDEATHON<br />TECH EVENTS · NON-TECH EVENTS 
+          </p>
 
 
         </div>
