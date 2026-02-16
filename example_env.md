@@ -1,0 +1,31 @@
+# Teaser mode to use only the coming soon page
+NEXT_PUBLIC_TEASER_MODE=true/false
+
+# DB
+MONGODB_URI=
+
+# JWT
+JWT_SECRET=
+
+# Brevo API 
+BREVO_API_KEY=
+
+# SMTP Settings for Brevo
+BREVO_SMTP_HOST=
+BREVO_SMTP_PORT=
+BREVO_SMTP_USER=
+BREVO_SMTP_PASS=
+
+# Sender details
+BREVO_SENDER_EMAIL=
+BREVO_SENDER_NAME="Team Techutsav"
+
+# AZURE
+
+CONNECTIONSTRING=
+CONNECTIONKEY=
+CONTAINERNAME=
+
+NODE_ENV=production
+
+
