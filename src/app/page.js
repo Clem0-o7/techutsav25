@@ -30,7 +30,7 @@ export default function LandingPage() {
       <PastYearHighlights />
       <Events />
       <Faq />
-      <Contact />
+      <Contact />     
       <Footer />
     </div>
   );
