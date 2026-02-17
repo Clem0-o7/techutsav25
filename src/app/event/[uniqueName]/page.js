@@ -1,5 +1,5 @@
 import Event from '@/lib/models/Event';
-import EventPageContent from './EventPageContent';
+import EventPageContent from '../../event/[uniqueName]/EventPageContent';
 import { connectToDatabase } from '@/lib/mongodb';
 
 export default async function EventPage({ params }) {

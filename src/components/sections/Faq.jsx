@@ -3,84 +3,126 @@
 import { useState, useEffect, useRef } from "react";
 import Question from "@/components/Question";
 import Particles from "@/components/Particles";
-import "@/styles/button.css"; // Adjust path if necessary
-
-const theme = {
-  eerieBlack: "#1C2127",
-  berkeleyBlue: "#0B385F",
-  uclaBlue: "#3373B0",
-  columbiaBlue: "#BED4E9",
-  aliceBlue: "#E7F1FB",
-};
+import "@/styles/button.css";
 
 const faqSections = [
   {
     title: "General Info",
     faqs: [
       {
+        question: "What is TechUtsav PARADIGM 2026?",
+        answer:
+          "TechUtsav PARADIGM 2026 is a technical symposium organized by Thiagarajar College of Engineering on 27th February 2026. It's organized by the Departments of CSE, IT, CSBS, AMCS, and MCA, featuring workshops, technical events, and non-technical events with a total prize pool of ₹35,000.",
+      },
+      {
         question: "Who can participate?",
         answer:
-          "It is open to students from all backgrounds, you are welcome to participate and showcase your skills.",
+          "Students from all backgrounds are welcome to participate and showcase their skills. Whether you're interested in technical competitions, workshops, or fun events, there's something for everyone.",
       },
       {
-        question: "Will this be conducted digitally or physically?",
+        question: "What is the theme for PARADIGM 2026?",
         answer:
-          "All the events and workshops will be conducted as an in-person event at the designated venue. Participants are required to be present in the venue to take part in it.",
+          "The event features a Stranger Things inspired theme with events like 'Think Like Eleven', 'Hawkins Hack', 'Upside Down Markets', and more, combining technology with pop culture.",
       },
     ],
   },
   {
-    title: "Registration & Participation",
+    title: "Registration & Passes",
     faqs: [
       {
-        question: "Should I register as a team?",
+        question: "What are the different registration passes available?",
         answer:
-          "Only individual registration is required. Participants will have the opportunity to collaborate during the event if needed.",
+          "There are 4 passes: PASS 1 (₹354) - Offline Workshop + All Events access; PASS 2 (₹118) - Online Paper Presentation; PASS 3 (₹118) - Online Idea Pitching; PASS 4 (₹118) - All Online Workshops. All prices include 18% GST.",
       },
       {
-        question: "Can we register on the spot?",
+        question: "How should I pay the registration fee?",
         answer:
-          "Yes, on-spot registrations are allowed. However, it is advisable to register in advance to secure your participation and receive event details early.",
+          "After registering on our portal, upload your payment screenshot along with the transaction number. Our team will verify the payment and update your profile accordingly.",
       },
       {
-        question: "Will all participants receive a certificate?",
+        question: "Should I register as a team or individually?",
         answer:
-          "Yes, every participant will receive a certificate acknowledging their involvement.",
+          "Individual registration is required for most passes. PASS 3 (Idea Pitching) is registered per team. You can collaborate with others during team events once registered.",
+      },
+      {
+        question: "Can I purchase multiple passes?",
+        answer:
+          "Yes! You can purchase any combination of passes. For example, buy PASS 1 for offline workshop and events, plus PASS 4 for online workshops access.",
       },
     ],
   },
   {
-    title: "Workshops & Event Details",
+    title: "Events & Workshops",
     faqs: [
       {
-        question: "What is the participation fee?",
+        question: "What workshops are available?",
         answer:
-          "The registration fee is ₹500 per person. This includes access to all workshops, events, registration kit, and food during the event.",
+          "Offline Workshop: 'Multi Agent Mastery - Orchestration for the Future' (PASS 1). Online Workshops: 'Drag. Drop. Deploy - Low Code/No Code' and 'Quick Build - From Zero to Live' (PASS 4).",
       },
       {
-        question: "How should we pay the fees?",
+        question: "What technical events are there?",
         answer:
-          "The registration fee should be paid using the ICICI Bank Portal. After making the payment, participants must enter the transaction number for verification. Once verified, the participant’s profile will be updated accordingly.",
+          "Online: Paper Presentation and Ideathon. Offline: Code Red: Escape The Mind, Core Logic Arena, Think Like Eleven, Model Matters, Mindflayer.io, Hawkins Hack, Upside Down Markets, Stranger Thinks, Fix & Play (Debugging), and Battle of Brains (Tech Puzzle).",
       },
       {
-        question: "What events can we attend?",
+        question: "Are there non-technical events?",
         answer:
-          "You can attend all the events of the particular department and workshops irrespective of the department chosen.",
+          "Yes! Enjoy VirtuAct, Hawkin's Lab, Survive the Deck, Dungeons and Dragons, and Fun Flicks. These events are included with PASS 1.",
+      },
+      {
+        question: "What do I get with Paper Presentation (PASS 2)?",
+        answer:
+          "Access to online paper presentation, prize pool participation, Best Paper Award eligibility, and your paper will be published with an ISBN Number.",
+      },
+      {
+        question: "What benefits does PASS 1 include?",
+        answer:
+          "PASS 1 (₹354) includes the offline physical workshop, access to ALL events (technical and non-technical), prize pool eligibility, registration kit, and food during the event.",
       },
     ],
   },
   {
-    title: "Others",
+    title: "Certificates & Prizes",
+    faqs: [
+      {
+        question: "Will I receive a certificate?",
+        answer:
+          "Yes! All participants receive certificates. PASS 4 holders get online certification for workshop completion. Event winners receive special recognition certificates.",
+      },
+      {
+        question: "What is the total prize pool?",
+        answer:
+          "The total prize pool is ₹35,000 distributed across various events. ",
+      },
+      {
+        question: "How are prizes distributed?",
+        answer:
+          "Each pass has its own prize pool. PASS 1 - Shared prize pool for all events; PASS 2 - Shared pool + Best Paper Award; PASS 3 - Shared pool + Best Idea and Creative Idea awards.",
+      },
+    ],
+  },
+  {
+    title: "Logistics",
     faqs: [
       {
         question: "Will accommodation be provided?",
         answer:
-          "Accommodation is not provided. However, we're more than happy to assist with directions from major railway stations and bus stops.",
+          "Accommodation is not provided. However, we're happy to assist with directions from major railway stations and bus stops to Thiagarajar College of Engineering.",
       },
       {
         question: "Will meals be provided?",
         answer:
-          "Yes, vegetarian meals will be provided during the afternoon for all registered participants.",
+          "Yes, meals are included with PASS 1. Vegetarian meals will be provided during the event for all registered PASS 1 participants.",
+      },
+      {
+        question: "Where is the venue?",
+        answer:
+          "Thiagarajar College of Engineering (A Govt. Aided Autonomous Institution Affiliated to Anna University), Madurai. Specific venue details will be shared after registration.",
+      },
+      {
+        question: "Can I register on the spot?",
+        answer:
+          "While on-spot registrations may be accommodated based on availability, we highly recommend registering in advance through our portal to secure your pass and receive event details early.",
       },
     ],
   },
@@ -127,9 +169,9 @@ const Faq = () => {
   };
 
   return (
-    <section id="faq" className="h-screen flex items-center justify-center bg-gray-600">
+    <section id="faq" className="h-screen flex items-center justify-center bg-background">
       <div
-        className="relative h-full bg-sky-100 flex items-center justify-center overflow-auto w-full px-3 py-4 sm:px-6 sm:py-8 lg:py-10"
+        className="relative h-full bg-card flex items-center justify-center overflow-auto w-full px-3 py-4 sm:px-6 sm:py-8 lg:py-10"
         ref={faqRef}
       >
         <div className="absolute inset-0 w-full h-full">
@@ -147,7 +189,7 @@ const Faq = () => {
             disableRotation={false}
             className="w-full h-full"
           />
-        </div>
+</div>
 
         {/* FAQ Content */}
         <div
@@ -155,22 +197,10 @@ const Faq = () => {
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}
         >
-          <h1
-            className="text-center text-3xl sm:text-5xl font-extrabold tracking-tight"
-            style={{
-              background: `linear-gradient(to right, ${theme.eerieBlack}, ${theme.berkeleyBlue})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <h1 className="text-center text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
             FAQs
           </h1>
-          <div
-            className="h-1 w-20 sm:w-28 mx-auto mt-2 sm:mt-3 rounded-full"
-            style={{
-              background: `linear-gradient(to right, ${theme.uclaBlue}, ${theme.columbiaBlue})`,
-            }}
-          ></div>
+          <div className="h-1 w-20 sm:w-28 mx-auto mt-2 sm:mt-3 rounded-full bg-primary"></div>
 
           {/* Category Buttons */}
           <div className="flex flex-wrap gap-2 justify-center mt-3 sm:mt-5">
@@ -178,8 +208,10 @@ const Faq = () => {
               <button
                 key={index}
                 onClick={() => setOpenSection(index)}
-                className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-semibold text-white text-sm sm:text-base transition-all duration-500 shadow-md ${
-                  openSection === index ? "bg-[#0b385f] scale-105" : "bg-[#3373b0]"
+                className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-semibold text-white text-sm sm:text-base transition-all duration-500 shadow-md hover:shadow-lg ${
+                  openSection === index 
+                    ? "bg-primary scale-105 shadow-lg" 
+                    : "bg-primary/70 hover:bg-primary/90"
                 }`}
               >
                 {section.title}
@@ -189,7 +221,7 @@ const Faq = () => {
 
           {/* Questions Section */}
           {openSection !== null && (
-            <div className="mt-4 sm:mt-5 bg-white p-3 sm:p-5 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+            <div className="mt-4 sm:mt-5 bg-card border border-border p-3 sm:p-5 rounded-xl shadow-xl w-full max-w-2xl mx-auto">
               {faqSections[openSection].faqs.map((faq, idx) => (
                 <Question
                   key={idx}
