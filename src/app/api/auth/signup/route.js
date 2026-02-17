@@ -31,7 +31,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate name
     if (name.trim().length < 2) {
       return NextResponse.json(
         { error: "Name must be at least 2 characters" },
@@ -39,7 +38,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate email format (supports subdomains like clement@student.tce.edu)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -48,7 +46,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate password strength
     if (password.length < 8) {
       return NextResponse.json(
         { error: "Password must be at least 8 characters" },
@@ -91,39 +88,47 @@ export async function POST(req) {
       isEmailVerified: false,
     });
 
-    console.log(`[SIGNUP] User created successfully: ${email}`);
+    console.log(`[SIGNUP] User created: ${email}`);
 
     //  Send verification email
     try {
       await sendVerificationEmail(email, token);
       console.log(`[SIGNUP] Verification email sent to: ${email}`);
-    } catch (emailError) {
-      console.error(`[SIGNUP ERROR] Failed to send verification email to ${email}:`, emailError.message);
-      
-      // Delete the user if email fails to send
+    } catch (emailErr) {
+      console.error(`[SIGNUP ERROR] Failed to send verification email:`, emailErr);
+
+      // Delete user if email sending fails
       await User.findByIdAndDelete(user._id);
-      
+
+      const errorMessage =
+        emailErr instanceof Error
+          ? emailErr.message
+          : JSON.stringify(emailErr);
+
       return NextResponse.json(
-        { 
-          error: "Failed to send verification email. Please check your email address and try again.",
-          details: process.env.NODE_ENV === "development" ? emailError.message : undefined
+        {
+          error: "Failed to send verification email. Please check your email address.",
+          details: process.env.NODE_ENV === "development" ? errorMessage : undefined,
         },
         { status: 500 }
       );
     }
 
-    //  Success response
-    return NextResponse.json({ 
-      success: true, 
+    //  Success
+    return NextResponse.json({
+      success: true,
       userId: user._id,
-      message: "Account created successfully. Please check your email to verify your account."
+      message: "Account created successfully. Please check your email to verify your account.",
     });
   } catch (err) {
     console.error("[SIGNUP ERROR] Unexpected error:", err);
+
+    const message = err instanceof Error ? err.message : JSON.stringify(err);
+
     return NextResponse.json(
-      { 
+      {
         error: "An unexpected error occurred. Please try again.",
-        details: process.env.NODE_ENV === "development" ? err.message : undefined
+        details: process.env.NODE_ENV === "development" ? message : undefined,
       },
       { status: 500 }
     );

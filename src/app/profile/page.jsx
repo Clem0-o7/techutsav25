@@ -1,421 +1,166 @@
-"use client";
+"use client"
 
-import dynamic from "next/dynamic";
-const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { ProfileHeader } from "@/components/Profile/ProfileHeader"
+import { ProfileInfo } from "@/components/Profile/ProfileInfo"
+import { ProfileQRCode } from "@/components/Profile/ProfileQRCode"
+import { PaymentSection } from "@/components/Profile/PaymentSection"
+import MainLoader from "@/components/MainLoader"
+import { SnackbarComponent } from "@/components/SnackbarComponent"
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import {
-  useMediaQuery,
-  Button,
-  ButtonGroup,
-  ClickAwayListener,
-  Paper,
-  Grow,
-  Popper,
-  MenuItem,
-  MenuList,
-} from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import WarningIcon from "@mui/icons-material/Warning";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import Footer from "@/components/Footer";
-import MainLoader from "@/components/MainLoader";
-import { SnackbarComponent } from "@/components/SnackbarComponent";
-import animationData from "@/lotties/profile.json";
+export default function ProfilePage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null)
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    color: "green"
+  })
 
-const Profile = () => {
-  const options = ["Not Selected", "CSE", "IT", "CSBS", "DS"];
-  const original = [
-    "",
-    "CSE",
-    "IT",
-    "CSBS",
-    "DS",
-  ];
+  const showSnackbar = (message, color = "green") => {
+    setSnackbar({ open: true, message, color })
+  }
 
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messageBack, setMessageBack] = useState("green");
-
-  const [verify, setVerify] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(null);
-  const [transactionNumber, setTransactionNumber] = useState("");
-  const [transactionScreenshot, setTransactionScreenshot] = useState(null);
-  const [disabledState, setDisabledState] = useState(false);
-  const [isLogoutHovered, setLogoutHover] = useState(false);
-  const [isVerifyHovered, setVerifyHovered] = useState(false);
-  const [isVerifyLoading, setIsVerifyLoading] = useState(false);
-  const [isSeeMoreHovered, setIsSeeMoreHovered] = useState(false);
-
-  const mobileCheck = useMediaQuery("(min-width: 900px)");
-  const router = useRouter();
-
-  // Payment status calculation based on profile data
-  const verifyRequest = () => {
-    if (profile?.paid) return "Payment Successful";
-    if (profile?.paymentRejected) return "Payment Verification Failed";
-    if (!profile?.paid && profile?.transactionNumber?.trim() !== "") return "Requested for Verification";
-    return "Not Verified";
-  };
-
-  const displayButton = () => (!mobileCheck && verifyRequest() === "Payment Successful");
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData,
-    rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
-  };
-
-  // Find the selected department index
-  useEffect(() => {
-    if (profile && profile.selectedDepartment) {
-      const index = original.findIndex(dept => dept === profile.selectedDepartment);
-      if (index !== -1) setSelectedIndex(index);
-    }
-  }, [profile]);
-
-  // Fetch profile data using native fetch (cookies are sent automatically)
-  useEffect(() => {
-    setLoading(true);
-    fetch("/api/profile/getProfile")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch profile");
-        return res.json();
-      })
-      .then((data) => {
-        setProfile(data);
-        setTransactionNumber(data.transactionNumber || "");
-        
-        // Determine if form fields should be disabled based on profile state
-        const shouldDisable = data.paid || 
-          (data.transactionNumber && data.transactionNumber.trim() !== "" && !data.paymentRejected);
-        
-        setDisabledState(shouldDisable);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Profile fetch error:", err);
-        router.push("/auth/login");
-      });
-  }, [verify]);
-
-  const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
-    setOpen(false);
-  };
-
-  const handleToggle = () => setOpen((prev) => !prev);
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) return;
-    setOpen(false);
-  };
-
-  const handleFileChange = (e) => {
-    setTransactionScreenshot(e.target.files[0]);
-  };
-
-  const handlePaymentSubmit = async () => {
-    if (selectedIndex === 0) {
-      setSnackbarOpen(true);
-      setMessage("Select any one Department");
-      setMessageBack("red");
-      return;
-    } 
-    
-    if (transactionNumber.trim() === "") {
-      setSnackbarOpen(true);
-      setMessage("Enter your Transaction Number");
-      setMessageBack("red");
-      return;
-    }
-    
-    // Check if screenshot is required and present
-    if (!profile?.transactionScreenshot && !transactionScreenshot) {
-      setSnackbarOpen(true);
-      setMessage("Please upload your transaction screenshot");
-      setMessageBack("red");
-      return;
-    }
-
-    setIsVerifyLoading(true);
-    setSnackbarOpen(true);
-    setMessage("Submitting...");
-    setMessageBack("green");
-    
+  const fetchProfile = async () => {
     try {
-      // Create FormData to handle file upload
-      const formData = new FormData();
-      formData.append("email", profile.email);
-      formData.append("transactionNumber", transactionNumber);
-      formData.append("selectedDepartment", original[selectedIndex]);
-      
-      // Only append file if it exists (for resubmission case)
-      if (transactionScreenshot) {
-        formData.append("transactionScreenshot", transactionScreenshot);
+      setLoading(true)
+      const res = await fetch("/api/profile/getProfile", {
+        credentials: "include"
+      })
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login")
+          return
+        }
+        throw new Error("Failed to fetch profile")
       }
-      
-      const res = await fetch("/api/auth/complete-registration", {
+
+      const data = await res.json()
+      setUser(data)
+    } catch (error) {
+      console.error("Profile fetch error:", error)
+      showSnackbar("Failed to load profile", "red")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchProfile()
+  }, [])
+
+  const handlePaymentSubmit = async (formData) => {
+    try {
+      const res = await fetch("/api/profile/submit-payment", {
         method: "POST",
         body: formData,
-      });
-      
+        credentials: "include"
+      })
+
+      const data = await res.json()
+
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Submission failed");
+        throw new Error(data.error || "Payment submission failed")
       }
+
+      showSnackbar("Payment details submitted successfully! Awaiting verification.", "green")
       
-      setVerify(!verify);
-      setSnackbarOpen(true);
-      setMessage("Payment details submitted successfully");
-      setMessageBack("green");
-    } catch (err) {
-      console.error(err);
-      setSnackbarOpen(true);
-      setMessage(err.message || "Submission failed");
-      setMessageBack("red");
-    } finally {
-      setIsVerifyLoading(false);
+      // Refresh profile data
+      await fetchProfile()
+    } catch (error) {
+      console.error("Payment submission error:", error)
+      showSnackbar(error.message || "Failed to submit payment", "red")
+      throw error
     }
-  };
+  }
 
-  if (loading) return <MainLoader />;
+  if (loading) {
+    return <MainLoader />
+  }
 
-  return (
-    <div>
-      <div className={`w-full ${mobileCheck ? "h-screen" : "h-fit"} flex ${mobileCheck ? "flex-row" : "flex-col"} justify-center items-center relative mb-10 overflow-x-hidden`}>
-        <div className={`${mobileCheck ? "w-[50%]" : "w-[90%]"} h-full flex flex-col items-center justify-center`}>
-          <nav className="w-full h-[50px] absolute top-5 left-5">
-            <Link
-              href="/"
-              className="px-7 py-1 hover:text-white border-2 border-black rounded-md fixed md:block bg-white z-30"
-              onMouseEnter={() => setIsSeeMoreHovered(true)}
-              onMouseLeave={() => setIsSeeMoreHovered(false)}
-            >
-              Back
-            </Link>
-          </nav>
-          <div className="flex items-start flex-col gap-8 mt-5">
-            <h1 className={`${mobileCheck ? "text-8xl" : "text-4xl"} font-black ${mobileCheck ? "mt-0" : "mt-10"}`}>PROFILE</h1>
-            {!mobileCheck && <Lottie options={defaultOptions} height={400} width={400} />}
-            <table className="table-auto">
-              <tbody>
-                <tr>
-                  <td className="font-semibold text-lg">Name:</td>
-                  <td>{profile.fullName}</td>
-                </tr>
-                <tr>
-                  <td className="font-semibold text-lg">Department:</td>
-                  <td>{profile.department}</td>
-                </tr>
-                <tr>
-                  <td className="font-semibold text-lg">College:</td>
-                  <td>{profile.collegeName}</td>
-                </tr>
-                <tr>
-                  <td className="font-semibold text-lg">Phone:</td>
-                  <td>{profile.phoneNumber}</td>
-                </tr>
-                <tr>
-                  <td className="font-semibold text-lg">Email:</td>
-                  <td>{profile.email}</td>
-                </tr>
-                <tr>
-                  <td className="font-semibold text-lg">Payment Status:</td>
-                  <td className="flex items-center">
-                    {verifyRequest()}
-                    {profile?.paid && (
-                      <CheckCircleIcon sx={{ color: 'green', marginLeft: '5px' }} />
-                    )}
-                    {profile?.paymentRejected && (
-                      <WarningIcon sx={{ color: 'red', marginLeft: '5px' }} />
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-semibold pr-9 text-lg">Interested Department:</td>
-                  <td>
-                    {disabledState && profile.selectedDepartment ? (
-                      profile.selectedDepartment
-                    ) : (
-                      <div className="border-2 w-full rounded-lg inline py-2">
-                        <ButtonGroup variant="outlined" ref={anchorRef} aria-label="Department selection">
-                          <Button onClick={() => console.info(`You clicked ${options[selectedIndex]}`)}>{options[selectedIndex]}</Button>
-                          <Button
-                            size="small"
-                            aria-controls={open ? "split-button-menu" : undefined}
-                            aria-expanded={open ? "true" : undefined}
-                            aria-label="select merge strategy"
-                            aria-haspopup="menu"
-                            onClick={handleToggle}
-                          >
-                            <ArrowDropDownIcon />
-                          </Button>
-                        </ButtonGroup>
-                        <Popper sx={{ zIndex: 1 }} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                          {({ TransitionProps, placement }) => (
-                            <Grow {...TransitionProps} style={{ transformOrigin: placement === "bottom" ? "center top" : "center bottom" }}>
-                              <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                  <MenuList id="split-button-menu" autoFocusItem>
-                                    {options.map((option, index) => (
-                                      <MenuItem key={option} selected={index === selectedIndex} onClick={(event) => handleMenuItemClick(event, index)}>
-                                        {option}
-                                      </MenuItem>
-                                    ))}
-                                  </MenuList>
-                                </ClickAwayListener>
-                              </Paper>
-                            </Grow>
-                          )}
-                        </Popper>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <p className="font-semibold">** Workshop can be attended irrespective of the selected department</p>
-            {mobileCheck && (
-              <div>
-                <button
-                  onClick={async () => {
-                    await fetch("/api/auth/logout");
-                    router.push("/");
-                  }}
-                  className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className={`${mobileCheck ? "w-[50%]" : "w-[90%]"} h-full flex flex-col items-center justify-center`}>
-          {mobileCheck && (
-            <div className="h-[400px]">
-              <Lottie options={defaultOptions} height={400} width={400} />
-            </div>
-          )}
-          
-          {/* Conditional rendering based on payment status */}
-          {verifyRequest() !== "Payment Successful" && (
-            <div>
-              <div className="text-1xl mt-3 flex items-center font-bold">
-                ** For Payment Details Download this file{" "}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
-                </svg>
-                <Button sx={{ marginLeft: "10px" }} onClick={() => window.open("https://clement2004.blob.core.windows.net/techutsav25/Payment_process2025.pdf")}>
-                  <CloudDownloadIcon />
-                </Button>
-              </div>
-              
-              {profile?.paymentRejected && (
-                <div className="mt-3 p-3 bg-red-100 border border-red-400 rounded">
-                  <p className="text-red-700 font-medium">Your payment verification was rejected. Please resubmit your payment details.</p>
-                  {profile?.rejectionReason && (
-                    <p className="text-red-700 mt-1">Reason: {profile.rejectionReason}</p>
-                  )}
-                </div>
-              )}
-              
-              <div className="mt-3">
-                <p>Please Enter your Transaction Number after Payment</p>
-                <input
-                  type="text"
-                  className="mt-5 h-[30px] p-5 min-w-[200px] border"
-                  placeholder="Transaction Number"
-                  value={transactionNumber}
-                  disabled={disabledState}
-                  onChange={(event) => setTransactionNumber(event.target.value)}
-                />
-              </div>
-              
-              {/* File upload section */}
-              {(!profile?.transactionScreenshot || profile?.paymentRejected) && (
-                <div className="mt-3">
-                  <p>Upload Transaction Screenshot</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="mt-2"
-                    onChange={handleFileChange}
-                    disabled={disabledState}
-                  />
-                </div>
-              )}
-              
-              <div className="flex items-end flex-row justify-center gap-3 mt-5">
-                {(!disabledState || profile?.paymentRejected) && (
-                  <button
-                    onClick={handlePaymentSubmit}
-                    className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
-                    onMouseEnter={() => setVerifyHovered(true)}
-                    onMouseLeave={() => setVerifyHovered(false)}
-                  >
-                    {profile?.paymentRejected ? "Resubmit Payment" : "Verify Payment"}
-                  </button>
-                )}
-                
-                {isVerifyLoading && (
-                  <Box sx={{ display: "flex" }}>
-                    <CircularProgress />
-                  </Box>
-                )}
-                
-                {!mobileCheck && (
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={async () => {
-                        await fetch("/api/auth/logout");
-                        router.push("/");
-                      }}
-                      className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-              
-              {verifyRequest() === "Requested for Verification" && (
-                <p className="max-w-[400px] mt-[20px] text-[#FF1717]">
-                  Your Verification request has been sent. Please wait for the admin to update your profile. If the profile is not updated within 36 Hours please contact using the number provided on the site.
-                </p>
-              )}
-            </div>
-          )}
-          
-          {displayButton() && (
-            <div className="w-full mt-5">
-              <button
-                onClick={async () => {
-                  await fetch("/api/auth/logout");
-                  router.push("/");
-                }}
-                className="px-7 py-1 hover:text-white border-2 border-black rounded-md"
-              >
-                Logout
-              </button>
-            </div>
-          )}
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground">Profile not found</h2>
+          <button
+            onClick={() => router.push("/login")}
+            className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-md"
+          >
+            Go to Login
+          </button>
         </div>
       </div>
-      <SnackbarComponent open={snackbarOpen} message={message} messageBack={messageBack} setOpen={setSnackbarOpen} />
-      <Footer />
-    </div>
-  );
-};
+    )
+  }
 
-export default Profile;
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Background effects */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <ProfileHeader />
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Left column - Main Info */}
+          <div className="xl:col-span-2 space-y-6">
+            <ProfileInfo user={user} />
+            <PaymentSection user={user} onPaymentSubmit={handlePaymentSubmit} />
+          </div>
+
+          {/* Right column - QR Code */}
+          <div className="xl:col-span-1">
+            <ProfileQRCode userId={user.id} userName={user.name} passes={user.passes} />
+          </div>
+        </div>
+
+        {/* Additional Info Section */}
+        <div className="mt-8 p-6 bg-card border border-border rounded-lg">
+          <h3 className="text-xl font-semibold text-card-foreground mb-4">
+            Important Information
+          </h3>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>You can purchase multiple passes - each pass can be bought only once</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>Pass 3 (Idea Pitching) is per team - team formation happens after payment verification</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>Payment verification typically takes 24-36 hours</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>Keep your QR code handy for event check-ins</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>For any issues, contact us through the main website</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>All pass fees are inclusive of 18% GST and non-refundable</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <SnackbarComponent
+        open={snackbar.open}
+        message={snackbar.message}
+        messageBack={snackbar.color}
+        setOpen={(open) => setSnackbar({ ...snackbar, open })}
+      />
+    </div>
+  )
+}

@@ -19,6 +19,27 @@ const userSchema = new Schema(
     year: Number,
     department: String,
     onboardingCompleted: { type: Boolean, default: false },
+
+    // Multi-pass payment system
+    passes: [
+      {
+        passType: {
+          type: Number,
+          required: true,
+          enum: [1, 2, 3, 4], // Pass 1-4
+        },
+        transactionNumber: { type: String, required: true },
+        transactionScreenshot: { type: String, required: true }, // Azure Blob URL
+        status: {
+          type: String,
+          enum: ["pending", "verified", "rejected"],
+          default: "pending",
+        },
+        rejectionReason: String,
+        submittedDate: { type: Date, default: Date.now },
+        verifiedDate: Date,
+      },
+    ],
   },
   { timestamps: true }
 );

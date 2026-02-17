@@ -83,11 +83,12 @@ function linkClass(active) {
     block w-full rounded-md px-4 py-3 text-base font-medium transition
     ${
       active
-        ? "bg-accent text-primary"
-        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+        ? "border-b-2 border-accent text-accent-foreground font-semibold"
+        : "text-muted-foreground hover:border-b-2 hover:border-accent hover:text-foreground"
     }
   `
 }
+
 
 function CloseIcon() {
   return (

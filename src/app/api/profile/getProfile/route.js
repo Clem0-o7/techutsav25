@@ -24,9 +24,21 @@ export async function GET(request) {
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
     
-    const { fullName, email, phoneNumber, collegeName, department, paid, transactionNumber, selectedDepartment } = user;
+    const profileData = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNo: user.phoneNo,
+      college: user.college,
+      department: user.department,
+      year: user.year,
+      isEmailVerified: user.isEmailVerified,
+      onboardingCompleted: user.onboardingCompleted,
+      passes: user.passes || []
+    };
+    
     return new Response(
-      JSON.stringify({ fullName, email, phoneNumber, collegeName, department, paid, transactionNumber, selectedDepartment }),
+      JSON.stringify(profileData),
       { status: 200 }
     );
   } catch (error) {
