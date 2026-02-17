@@ -1,51 +1,22 @@
-// /app/api/auth/verify-email/route.js
-import { connectToDatabase } from "@/lib/mongodb";
-import User from "@/lib/models/User";
+import { NextResponse } from "next/server"
+import User from "@/models/User"
 
-export async function POST(request) {
-  try {
-    await connectToDatabase();
-    const body = await request.json();
-    const { email, otp } = body;
+export async function GET(req) {
+  const { searchParams } = new URL(req.url)
+  const token = searchParams.get("token")
 
-    if (!email || !otp) {
-      return new Response(
-        JSON.stringify({ error: "Missing email or OTP" }),
-        { status: 400 }
-      );
-    }
+  const user = await User.findOne({
+    emailVerificationToken: token,
+    emailVerificationExpires: { $gt: Date.now() },
+  })
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return new Response(
-        JSON.stringify({ error: "User not found" }),
-        { status: 404 }
-      );
-    }
+  if (!user)
+    return NextResponse.redirect("/auth/invalid-token")
 
-    // Check if the OTP matches and is not expired
-    if (user.emailOTP !== otp || new Date() > user.emailOTPExpires) {
-      return new Response(
-        JSON.stringify({ error: "Invalid or expired OTP" }),
-        { status: 400 }
-      );
-    }
+  user.isEmailVerified = true
+  user.emailVerificationToken = undefined
+  user.emailVerificationExpires = undefined
+  await user.save()
 
-    // Mark user as verified and clear OTP fields
-    user.verified = true;
-    user.emailOTP = undefined;
-    user.emailOTPExpires = undefined;
-    await user.save();
-
-    return new Response(
-      JSON.stringify({ message: "Email verified successfully", verified: true }),
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("Email verification error:", error);
-    return new Response(
-      JSON.stringify({ error: "Verification failed" }),
-      { status: 500 }
-    );
-  }
+  return NextResponse.redirect("/onboarding")
 }

@@ -27,9 +27,9 @@ const Navbar = ({ authenticated }) => {
     { name: "Home", link: "home" },
     { name: "About", link: "about" },
     { name: "Events", link: "events" },
-    { name: "Memories", link: "past-year-highlights" }, // Updated for clarity
+    { name: "Memories", link: "past-year-highlights" }, 
     { name: "FAQs", link: "faq" },
-    { name: "Guidelines", link: "/guidelines" }, // Add this new link
+    { name: "Guidelines", link: "/guidelines" }, 
     { name: "Contact", link: "contact" },
   ]
 

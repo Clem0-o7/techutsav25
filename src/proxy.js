@@ -7,22 +7,29 @@ export function proxy(request) {
   const teaserMode = process.env.NEXT_PUBLIC_TEASER_MODE === "true";
 
   if (teaserMode) {
-    // Allow only /coming-soon page
-    if (pathname === "/coming-soon") {
+    // List of paths allowed during teaser mode
+    const allowedPaths = [
+      "/coming-soon",
+      "/api/auth",     // signup, signin, verification
+      "/onboarding",   // onboarding form
+      "/u/",           // user profiles after onboarding
+      "/_next",        // Next.js internals
+      "/favicon",      // favicon
+      "/images",       // static images
+    ];
+
+    // Allow static files (like CSS, JS) and anything with an extension
+    if (pathname.includes(".")) {
       return NextResponse.next();
     }
 
-    // Allow Next.js internals and static files
-    if (
-      pathname.startsWith("/_next") ||
-      pathname.startsWith("/favicon") ||
-      pathname.startsWith("/images") ||
-      pathname.includes(".")
-    ) {
+    // Check if the path starts with any allowed path
+    const isAllowed = allowedPaths.some((p) => pathname.startsWith(p));
+    if (isAllowed) {
       return NextResponse.next();
     }
 
-    // Redirect everything else to coming-soon page
+    // Redirect all other paths to coming-soon
     return NextResponse.redirect(new URL("/coming-soon", request.url));
   }
 

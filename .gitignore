@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-/scripts
+/scripts/*
 
 # next.js
 /.next/
@@ -45,5 +45,10 @@ next-env.d.ts
 .github
 
 #vscode
-.vscode
+.vscode/
 
+#python_tools
+.python_tools/
+
+#old files
+.zlegacy/
