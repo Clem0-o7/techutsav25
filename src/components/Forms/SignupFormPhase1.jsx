@@ -66,11 +66,18 @@ export function SignupFormPhase1() {
       if (!contentType || !contentType.includes("application/json")) {
         // Response is not JSON - likely an error page or server error
         const text = await res.text();
-        console.error("Non-JSON response:", text);
-        throw new Error("Server error. Please try again later or contact support.");
+        console.error("Non-JSON response:", text.substring(0, 200));
+        throw new Error("Server error. Please check Vercel logs or contact support.");
       }
 
       const data = await res.json();
+      
+      // Log error code for debugging
+      if (!res.ok && data.code) {
+        console.error("Signup error code:", data.code);
+        console.error("Signup error details:", data);
+      }
+      
       if (!res.ok) {
         throw new Error(data.error || "Signup failed");
       }
