@@ -1,4 +1,4 @@
-// models/College.ts
+// @/lib/models/College.js
 import mongoose, { Schema } from "mongoose"
 
 const collegeSchema = new Schema(

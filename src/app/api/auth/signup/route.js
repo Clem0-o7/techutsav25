@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
-import User from "@/models/User"
-import { sendVerificationEmail } from "@/lib/mail"
+import User from "@/lib/models/User"
+import { sendVerificationEmail } from "@/lib/email"
 
 export async function POST(req) {
   const { name, email, password, confirmPassword } = await req.json()

@@ -11,6 +11,7 @@ export function proxy(request) {
     const allowedPaths = [
       "/coming-soon",
       "/api/auth",     // signup, signin, verification
+      "/signup",
       "/onboarding",   // onboarding form
       "/u/",           // user profiles after onboarding
       "/_next",        // Next.js internals

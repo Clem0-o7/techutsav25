@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import User from "@/models/User"
+import User from "@/lib/models/User"
 import { NextResponse } from "next/server"
 
 export async function POST(req) {

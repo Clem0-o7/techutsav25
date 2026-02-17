@@ -1,4 +1,4 @@
-import College from "@/models/College"
+import College from "@/lib/models/College"
 import { NextResponse } from "next/server"
 
 export async function GET(req) {

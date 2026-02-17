@@ -1,55 +1,55 @@
+//@/api/auth/[...nextauth]/route.js
+
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { MongoDBAdapter } from "@auth/mongodb-adapter"
-import clientPromise from "@/lib/mongodb"
-import User from "@/models/User"
+import { connectToDatabase } from "@/lib/mongodb"
+import User from "@/lib/models/User"
 import bcrypt from "bcryptjs"
 
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+    session: { strategy: "jwt" },
 
-  session: { strategy: "jwt" },
+    providers: [
+        Credentials({
+            name: "credentials",
+            credentials: {
+                email: {},
+                password: {},
+            },
+            async authorize(credentials) {
+                await connectToDatabase()
+                const user = await User.findOne({ email: credentials.email })
 
-  providers: [
-    Credentials({
-      name: "credentials",
-      credentials: {
-        email: {},
-        password: {},
-      },
-      async authorize(credentials) {
-        const user = await User.findOne({ email: credentials.email })
+                if (!user) throw new Error("User not found")
+                if (!user.isEmailVerified)
+                    throw new Error("Email not verified")
 
-        if (!user) throw new Error("User not found")
-        if (!user.isEmailVerified)
-          throw new Error("Email not verified")
+                const isValid = await bcrypt.compare(
+                    credentials.password,
+                    user.password
+                )
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        )
+                if (!isValid) throw new Error("Invalid password")
 
-        if (!isValid) throw new Error("Invalid password")
+                return user
+            },
+        }),
+    ],
 
-        return user
-      },
-    }),
-  ],
-
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user._id
-        token.onboardingCompleted = user.onboardingCompleted
-      }
-      return token
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user._id
+                token.onboardingCompleted = user.onboardingCompleted
+            }
+            return token
+        },
+        async session({ session, token }) {
+            session.user.id = token.id
+            session.user.onboardingCompleted = token.onboardingCompleted
+            return session
+        },
     },
-    async session({ session, token }) {
-      session.user.id = token.id
-      session.user.onboardingCompleted = token.onboardingCompleted
-      return session
-    },
-  },
 }
 
 const handler = NextAuth(authOptions)

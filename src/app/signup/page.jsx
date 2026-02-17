@@ -1,11 +1,14 @@
-import { SignupForm } from "@/components/auth/signup-form"
+"use client";
 
-export default function Page() {
+import { SignupFormPhase1 } from "./components/SignupFormPhase1";
+
+export default function SignupPage() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <SignupForm />
-      </div>
-    </div>
+    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background transition-colors duration-300">
+  <div className="w-full max-w-md">
+    <SignupFormPhase1 />
+  </div>
+</div>
+
   );
 }
