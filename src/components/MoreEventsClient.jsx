@@ -96,7 +96,7 @@ const MoreEventsClient = ({ events, department }) => {
             style={{ backgroundColor: theme.aliceBlue }}
           >
             <h1 className="text-4xl font-bold tracking-wide bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              Techutsav 2025 Events
+              TechUtsav Paradigm '26 Events
             </h1>
           </div>
 

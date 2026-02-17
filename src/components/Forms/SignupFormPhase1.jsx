@@ -61,6 +61,15 @@ export function SignupFormPhase1() {
         body: JSON.stringify(formData),
       });
 
+      // Check if response is JSON
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        // Response is not JSON - likely an error page or server error
+        const text = await res.text();
+        console.error("Non-JSON response:", text);
+        throw new Error("Server error. Please try again later or contact support.");
+      }
+
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || "Signup failed");
@@ -69,7 +78,8 @@ export function SignupFormPhase1() {
       // Success - redirect to verification page
       router.push("/verify-email?email=" + encodeURIComponent(formData.email));
     } catch (err) {
-      setError(err.message);
+      console.error("Signup error:", err);
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }

@@ -8,11 +8,11 @@ export default function CyberSecureDigitalTwinsPage() {
   // Hardcoded event data for the static page
   const eventData = {
     title: "Cyber-Secure Digital Twins Workshop",
-    date: "20th March 2025",
+    date: "27th February 2026",
     time: "9:00 AM onwards",
     venue: "Thiagarajar College of Engineering",
     registerLink: "https://techutsavtce.tech",
-    description: `🚀 Techutsav'25 Panorama is set to host an exciting and thought-provoking workshop on Cyber-Secure Digital Twins, a cutting-edge field that integrates cybersecurity, artificial intelligence, and digital twin technology to create secure, efficient, and sustainable digital replicas of real-world systems. This workshop will provide deep insights into how digital twins are transforming industries by enhancing predictive analytics, security frameworks, and operational resilience.`,
+    description: `🚀 TechUtsav Paradigm '26 is set to host an exciting and thought-provoking workshop on Cyber-Secure Digital Twins, a cutting-edge field that integrates cybersecurity, artificial intelligence, and digital twin technology to create secure, efficient, and sustainable digital replicas of real-world systems. This workshop will provide deep insights into how digital twins are transforming industries by enhancing predictive analytics, security frameworks, and operational resilience.`,
     speakers: [
       {
         name: "Dr. Gururaj H L",
@@ -38,7 +38,7 @@ export default function CyberSecureDigitalTwinsPage() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-12 relative z-10">
           <div className="inline-block px-4 py-1 bg-white/20 text-white text-sm rounded-full mb-4">
-            Techutsav'25 Panorama
+            TechUtsav Paradigm '26
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{eventData.title}</h1>
           <div className="flex flex-wrap gap-4 text-white">

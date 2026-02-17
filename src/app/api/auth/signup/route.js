@@ -9,6 +9,23 @@ import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req) {
   try {
+    // Check critical environment variables first
+    if (!process.env.MONGODB_URI) {
+      console.error("[SIGNUP ERROR] MONGODB_URI not set");
+      return NextResponse.json(
+        { error: "Server configuration error. Please contact support." },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.EMAIL_SERVER_HOST || !process.env.EMAIL_SERVER_USER) {
+      console.error("[SIGNUP ERROR] Email configuration missing");
+      return NextResponse.json(
+        { error: "Email service not configured. Please contact support." },
+        { status: 500 }
+      );
+    }
+
     //  Parse JSON safely
     let body;
     try {
@@ -61,7 +78,17 @@ export async function POST(req) {
     }
 
     //  Connect to MongoDB
-    await connectToDatabase();
+    let connection;
+    try {
+      connection = await connectToDatabase();
+      console.log("[SIGNUP] Database connected");
+    } catch (dbError) {
+      console.error("[SIGNUP ERROR] Database connection failed:", dbError);
+      return NextResponse.json(
+        { error: "Database connection error. Please try again later." },
+        { status: 503 }
+      );
+    }
 
     //  Check if email already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });

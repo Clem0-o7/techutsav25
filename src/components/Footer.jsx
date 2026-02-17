@@ -17,7 +17,7 @@ const Footer = () => {
           {/* Title Section */}
           <div className="text-center md:text-left">
             <h1 className="font-bold text-xl sm:text-2xl text-[#E7F1FB]">
-              PANORAMA&apos;25
+              PARADIGM &apos;26
             </h1>
             <p className="text-sm sm:text-base">
               THIAGARAJAR COLLEGE OF ENGINEERING, MADURAI
@@ -26,7 +26,7 @@ const Footer = () => {
 
           {/* Copyright Section */}
           <div className="text-sm sm:text-base">
-            <p>© 2025. All rights reserved by TCE</p>
+            <p>© 2026. All rights reserved by TCE</p>
           </div>
 
           {/* Social Media & Email Icons */}

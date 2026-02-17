@@ -85,7 +85,7 @@ const Home = ({ authenticated }) => {
             </p>
           </div>
 
-          {/* PANORAMA'25 title */}
+          {/* PARADIGM '26 title */}
           <div className="relative">
             <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-wider relative z-20 animate-fade-in-up">
               <span
@@ -95,7 +95,7 @@ const Home = ({ authenticated }) => {
                   backgroundSize: "200% auto",
                 }}
               >
-                PANORAMA'25
+                PARADIGM '26
               </span>
             </h1>
           </div>
@@ -119,13 +119,13 @@ const Home = ({ authenticated }) => {
                   backgroundSize: "200% auto",
                 }}
               ></span>
-              On 20th March
+              On 27th February
             </p>
           </div>
 
           {/* CountdownTimer */}
           <div className="mt-4 sm:mt-6 animate-fade-in">
-            <CountdownTimer targetDate="2025-03-20T00:00:00" />
+            <CountdownTimer targetDate="2026-02-27T00:00:00" />
           </div>
 
           {/* Typed text */}
