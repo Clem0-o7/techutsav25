@@ -32,9 +32,10 @@ export async function POST(request) {
     return new Response(
       JSON.stringify({ 
         user: { 
-          fullName: user.fullName, 
+          name: user.name, 
           email: user.email, 
-          verified: user.verified 
+          isEmailVerified: user.isEmailVerified,
+          onboardingCompleted: user.onboardingCompleted
         } 
       }),
       { status: 200, headers: { "Set-Cookie": cookie, "Content-Type": "application/json" } }

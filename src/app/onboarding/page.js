@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { SignupFormPhase2 } from "./components/SignupFormPhase2";
+import { SignupFormPhase2 } from "@/components/Forms/SignupFormPhase2";
 
 function OnboardingPageContent() {
   const searchParams = useSearchParams();

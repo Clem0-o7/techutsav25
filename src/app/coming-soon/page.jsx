@@ -1,9 +1,12 @@
 'use client'
 
 import { Suspense, lazy } from 'react'
+import { useAuth } from '@/lib/useAuth'
 const Spline = lazy(() => import('@splinetool/react-spline'))
 
 export default function ComingSoonPage() {
+  const { authenticated } = useAuth()
+
   return (
     <div className="min-h-screen bg-black/[0.96] relative overflow-hidden">
       {/* Spotlight effect */}
@@ -46,7 +49,7 @@ export default function ComingSoonPage() {
           </p>
 
           <p className="mt-6 text-xs md:text-sm tracking-wide text-red-300/70">
-            · Workshops · Paper Presentations · Ideathon · Tech/Non-Tech Events
+            Workshops · Paper Presentations · Ideathon · Tech/Non-Tech Events
           </p>
 
 
@@ -80,24 +83,44 @@ export default function ComingSoonPage() {
             </svg>
           </a>
 
-          {/* Signup Button */}
-          <a
-            href="/signup"
-            className="
-    inline-flex items-center justify-center
-    px-7 py-2.5 rounded-full
-    text-sm font-medium tracking-wide
-    text-red-400
-    border border-red-500/40
-    bg-black/40 backdrop-blur-sm
-    hover:bg-red-500/10
-    hover:text-red-300
-    hover:border-red-400
-    transition-all duration-300
-  "
-          >
-            Sign Up
-          </a>
+          {/* Signup/Profile Button */}
+          {authenticated ? (
+            <a
+              href="/profile"
+              className="
+      inline-flex items-center justify-center
+      px-7 py-2.5 rounded-full
+      text-sm font-medium tracking-wide
+      text-red-400
+      border border-red-500/40
+      bg-black/40 backdrop-blur-sm
+      hover:bg-red-500/10
+      hover:text-red-300
+      hover:border-red-400
+      transition-all duration-300
+    "
+            >
+              Profile
+            </a>
+          ) : (
+            <a
+              href="/signup"
+              className="
+      inline-flex items-center justify-center
+      px-7 py-2.5 rounded-full
+      text-sm font-medium tracking-wide
+      text-red-400
+      border border-red-500/40
+      bg-black/40 backdrop-blur-sm
+      hover:bg-red-500/10
+      hover:text-red-300
+      hover:border-red-400
+      transition-all duration-300
+    "
+            >
+              Sign Up
+            </a>
+          )}
 
 
 

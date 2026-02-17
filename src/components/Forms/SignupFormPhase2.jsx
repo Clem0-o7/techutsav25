@@ -18,16 +18,17 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-export function SignupFormPhase1() {
+export function SignupFormPhase2({ userId }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    phoneNo: "",
+    college: "",
+    year: "",
+    department: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -36,24 +37,24 @@ export function SignupFormPhase1() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
+    setSuccess(false);
     setLoading(true);
+
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, userId }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Signup failed");
+      if (!res.ok) throw new Error(data.error || "Onboarding failed");
 
-      router.push("/verify-email?email=" + encodeURIComponent(formData.email));
+      setSuccess(true);
+      // Redirect to login page after successful onboarding
+      setTimeout(() => {
+        router.push("/login?onboarded=true");
+      }, 1500);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -64,9 +65,9 @@ export function SignupFormPhase1() {
   return (
     <Card className="max-w-md mx-auto mt-12 shadow-lg dark:shadow-xl transition-all duration-300">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-semibold">Create an account</CardTitle>
+        <CardTitle className="text-2xl font-semibold">Complete Your Profile</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">
-          Enter your information below to create your account
+          Provide additional information to complete your account
         </CardDescription>
       </CardHeader>
 
@@ -74,73 +75,71 @@ export function SignupFormPhase1() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <FieldGroup className="space-y-4">
             <Field>
-              <FieldLabel htmlFor="name">Full Name</FieldLabel>
+              <FieldLabel htmlFor="phoneNo">Phone Number</FieldLabel>
               <Input
-                id="name"
+                id="phoneNo"
+                type="tel"
+                placeholder="+91 12345 67890"
+                required
+                value={formData.phoneNo}
+                onChange={handleChange}
+                className="bg-input text-foreground border border-border rounded-md focus:ring-2 focus:ring-ring transition"
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="college">College</FieldLabel>
+              <Input
+                id="college"
                 type="text"
-                placeholder="John Doe"
+                placeholder="PSNA College of Engineering"
                 required
-                value={formData.name}
+                value={formData.college}
                 onChange={handleChange}
                 className="bg-input text-foreground border border-border rounded-md focus:ring-2 focus:ring-ring transition"
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="year">Year</FieldLabel>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="year"
+                type="number"
+                placeholder="2"
                 required
-                value={formData.email}
+                value={formData.year}
                 onChange={handleChange}
                 className="bg-input text-foreground border border-border rounded-md focus:ring-2 focus:ring-ring transition"
               />
-              <FieldDescription className="text-sm text-muted-foreground">
-                We'll use this to contact you. We will not share your email with anyone else.
-              </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="department">Department</FieldLabel>
               <Input
-                id="password"
-                type="password"
+                id="department"
+                type="text"
+                placeholder="Computer Science"
                 required
-                value={formData.password}
+                value={formData.department}
                 onChange={handleChange}
                 className="bg-input text-foreground border border-border rounded-md focus:ring-2 focus:ring-ring transition"
               />
-              <FieldDescription className="text-sm text-muted-foreground">
-                Must be at least 8 characters long.
-              </FieldDescription>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-              <Input
-                id="confirmPassword"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="bg-input text-foreground border border-border rounded-md focus:ring-2 focus:ring-ring transition"
-              />
-              <FieldDescription className="text-sm text-muted-foreground">
-                Please confirm your password.
-              </FieldDescription>
             </Field>
 
             {error && <p className="text-destructive text-sm font-medium">{error}</p>}
+            {success && (
+              <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                ✓ Profile completed successfully! Redirecting to login...
+              </p>
+            )}
 
             <Field>
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || success}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-ring transition"
               >
-                {loading ? "Creating..." : "Create Account"}
+                {success ? "Success! Redirecting..." : loading ? "Saving..." : "Complete Profile"}
               </Button>
             </Field>
           </FieldGroup>

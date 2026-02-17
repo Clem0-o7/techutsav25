@@ -1,5 +1,5 @@
 // @/lib/models/College.js
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema } from "mongoose";
 
 const collegeSchema = new Schema(
   {
@@ -10,7 +10,7 @@ const collegeSchema = new Schema(
     approved: { type: Boolean, default: true },
   },
   { timestamps: true }
-)
+);
 
-export default mongoose.models.College ||
-  mongoose.model("College", collegeSchema)
+const College = mongoose.models.College || mongoose.model("College", collegeSchema);
+export default College;
