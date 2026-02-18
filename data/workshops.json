@@ -1,0 +1,39 @@
+{
+  "mainWorkshop": {
+    "id": "multi-agent-mastery",
+    "title": "Multi-Agent Mastery",
+    "subtitle": "Orchestration for the future",
+    "description": "Dive deep into the world of autonomous agents and discover how to orchestrate multiple AI agents to solve complex problems. Learn the latest techniques in agent-based systems, prompt engineering, and real-world applications.",
+    "date": "2026-03-15",
+    "time": "09:00 AM - 12:00 PM",
+    "location": "Main Auditorium",
+    "speakers": ["Expert in AI", "Industry Leader"],
+    "tags": ["AI", "Agents", "Orchestration"],
+    "image": "/images/workshops/multi-agent.jpg",
+    "bgImage": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/multi-agent-mastry%20backdrop-gTSN0VdFQz5PvJlVxkfnvX5tBiiXks.png"
+  },
+  "onlineWorkshops": [
+    {
+      "id": "ai-sdk-advanced",
+      "title": "AI SDK Advanced",
+      "description": "Master the Vercel AI SDK and build production-ready AI applications with advanced patterns and best practices.",
+      "date": "2026-03-20",
+      "time": "07:00 PM IST",
+      "duration": "2 hours",
+      "image": "/images/workshops/ai-sdk.jpg",
+      "tags": ["AI SDK", "Vercel", "Development"],
+      "link": "/events/ai-sdk-advanced"
+    },
+    {
+      "id": "langchain-integration",
+      "title": "LangChain Integration",
+      "description": "Learn to build sophisticated AI applications using LangChain, from simple chains to complex reasoning systems.",
+      "date": "2026-03-22",
+      "time": "07:00 PM IST",
+      "duration": "2 hours",
+      "image": "/images/workshops/langchain.jpg",
+      "tags": ["LangChain", "AI", "Integration"],
+      "link": "/events/langchain-integration"
+    }
+  ]
+}

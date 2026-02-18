@@ -40,6 +40,7 @@
     "react-loading-skeleton": "^3.5.0",
     "react-lottie": "^1.2.10",
     "react-scroll": "^1.9.3",
+    "shadcn": "^3.8.5",
     "styled-components": "^6.1.15",
     "tailwind-merge": "^3.4.0",
     "techutsav": "file:",
