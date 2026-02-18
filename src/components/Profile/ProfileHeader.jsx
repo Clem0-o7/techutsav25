@@ -8,10 +8,26 @@ export function ProfileHeader() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" })
-      router.push("/")
+      const response = await fetch("/api/auth/logout", { 
+        method: "POST",
+        credentials: "include" 
+      })
+      
+      if (response.ok) {
+        // Clear any client-side storage if needed
+        localStorage.clear()
+        sessionStorage.clear()
+        
+        // Redirect to home page
+        router.push("/")
+        router.refresh() // Force refresh to clear any cached data
+      } else {
+        throw new Error("Logout failed")
+      }
     } catch (error) {
       console.error("Logout error:", error)
+      // Even if there's an error, try to redirect
+      router.push("/")
     }
   }
 

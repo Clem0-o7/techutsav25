@@ -71,7 +71,7 @@ export async function POST(request) {
       );
 
       const timestamp = Date.now();
-      const blobName = `payment-screenshots/${user._id}-pass${passType}-${timestamp}-${screenshot.name}`;
+      const blobName = `PASS${passType}/${user._id}-${timestamp}-${screenshot.name}`;
       const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
       const buffer = Buffer.from(await screenshot.arrayBuffer());

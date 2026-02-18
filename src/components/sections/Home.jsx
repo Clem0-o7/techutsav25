@@ -8,7 +8,7 @@ import "@/styles/button.css";
 import CountdownTimer from "@/components/CountdownTImer";
 import Particles from "@/components/Particles";
 
-const Home = ({ authenticated }) => {
+const Home = ({ authenticated, user }) => {
   const [typedText, setTypedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const fullText = "Paradigms of Tomorrow.";
@@ -100,9 +100,11 @@ const Home = ({ authenticated }) => {
           {/* Authentication-dependent content */}
           {authenticated ? (
             <div className="flex flex-col items-center gap-3 sm:gap-6 mt-4 sm:mt-6 animate-fade-in">
-              <p className="text-xl sm:text-2xl font-semibold text-foreground drop-shadow-sm">
-                Welcome, {sessionStorage.getItem("name")}
-              </p>
+              {user?.name && (
+                <p className="text-xl sm:text-2xl font-semibold text-foreground drop-shadow-sm">
+                  Welcome back, {user.name}!
+                </p>
+              )}
               {/* Button layout: Stack on mobile, side by side on tablet and up */}
               <div className="flex gap-3 sm:gap-5 flex-col sm:flex-row w-full sm:w-auto px-4 sm:px-0">
                 <ScrollLink
@@ -113,13 +115,13 @@ const Home = ({ authenticated }) => {
                   offset={-70}
                   className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-md text-center cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg w-full bg-card hover:bg-primary text-foreground hover:text-white border-2 border-primary group"
                 >
-                  <span className="relative z-10">Explore</span>
+                  <span className="relative z-10">Explore Events</span>
                 </ScrollLink>
                 <Link
                   href="/profile"
-                  className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-md text-center transition-all duration-300 shadow-md hover:shadow-lg w-full bg-card hover:bg-accent text-foreground hover:text-white border-2 border-accent group"
+                  className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-md text-center transition-all duration-300 shadow-md hover:shadow-lg w-full bg-primary hover:bg-primary/90 text-white border-2 border-primary group"
                 >
-                  <span className="relative z-10">Profile</span>
+                  <span className="relative z-10">View Profile</span>
                 </Link>
               </div>
             </div>

@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 
 export default function LandingPage() {
   const [loading, setLoading] = useState(true);
-  const { authenticated } = useAuth();
+  const { authenticated, user } = useAuth();
 
   useEffect(() => {
     setLoading(false);
@@ -27,7 +27,7 @@ export default function LandingPage() {
   return (
     <div className="font-poppins">
       <Navbar authenticated={authenticated} />
-      <Home />
+      <Home authenticated={authenticated} user={user} />
       <About />
       <Workshops />
       <OnlineEvents />

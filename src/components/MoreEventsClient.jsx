@@ -7,10 +7,12 @@ import { Navbar } from './Navbar/Navbar';
 import Footer from './Footer';
 import MainLoader from '../components/MainLoader';
 import Typography from '@mui/material/Typography';
+import { useAuth } from '@/lib/useAuth';
 import '@/styles/globals.css';
 
 const MoreEventsClient = ({ events, department }) => {
   const router = useRouter();
+  const { authenticated } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -77,7 +79,7 @@ const MoreEventsClient = ({ events, department }) => {
         <MainLoader />
       ) : (
         <div className="w-full min-h-screen bg-background text-foreground">
-          <Navbar />
+          <Navbar authenticated={authenticated} />
 
           <div className="text-center py-6">
             <h1 className="text-4xl md:text-5xl font-bold tracking-wide mb-2">
