@@ -1,0 +1,31 @@
+{
+  "navLinks": [
+    { "name": "Home", "href": "#home" },
+    { "name": "About", "href": "#about" },
+    { "name": "Workshops", "href": "#workshops" },
+    { "name": "Events", "href": "#events" },
+    { "name": "Memories", "href": "#memories" },
+    { "name": "FAQ", "href": "#faq" },
+    { "name": "Contact", "href": "#contact" }
+  ],
+  "about": {
+    "collegeTitle": "THIAGARAJAR COLLEGE OF ENGINEERING",
+    "collegeDescription": "Founded in 1957, Thiagarajar College of Engineering, Madurai is one of India's premier engineering institutions. Located in the temple city of Madurai, TCE has been nurturing talent and innovation for over six decades.",
+    "collegeImage": "/images/about/tce-campus.jpg",
+    "techutsavTitle": "About Techutsav",
+    "techutsavHistory": "Techutsav is the annual flagship techno-management festival of Thiagarajar College of Engineering. Since its inception, it has been a platform for students to showcase their talents, learn from industry experts, and network with like-minded innovators. Techutsav '26 brings the theme 'PARADIGM' - a shift in how we think about technology and innovation.",
+    "techutsavImage": "/images/about/techutsav.jpg"
+  },
+  "memories": {
+    "title": "Memories from Past Events",
+    "description": "Relive the moments that made Techutsav unforgettable. Here are glimpses of past years' celebrations.",
+    "gallery": [
+      { "id": 1, "image": "/images/memories/memory-1.jpg", "title": "Opening Ceremony 2024" },
+      { "id": 2, "image": "/images/memories/memory-2.jpg", "title": "Code Sprint Winners" },
+      { "id": 3, "image": "/images/memories/memory-3.jpg", "title": "Workshop Session" },
+      { "id": 4, "image": "/images/memories/memory-4.jpg", "title": "Cultural Night" },
+      { "id": 5, "image": "/images/memories/memory-5.jpg", "title": "Prize Distribution" },
+      { "id": 6, "image": "/images/memories/memory-6.jpg", "title": "Networking Event" }
+    ]
+  }
+}

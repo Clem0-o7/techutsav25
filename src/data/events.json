@@ -1,0 +1,58 @@
+{
+  "paperPresentation": {
+    "id": "paper-presentation",
+    "title": "Paper Presentation",
+    "description": "Showcase your research papers and innovative ideas in front of industry experts and fellow innovators.",
+    "date": "2026-03-18",
+    "time": "10:00 AM - 05:00 PM",
+    "image": "/images/events/paper-presentation.jpg",
+    "tags": ["Research", "Presentation", "Competition"],
+    "link": "/events/paper-presentation",
+    "participants": "50+",
+    "prizes": "₹50,000+"
+  },
+  "ideathon": {
+    "id": "ideathon",
+    "title": "Ideathon",
+    "description": "Turn your brilliant ideas into reality. Compete with teams, pitch your innovations, and win exciting prizes.",
+    "date": "2026-03-19",
+    "time": "09:00 AM - 06:00 PM",
+    "image": "/images/events/ideathon.jpg",
+    "tags": ["Innovation", "Ideation", "Competition"],
+    "link": "/events/ideathon",
+    "participants": "100+",
+    "prizes": "₹100,000+"
+  },
+  "allEvents": [
+    {
+      "id": "event-1",
+      "name": "Code Sprint",
+      "image": "/images/events/code-sprint.jpg",
+      "date": "2026-03-16"
+    },
+    {
+      "id": "event-2",
+      "name": "Design Challenge",
+      "image": "/images/events/design-challenge.jpg",
+      "date": "2026-03-17"
+    },
+    {
+      "id": "event-3",
+      "name": "Hardware Hack",
+      "image": "/images/events/hardware-hack.jpg",
+      "date": "2026-03-20"
+    },
+    {
+      "id": "event-4",
+      "name": "Startup Pitch",
+      "image": "/images/events/startup-pitch.jpg",
+      "date": "2026-03-21"
+    },
+    {
+      "id": "event-5",
+      "name": "Tech Quiz",
+      "image": "/images/events/tech-quiz.jpg",
+      "date": "2026-03-22"
+    }
+  ]
+}

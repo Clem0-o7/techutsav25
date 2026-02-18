@@ -1,9 +1,31 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-{/*@import "shadcn/tailwind.css";*/}
+/* Stranger Things Theme Animations */
+@keyframes neon-glow {
+  0%, 100% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #ff006e; }
+  50% { text-shadow: 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff, 0 0 50px #ff006e; }
+}
 
-@custom-variant dark (&:is(.dark *));
+@keyframes neon-box-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(255, 0, 110, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 0 0 30px rgba(255, 0, 110, 0.5); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @layer base {
   * {
@@ -15,58 +37,34 @@
 }
 
 :root {
-  --card: #f9fafb;
-  --ring: #e50914;
-  --input: #e5e7eb;
-  --muted: #f9fafb;
-  --accent: #fffbeb;
-  --border: #e5e7eb;
-  --radius: 0.25rem;
-  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --popover: #ffffff;
-  --primary: #e50914;
-  --spacing: 0.25rem;
-  --font-mono: "Courier New", monospace;
-  --font-sans: "Netflix Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --secondary: #f3f4f6;
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --background: #ffffff;
-  --font-serif: "Georgia", serif;
-  --foreground: #000000;
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --destructive: #ef4444;
-  --card-foreground: #171717;
-  --muted-foreground: #6b7280;
-  --accent-foreground: #92400e;
-  --popover-foreground: #000000;
-  --primary-foreground: #ffffff;
-  --secondary-foreground: #4b5563;
-  --destructive-foreground: #ffffff;
-}
-
-.dark {
+  /* Stranger Things Color Palette */
+  --color-primary-blue: #0a1428;
+  --color-primary-red: #e50914;
+  --color-accent-cyan: #00ffff;
+  --color-accent-pink: #ff006e;
+  --color-dark-bg: #0f0f0f;
+  --color-light-text: #ffffff;
+  
+  /* Theme Variables */
   --card: #1a1a1a;
   --ring: #e50914;
   --input: #404040;
   --muted: #2b2b2b;
-  --accent: #e50914;
+  --accent: #00ffff;
   --border: #404040;
   --radius: 0.25rem;
-  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
   --popover: #1a1a1a;
   --primary: #e50914;
   --spacing: 0.25rem;
   --font-mono: "Courier New", monospace;
   --font-sans: "Netflix Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --secondary: #2b2b2b;
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --background: #000000;
+  --secondary: #1e4d8b;
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  --background: #0f0f0f;
   --font-serif: "Georgia", serif;
   --foreground: #ffffff;
   --shadow-2xl: 0px 0.25rem 0.5rem 0px rgba(0, 0, 0, 0.8);
@@ -111,4 +109,95 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-destructive-foreground: var(--destructive-foreground);
+}
+
+/* Stranger Things Theme Utilities */
+.neon-glow {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+.neon-box-glow {
+  animation: neon-box-glow 2s ease-in-out infinite;
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.8s ease-out;
+}
+
+.gradient-blue-red {
+  background: linear-gradient(90deg, var(--color-primary-blue) 0%, #1e4d8b 25%, #4d2b5f 50%, #8b1e3f 75%, var(--color-primary-red) 100%);
+}
+
+.gradient-blue-red-text {
+  background: linear-gradient(90deg, #00ffff 0%, #0088ff 50%, #ff0088 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glassmorphism {
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.neon-border {
+  border: 2px solid var(--color-accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.neon-text {
+  color: var(--color-light-text);
+  text-shadow: 0 0 10px var(--color-accent-cyan), 0 0 20px var(--color-accent-cyan);
+}
+
+.section-wrapper {
+  position: relative;
+  min-height: 100vh;
+  padding: 80px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+.dark {
+  --card: #1a1a1a;
+  --ring: #e50914;
+  --input: #404040;
+  --muted: #2b2b2b;
+  --accent: #e50914;
+  --border: #404040;
+  --radius: 0.25rem;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --popover: #1a1a1a;
+  --primary: #e50914;
+  --spacing: 0.25rem;
+  --font-mono: "Courier New", monospace;
+  --font-sans: "Netflix Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --secondary: #2b2b2b;
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --background: #000000;
+  --font-serif: "Georgia", serif;
+  --foreground: #ffffff;
+  --shadow-2xl: 0px 0.25rem 0.5rem 0px rgba(0, 0, 0, 0.8);
+  --destructive: #e50914;
+  --card-foreground: #ffffff;
+  --muted-foreground: #a3a3a3;
+  --accent-foreground: #ffffff;
+  --popover-foreground: #ffffff;
+  --primary-foreground: #ffffff;
+  --secondary-foreground: #a3a3a3;
+  --destructive-foreground: #ffffff;
 }

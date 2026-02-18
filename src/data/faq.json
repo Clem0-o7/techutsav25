@@ -1,0 +1,44 @@
+{
+  "faqs": [
+    {
+      "id": "faq-1",
+      "question": "When and where is Techutsav '26 taking place?",
+      "answer": "Techutsav '26 will be held from March 15-22, 2026 at Thiagarajar College of Engineering, Madurai. All events will take place in our main campus, with online workshops available for remote participants."
+    },
+    {
+      "id": "faq-2",
+      "question": "How do I register for events?",
+      "answer": "You can register for individual events or workshops through our registration portal. Sign up on the event page, fill in your details, and select your preferred time slots. Early registration comes with special discounts!"
+    },
+    {
+      "id": "faq-3",
+      "question": "Are there any fees for attending Techutsav?",
+      "answer": "Most workshops have nominal registration fees to cover costs. Core events like Paper Presentation and Ideathon are free for students. Check individual event pages for specific pricing details."
+    },
+    {
+      "id": "faq-4",
+      "question": "Can I participate in multiple events?",
+      "answer": "Absolutely! You can register for multiple workshops and events based on your schedule and interests. Our schedule is designed to avoid major conflicts between key events."
+    },
+    {
+      "id": "faq-5",
+      "question": "Are online workshops available?",
+      "answer": "Yes, we offer selected workshops in hybrid mode. You can attend online via Zoom if you're unable to be physically present. Check the event details for online availability."
+    },
+    {
+      "id": "faq-6",
+      "question": "How are winners decided and what are the prizes?",
+      "answer": "Winners are evaluated by expert judges based on innovation, execution, and presentation quality. Prizes include cash awards, internships, and recognition certificates. Detailed criteria are available on each competition's page."
+    },
+    {
+      "id": "faq-7",
+      "question": "What if I need accommodations or have special requirements?",
+      "answer": "We're happy to help! Please mention any special requirements during registration or contact us at contact@techutsav.com. We'll do our best to accommodate your needs."
+    },
+    {
+      "id": "faq-8",
+      "question": "Is there a refund policy?",
+      "answer": "Refunds are available up to 7 days before the event. After that, registrations are non-refundable but can be transferred to another participant with prior approval."
+    }
+  ]
+}

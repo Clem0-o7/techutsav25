@@ -1,0 +1,29 @@
+{
+  "socials": [
+    {
+      "name": "Instagram",
+      "url": "https://instagram.com/techutsav",
+      "icon": "instagram"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://linkedin.com/company/techutsav",
+      "icon": "linkedin"
+    },
+    {
+      "name": "Twitter",
+      "url": "https://twitter.com/techutsav",
+      "icon": "twitter"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://facebook.com/techutsav",
+      "icon": "facebook"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.gg/techutsav",
+      "icon": "discord"
+    }
+  ]
+}
