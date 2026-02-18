@@ -12,7 +12,7 @@ export function Navbar({ authenticated }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
-      <nav className="flex items-center justify-between px-6 py-3 shadow-sm">
+      <nav className="flex items-center justify-between px-6 py-3 shadow-sm max-w-[1920px] mx-auto">
         <NavbarLogo isHome={navbar.isHomePage} />
 
         {/* Mobile hamburger */}
@@ -26,7 +26,7 @@ export function Navbar({ authenticated }) {
         />
 
         {/* Desktop-only actions */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block shrink-0">
           <NavbarActions authenticated={authenticated} />
         </div>
       </nav>

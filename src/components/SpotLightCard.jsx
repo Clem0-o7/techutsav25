@@ -5,19 +5,7 @@ const SpotlightCard = ({ name, onClick }) => {
   return (
     <motion.div
       onClick={onClick}
-      className="card-spotlight w-full cursor-pointer"
-      style={{
-        position: "relative",
-        marginBottom: "30px",
-        overflow: "hidden",
-        borderRadius: "12px",
-        background: "linear-gradient(135deg, #3373B0, #BED4E9)",
-        height: "200px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
+      className="card-spotlight w-full cursor-pointer relative mb-8 overflow-hidden rounded-xl h-[200px] flex flex-col justify-center items-center bg-gradient-to-br from-primary via-accent to-primary/80 shadow-lg hover:shadow-primary/30"
       whileHover={{
         scale: 1.05,
         rotate: Math.random() > 0.5 ? -5 : 5
@@ -28,21 +16,11 @@ const SpotlightCard = ({ name, onClick }) => {
         damping: 10
       }}
     >
-      <div
-        className="overlay"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(0, 0, 0, 0.3)"
-        }}
-      />
-      <h2 className="text-2xl font-bold text-white relative">{name}</h2>
+      <div className="absolute inset-0 bg-black/30" />
+      
+      <h2 className="text-2xl font-bold text-white relative z-10">{name}</h2>
       <button
-        className="mt-2 px-4 py-2 bg-white/20 rounded-full text-sm font-medium hover:bg-white/30 transition-colors relative"
-        style={{ color: "#ffffff" }}
+        className="mt-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium hover:bg-white/30 transition-colors relative z-10 text-white"
         onClick={(e) => {
           e.stopPropagation();
           onClick();

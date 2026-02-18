@@ -1,18 +1,9 @@
 "use client"
 
-import { useRef, useState } from "react";
-import "@/styles/button.css";
-
-const theme = {
-  eerieBlack: "#1C2127",
-  berkeleyBlue: "#0B385F",
-  uclaBlue: "#3373B0",
-  columbiaBlue: "#BED4E9",
-  aliceBlue: "#E7F1FB",
-};
+import { useRef } from "react";
+import { Mail, MessageSquare, Send } from "lucide-react";
 
 const Contact = () => {
-  const [isSubmitHovered, setIsSubmitHovered] = useState(false);
   const form = useRef();
 
   const sendEmail = async (e) => {
@@ -38,73 +29,112 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="h-screen flex items-center justify-center" style={{ backgroundColor: theme.eerieBlack, color: theme.aliceBlue }}>
-      <div className="w-full pt-16 flex flex-col overflow-x-hidden md:px-9 pl-9" style={{ backgroundColor: theme.aliceBlue, color: theme.eerieBlack }}>
-        {/* CONTACT Title */}
-        <h1 className="text-4xl sm:text-6xl font-bold" style={{ color: theme.uclaBlue }}>CONTACT</h1>
+    <section id="contact" className="min-h-screen flex items-center justify-center bg-background py-20 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+              CONTACT US
+            </span>
+          </h1>
+          <div className="h-1 w-32 mx-auto rounded-full bg-gradient-to-r from-primary to-accent"></div>
+          <p className="text-foreground/70 mt-6 text-sm sm:text-base max-w-2xl mx-auto">
+            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          </p>
+        </div>
 
-        {/* Container - Reduced gap between heading and form */}
-        <div className="w-full h-max flex flex-col-reverse sm:flex-row items-center justify-center sm:px-16 md:my-12 mb-14 mt-4 sm:mt-0">
-          {/* Contact Form */}
-          <form
-            ref={form}
-            onSubmit={sendEmail}
-            className="flex flex-col gap-6 p-8 mt-4 sm:mt-0 rounded-lg drop-shadow-[3px_5px_10px_rgba(0,0,0,0.25)]"
-            style={{ backgroundColor: theme.aliceBlue }}
-          >
-            <div className="flex flex-col gap-3">
-              <label className="font-semibold tracking-widest text-sm">Name</label>
-              <input
-                type="text"
-                className="shadow appearance-none border rounded h-14 py-2 px-3 font-medium leading-tight focus:outline-none focus:shadow-outline"
-                style={{ backgroundColor: theme.columbiaBlue }}
-                placeholder="Enter your name"
-                name="user_name"
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <label className="font-semibold tracking-widest text-sm">Email</label>
-              <input
-                type="email"
-                className="shadow appearance-none border rounded w-full h-14 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                style={{ backgroundColor: theme.columbiaBlue }}
-                placeholder="Enter your email"
-                name="user_email"
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <label className="font-semibold tracking-widest text-sm">Message</label>
-              <textarea
-                rows="5"
-                cols="60"
-                type="text"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                style={{ backgroundColor: theme.columbiaBlue }}
-                placeholder="Message"
-                name="message"
-                required
-              />
-            </div>
-            <button
-              className={`px-7 py-1 fill-right hover:text-white border-2 rounded-md ${isSubmitHovered ? "hovered" : ""}`}
-              style={{ borderColor: theme.uclaBlue, color: theme.uclaBlue }}
-              onMouseEnter={() => setIsSubmitHovered(true)}
-              onMouseLeave={() => setIsSubmitHovered(false)}
-            >
-              SUBMIT
-            </button>
-          </form>
-
+        {/* Content Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Contact Info Section */}
-          <div className="flex flex-col gap-6 sm:p-9 sm:w-1/2 text-justify">
-            <h1 className="text-2xl font-semibold">Have A Question? Get In Touch!</h1>
-            <p className="hidden sm:block">
-              Thank you for visiting our website! If you have any questions or queries,
-              drop us a message, and we&apos;ll get back to you promptly.
-              Your time is valuable to us!
-            </p>
+          <div className="space-y-8">
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 shadow-xl">
+              <h2 className="text-2xl font-bold mb-6">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary">
+                  Get In Touch
+                </span>
+              </h2>
+              <p className="text-foreground/80 leading-relaxed mb-8">
+                Thank you for visiting our website! If you have any questions or queries,
+                drop us a message, and we'll get back to you promptly.
+                Your time is valuable to us!
+              </p>
+
+              {/* Contact Cards */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-primary/5 border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="p-3 rounded-lg bg-primary/10">
+                    <Mail className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
+                    <p className="text-sm text-foreground/70">paradigm@tce.edu</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-primary/5 border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="p-3 rounded-lg bg-primary/10">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Quick Response</h3>
+                    <p className="text-sm text-foreground/70">We typically respond within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 shadow-xl">
+            <form ref={form} onSubmit={sendEmail} className="space-y-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground tracking-wide">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  className="w-full h-12 px-4 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="Enter your name"
+                  name="user_name"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground tracking-wide">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="w-full h-12 px-4 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="Enter your email"
+                  name="user_email"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground tracking-wide">
+                  Message
+                </label>
+                <textarea
+                  rows="5"
+                  className="w-full px-4 py-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                  placeholder="Type your message here..."
+                  name="message"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 group"
+              >
+                <span>SEND MESSAGE</span>
+                <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </form>
           </div>
         </div>
       </div>

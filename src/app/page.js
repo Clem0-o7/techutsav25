@@ -2,9 +2,11 @@
 
 import Home from '@/components/sections/Home';
 import About from '@/components/sections/About';
-import PastYearHighlights from '@/components/sections/pyq';
+import Workshops from '@/components/sections/Workshops';
+import OnlineEvents from '@/components/sections/OnlineEvents';
 import Events from '@/components/sections/Events';
-import Faq from '@/components/sections/Faq';
+import Memories from '@/components/sections/Memories';
+import FAQ from '@/components/sections/Faq';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/Footer';
 import MainLoader from '@/components/MainLoader';
@@ -27,9 +29,11 @@ export default function LandingPage() {
       <Navbar authenticated={authenticated} />
       <Home />
       <About />
-      <PastYearHighlights />
+      <Workshops />
+      <OnlineEvents />
       <Events />
-      <Faq />
+      <Memories />
+      <FAQ />
       <Contact />     
       <Footer />
     </div>

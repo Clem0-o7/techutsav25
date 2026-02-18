@@ -4,14 +4,14 @@ import PropTypes from "prop-types";
 
 const Question = ({ question, answer, isOpen, onClick }) => {
   return (
-    <div className="border-b border-gray-300 transition-all duration-500">
+    <div className="border-b border-border transition-all duration-500">
       <button
         onClick={onClick}
-        className="w-full flex justify-between items-center px-4 py-3 text-sm sm:text-base md:text-lg font-semibold text-[#0b385f] focus:outline-none bg-white hover:bg-[#e7f1fb] rounded-md transition-all duration-300 ease-in-out shadow-sm hover:shadow-md"
+        className="w-full flex justify-between items-center px-4 py-3 text-sm sm:text-base md:text-lg font-semibold text-foreground focus:outline-none bg-card hover:bg-card/80 rounded-md transition-all duration-300 ease-in-out shadow-sm hover:shadow-md hover:border hover:border-primary/30"
       >
         <span className="transition-all duration-300">{question}</span>
         <span
-          className={`transform transition-transform duration-500 ${
+          className={`transform transition-transform duration-500 text-primary ${
             isOpen ? "rotate-180 scale-110" : "scale-100"
           } text-base sm:text-lg md:text-xl`}
         >
@@ -27,7 +27,7 @@ const Question = ({ question, answer, isOpen, onClick }) => {
             : "max-h-0 opacity-0 -translate-y-2"
         }`}
       >
-        <p className="px-4 py-2 text-sm sm:text-base text-[#1c2127] bg-[#f9fbfc] rounded-md shadow">
+        <p className="px-4 py-2 text-sm sm:text-base text-foreground/80 bg-card/50 backdrop-blur-sm rounded-md shadow border border-border">
           {answer}
         </p>
       </div>

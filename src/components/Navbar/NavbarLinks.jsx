@@ -19,8 +19,8 @@ export function NavbarLinks({ links, navbar, authenticated }) {
           fixed right-0 top-0 z-50 h-full w-[85%] max-w-sm
           bg-background shadow-xl transition-transform duration-300
           flex flex-col
-          lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center
-          lg:shadow-none lg:translate-x-0
+          lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:flex-1
+          lg:shadow-none lg:translate-x-0 lg:justify-center lg:mx-8
           ${navbar.open ? "translate-x-0" : "translate-x-full"}
         `}
       >
@@ -37,7 +37,7 @@ export function NavbarLinks({ links, navbar, authenticated }) {
         </div>
 
         {/* Links */}
-        <ul className="flex flex-col gap-1 px-5 pt-6 lg:flex-row lg:items-center lg:gap-6 lg:p-0">
+        <ul className="flex flex-col gap-1 px-5 pt-6 lg:flex-row lg:items-center lg:gap-3 xl:gap-4 lg:p-0 lg:justify-center">
           {links.map((link) => (
             <li key={link.name}>
               {link.id && navbar.isHomePage ? (
@@ -80,11 +80,12 @@ export function NavbarLinks({ links, navbar, authenticated }) {
 
 function linkClass(active) {
   return `
-    block w-full rounded-md px-4 py-3 text-base font-medium transition
+    block w-full rounded-md px-4 py-3 text-base font-medium transition whitespace-nowrap
+    lg:w-auto lg:px-2.5 lg:py-2 lg:text-sm xl:px-3.5
     ${
       active
-        ? "border-b-2 border-accent text-accent-foreground font-semibold"
-        : "text-muted-foreground hover:border-b-2 hover:border-accent hover:text-foreground"
+        ? "bg-primary/10 text-primary border-b-2 border-primary lg:border-b-0 lg:bg-primary/20"
+        : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
     }
   `
 }

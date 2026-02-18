@@ -6,7 +6,7 @@ import { Link as ScrollLink } from "react-scroll"
 
 export function NavbarLogo({ isHome }) {
   const LogoContent = (
-    <div className="flex items-center gap-2 select-none">
+    <div className="flex items-center gap-2 select-none shrink-0">
       <Image
         src="/logos/tce_logo.png"
         alt="TCE Logo"

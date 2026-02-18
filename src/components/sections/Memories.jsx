@@ -4,20 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const theme = {
-  eerieBlack: "#1C2127",
-  berkeleyBlue: "#0B385F",
-  uclaBlue: "#3373B0",
-  columbiaBlue: "#BED4E9",
-  aliceBlue: "#E7F1FB",
-  neonBlue: "#00B4FF",
-  glowBlue: "#00E5FF",
-};
-
 // Create a motion-enhanced Next.js Image component
 const MotionImage = motion(Image);
 
-const PastYearHighlights = () => {
+const Memories = () => {
   const [activeEntries, setActiveEntries] = useState([false, false, false]);
   const sectionRefs = [useRef(null), useRef(null), useRef(null)];
 
@@ -54,43 +44,27 @@ const PastYearHighlights = () => {
 
   return (
     <section
-      id="past-year-highlights"
-      className="relative min-h-screen overflow-hidden bg-gray-50"
-      style={{
-        background: `linear-gradient(135deg, ${theme.aliceBlue} 0%, ${theme.columbiaBlue} 100%)`,
-      }}
+      id="memories"
+      className="relative min-h-screen overflow-hidden bg-background"
     >
       <div className="container mx-auto px-4 py-8 sm:py-16 relative z-10">
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-16">
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight px-2"
-            style={{
-              background: `linear-gradient(to right, ${theme.eerieBlack}, ${theme.berkeleyBlue})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            PAST YEAR HIGHLIGHTS
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight px-2 mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+              MEMORIES
+            </span>
           </h1>
-          <div
-            className="h-1 w-24 sm:w-32 mx-auto mt-3 sm:mt-4 rounded-full"
-            style={{
-              background: `linear-gradient(to right, ${theme.uclaBlue}, ${theme.columbiaBlue})`,
-            }}
-          ></div>
+          <div className="h-1 w-24 sm:w-32 mx-auto rounded-full bg-gradient-to-r from-primary to-accent"></div>
+          <p className="text-foreground/70 mt-6 text-sm sm:text-base max-w-2xl mx-auto">
+            Relive the excitement and innovation from our previous editions
+          </p>
         </div>
 
         {/* Category Timeline Container */}
         <div className="relative max-w-4xl mx-auto">
           {/* Vertical Timeline Line */}
-          <div
-            className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 hidden sm:block"
-            style={{
-              background: `linear-gradient(to bottom, transparent, ${theme.neonBlue}, transparent)`,
-              opacity: 0.7,
-            }}
-          />
+          <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 hidden sm:block bg-gradient-to-b from-transparent via-primary to-transparent opacity-30" />
 
           {/* Timeline Entries */}
           <div className="relative space-y-8 sm:space-y-16 py-8 sm:py-16">
@@ -104,17 +78,13 @@ const PastYearHighlights = () => {
               }`}
             >
               <div className="w-full sm:w-1/2 sm:pr-8 mb-4 sm:mb-0">
-                <div
-                  className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-transparent hover:border-neon-blue transition-all"
-                  style={{
-                    borderColor: theme.neonBlue,
-                    boxShadow: `0 0 15px 0 ${theme.neonBlue}40`,
-                  }}
-                >
-                  <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 text-gray-800">
-                    Multi-College Participation
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 border-2 border-primary/30 hover:border-primary hover:shadow-primary/20 transition-all">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary">
+                      Multi-College Participation
+                    </span>
                   </h2>
-                  <p className="text-sm sm:text-base text-gray-600 text-justify">
+                  <p className="text-sm sm:text-base text-foreground/70 text-justify leading-relaxed">
                     TECHUTSAV 2024 witnessed an unprecedented level of inter-collegiate engagement, bringing together over 25 engineering colleges from across Tamil Nadu.
                   </p>
                 </div>
@@ -123,7 +93,7 @@ const PastYearHighlights = () => {
                 <MotionImage
                   src="/pyq/image.png"
                   alt="Multi-College Participation"
-                  className="rounded-xl shadow-lg"
+                  className="rounded-xl shadow-lg border-2 border-border hover:border-primary/40 transition-all"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5 }}
@@ -144,17 +114,13 @@ const PastYearHighlights = () => {
               }`}
             >
               <div className="w-full sm:w-1/2 sm:pl-8 mb-4 sm:mb-0">
-                <div
-                  className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-transparent hover:border-neon-blue transition-all"
-                  style={{
-                    borderColor: theme.neonBlue,
-                    boxShadow: `0 0 15px 0 ${theme.neonBlue}40`,
-                  }}
-                >
-                  <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 text-gray-800">
-                    Innovative Tech Workshops
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 border-2 border-primary/30 hover:border-primary hover:shadow-primary/20 transition-all">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary">
+                      Innovative Tech Workshops
+                    </span>
                   </h2>
-                  <p className="text-sm sm:text-base text-gray-600 text-justify">
+                  <p className="text-sm sm:text-base text-foreground/70 text-justify leading-relaxed">
                     We curated a series of cutting-edge technology workshops focusing on emerging domains, providing students with practical skills and insights from industry experts.
                   </p>
                 </div>
@@ -163,7 +129,7 @@ const PastYearHighlights = () => {
                 <MotionImage
                   src="/pyq/workshop.png"
                   alt="Tech Workshops"
-                  className="rounded-xl shadow-lg"
+                  className="rounded-xl shadow-lg border-2 border-border hover:border-primary/40 transition-all"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5 }}
@@ -180,4 +146,4 @@ const PastYearHighlights = () => {
   );
 };
 
-export default PastYearHighlights;
+export default Memories;

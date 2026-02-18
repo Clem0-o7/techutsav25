@@ -9,15 +9,6 @@ import MainLoader from '../components/MainLoader';
 import Typography from '@mui/material/Typography';
 import '@/styles/globals.css';
 
-
-const theme = {
-  eerieBlack: '#1C2127',
-  berkeleyBlue: '#0B385F',
-  uclaBlue: '#3373B0',
-  columbiaBlue: '#BED4E9',
-  aliceBlue: '#E7F1FB'
-};
-
 const MoreEventsClient = ({ events, department }) => {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,18 +76,14 @@ const MoreEventsClient = ({ events, department }) => {
       {loading ? (
         <MainLoader />
       ) : (
-        <div
-          className="w-full min-h-screen text-gray-800"
-          style={{ backgroundColor: theme.aliceBlue }}
-        >
+        <div className="w-full min-h-screen bg-background text-foreground">
           <Navbar />
 
-          <div
-            className="text-center py-6"
-            style={{ backgroundColor: theme.aliceBlue }}
-          >
-            <h1 className="text-4xl font-bold tracking-wide bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              TechUtsav Paradigm '26 Events
+          <div className="text-center py-6">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-wide mb-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+                TechUtsav Paradigm '26 Events
+              </span>
             </h1>
           </div>
 
@@ -114,27 +101,28 @@ const MoreEventsClient = ({ events, department }) => {
             />
 
             <motion.div
-              className="w-full p-6 rounded-xl shadow-lg"
+              className="w-full p-6 rounded-xl shadow-lg bg-card/50 backdrop-blur-sm border border-border"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              style={{ backgroundColor: theme.columbiaBlue, color: theme.berkeleyBlue }}
             >
-              <h2 className="text-3xl font-bold text-blue-600">
-                {currentEvent.eventName}
+              <h2 className="text-3xl font-bold">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary">
+                  {currentEvent.eventName}
+                </span>
               </h2>
-              <p className="text-lg mt-2">
+              <p className="text-lg mt-2 text-foreground/80">
                 {currentEvent.eventAbstract}
               </p>
               {/*<p className="mt-2">
                 <strong>📍 Venue:</strong> {currentEvent.venue}
               </p>*/}
-              <p>
+              <p className="text-foreground/70 mt-2">
                 <strong>🕒 Time:</strong> {currentEvent.eventTiming}
               </p>
 
               <button
-                className="mt-4 px-6 py-2 bg-blue-500 rounded-lg text-white font-semibold hover:bg-blue-700 transition-all duration-300"
+                className="mt-4 px-6 py-2 bg-primary hover:bg-primary/90 rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-primary/30"
                 onClick={() => setModalOpen(true)}
               >
                 More Details
@@ -150,8 +138,8 @@ const MoreEventsClient = ({ events, department }) => {
                 alt={event.uniqueName}
                 className={`w-24 h-24 object-cover rounded-lg cursor-pointer transition-all duration-300 ${
                   index === currentIndex
-                    ? 'border-4 border-blue-500 scale-110'
-                    : 'border-2 border-gray-400'
+                    ? 'border-4 border-primary scale-110 shadow-lg shadow-primary/30'
+                    : 'border-2 border-border hover:border-primary/50'
                 }`}
                 whileHover={{ scale: 1.2 }}
                 onClick={() => {
@@ -166,47 +154,47 @@ const MoreEventsClient = ({ events, department }) => {
           <AnimatePresence>
             {modalOpen && (
               <motion.div
-                className="fixed inset-0 mt-3 bg-black bg-opacity-70 flex items-center justify-center p-4"
+                className="fixed inset-0 mt-3 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[1000]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                style={{ zIndex: 1000 }}
               >
                 <motion.div
-                  className="bg-white text-gray-800 p-8 rounded-xl max-w-xl w-full shadow-2xl relative"
+                  className="bg-card/95 backdrop-blur-md text-foreground p-8 rounded-xl max-w-xl w-full shadow-2xl relative border border-border"
                   initial={{ scale: 0.7 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.7 }}
-                  style={{ backgroundColor: theme.aliceBlue, color: theme.berkeleyBlue }}
                 >
                   <h2 className="text-3xl font-bold text-center">
-                    {currentEvent.eventName}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+                      {currentEvent.eventName}
+                    </span>
                   </h2>
                   <div className="overflow-y-auto max-h-[60vh] mt-3">
                     <Typography
                       marginTop={'24px'}
                       fontSize={'18px'}
-                      className="whitespace-pre-wrap"
+                      className="whitespace-pre-wrap text-foreground/80"
                     >
                       {currentEvent.eventDesp}
                     </Typography>
-                    <p className="mt-3">
+                    <p className="mt-3 text-foreground/70">
                       <strong>📚 Contact :</strong> {currentEvent.incharge}
                     </p>
-                    <p>
+                    <p className="text-foreground/70">
                       <strong>Mobile Number:</strong> {currentEvent.inchargeNumber}
                     </p>
                   </div>
 
-                  <div className="flex justify-between mt-5">
+                  <div className="flex justify-between mt-5 gap-4">
                     <button
-                      className="px-5 py-2 bg-blue-500 rounded-lg text-white font-semibold hover:bg-blue-700 transition-all duration-300"
+                      className="px-5 py-2 bg-primary hover:bg-primary/90 rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-primary/30"
                       onClick={handleRegisterClick}
                     >
                       Register Now
                     </button>
                     <button
-                      className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-800 transition-all duration-300"
+                      className="px-4 py-2 bg-destructive hover:bg-destructive/90 rounded-lg text-white transition-all duration-300"
                       onClick={() => setModalOpen(false)}
                     >
                       Close

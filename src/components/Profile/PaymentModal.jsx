@@ -112,32 +112,32 @@ export function PaymentModal({ isOpen, passType, onClose, onSubmit }) {
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Payment Instructions */}
-          <div className="p-4 bg-accent/20 border border-border rounded-lg">
-            <h4 className="font-semibold text-foreground mb-2">
-              Payment Instructions:
-            </h4>
-            <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-              <li>Pay the amount to the account details provided</li>
-              <li>Note down your transaction ID</li>
-              <li>Take a screenshot of the payment confirmation</li>
-              <li>Enter the transaction ID below</li>
-              <li>Upload the screenshot and submit</li>
-            </ol>
-            <Button
-              type="button"
-              variant="link"
-              className="mt-2 p-0 h-auto text-primary"
-              onClick={() =>
-                window.open(
-                  "https://clement2004.blob.core.windows.net/techutsav25/Payment_process2025.pdf"
-                )
-              }
-            >
-              Download Payment Details PDF
-            </Button>
-          </div>
+                <div className="p-4 bg-accent/20 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">
+                  Payment Instructions:
+                </h4>
+                <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+                  <li>Pay the amount to the account details provided</li>
+                  <li>Note down your transaction ID</li>
+                  <li>Take a screenshot of the payment confirmation</li>
+                  <li>Enter the transaction ID below</li>
+                  <li>Upload the screenshot and submit</li>
+                </ol>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="mt-2 p-0 h-auto text-primary"
+                  onClick={() =>
+                  window.open(
+                    "https://docs.google.com/document/d/1EDiuO0aRdf_rsBwmFYqepbbteHksEdLELRRVZWkl2Ws"
+                  )
+                  }
+                >
+                  View Payment Details
+                </Button>
+                </div>
 
-          {/* Transaction ID Input */}
+                {/* Transaction ID Input */}
           <div className="space-y-2">
             <Label htmlFor="transactionId">Transaction ID *</Label>
             <Input

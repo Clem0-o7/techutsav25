@@ -8,6 +8,8 @@ export function Providers({ children }) {
       attribute="class"
       defaultTheme="dark"
       enableSystem={false}
+      disableTransitionOnChange
+      storageKey="techutsav-theme"
     >
       {children}
     </ThemeProvider>

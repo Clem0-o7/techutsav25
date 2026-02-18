@@ -174,22 +174,7 @@ const Faq = () => {
         className="relative h-full bg-card flex items-center justify-center overflow-auto w-full px-3 py-4 sm:px-6 sm:py-8 lg:py-10"
         ref={faqRef}
       >
-        <div className="absolute inset-0 w-full h-full">
-          <Particles
-            particleCount={200}
-            particleSpread={10}
-            speed={0.1}
-            particleColors={["#ffffff", "#a2d2ff", "#bde0fe"]}
-            moveParticlesOnHover={true}
-            particleHoverFactor={2}
-            alphaParticles={true}
-            particleBaseSize={120}
-            sizeRandomness={1}
-            cameraDistance={20}
-            disableRotation={false}
-            className="w-full h-full"
-          />
-</div>
+        
 
         {/* FAQ Content */}
         <div
@@ -197,10 +182,12 @@ const Faq = () => {
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}
         >
-          <h1 className="text-center text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-            FAQs
+          <h1 className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+              FAQs
+            </span>
           </h1>
-          <div className="h-1 w-20 sm:w-28 mx-auto mt-2 sm:mt-3 rounded-full bg-primary"></div>
+          <div className="h-1 w-24 sm:w-32 mx-auto rounded-full bg-gradient-to-r from-primary to-accent"></div>
 
           {/* Category Buttons */}
           <div className="flex flex-wrap gap-2 justify-center mt-3 sm:mt-5">
