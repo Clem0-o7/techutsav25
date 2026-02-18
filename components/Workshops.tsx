@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Calendar, Clock, MapPin, ArrowRight } from 'lucide-react';
-import workshopData from '@/data/workshops.json';
+import workshopData from '../data/workshops.json';
 
 export default function Workshops() {
   const { mainWorkshop, onlineWorkshops } = workshopData;

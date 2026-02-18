@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import memoryData from '@/data/sections.json';
+import memoryData from '../data/sections.json';
 
 export default function Memories() {
   const { title, description, gallery } = memoryData.memories;

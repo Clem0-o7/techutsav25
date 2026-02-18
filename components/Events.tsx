@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Calendar, Users, Trophy, ArrowRight } from 'lucide-react';
-import eventsData from '@/data/events.json';
+import eventsData from '../data/events.json';
 
 export default function Events() {
   const { paperPresentation, ideathon, allEvents } = eventsData;

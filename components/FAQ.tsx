@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import faqData from '@/data/faq.json';
+import faqData from '../data/faq.json';
 
 export default function FAQ() {
   const [openId, setOpenId] = useState<string | null>(null);

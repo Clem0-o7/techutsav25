@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Navbar from '@/components/Navbar';
-import Home from '@/components/Home';
-import About from '@/components/About';
-import Workshops from '@/components/Workshops';
-import Events from '@/components/Events';
-import Memories from '@/components/Memories';
-import FAQ from '@/components/FAQ';
-import Contact from '@/components/Contact';
-import Footer from '@/components/Footer';
+import Navbar from '../components/Navbar';
+import Home from '../components/Home';
+import About from '../components/About';
+import Workshops from '../components/Workshops';
+import Events from '../components/Events';
+import Memories from '../components/Memories';
+import FAQ from '../components/FAQ';
+import Contact from '../components/Contact';
+import Footer from '../components/Footer';
 
 export default function Page() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

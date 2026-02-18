@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import aboutData from '@/data/sections.json';
+import aboutData from '../data/sections.json';
 
 export default function About() {
   const { collegeTitle, collegeDescription, techutsavTitle, techutsavHistory } =

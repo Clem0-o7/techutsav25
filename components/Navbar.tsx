@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import navLinks from '@/data/sections.json';
+import navLinks from '../data/sections.json';
 
 interface NavbarProps {
   isAuthenticated?: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import { Github, Linkedin, Twitter, Mail, ExternalLink } from 'lucide-react';
-import socialLinks from '@/data/socialLinks.json';
+import socialLinks from '../data/socialLinks.json';
 
 export default function Footer() {
   const getSocialIcon = (iconName: string) => {
