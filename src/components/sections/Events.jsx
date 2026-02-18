@@ -224,7 +224,7 @@ const Events = () => {
                 </p>
                 
                 <button className="w-full px-4 py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/30 hover:border-primary rounded-lg font-medium transition-all duration-300 text-sm group-hover:scale-105">
-                  View Details
+                  Details Coming Soon
                 </button>
               </motion.div>
             );
@@ -299,12 +299,12 @@ const Events = () => {
               <div className="text-foreground/70 text-sm">Total Events</div>
             </div>
             <div className="text-center p-4">
-              <div className="text-4xl sm:text-5xl font-bold text-primary mb-2">₹50K</div>
+              <div className="text-4xl sm:text-5xl font-bold text-primary mb-2">₹35K</div>
               <div className="text-foreground/70 text-sm">Prize Pool</div>
             </div>
             <div className="text-center p-4">
               <div className="text-4xl sm:text-5xl font-bold text-primary mb-2">500+</div>
-              <div className="text-foreground/70 text-sm">Participants Expected</div>
+              <div className="text-foreground/70 text-sm">Participants </div>
             </div>
           </div>
         </motion.div>

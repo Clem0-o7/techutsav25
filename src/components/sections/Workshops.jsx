@@ -22,7 +22,7 @@ const Workshops = () => {
       title: "Drag. Drop. Deploy",
       subtitle: "Low Code / No Code",
       description: "Master the art of building applications without writing extensive code. Learn popular no-code platforms and tools to create functional applications rapidly.",
-      duration: "3 hours",
+      duration: "2 hours",
       platform: "Online",
       tags: ["No-Code", "Rapid Development", "Beginner Friendly"],
     },
@@ -31,7 +31,7 @@ const Workshops = () => {
       title: "Quick Build",
       subtitle: "From Zero to Live",
       description: "Learn the complete process of building and deploying a production-ready web application from scratch. Cover modern development tools, CI/CD, and deployment strategies.",
-      duration: "4 hours",
+      duration: "2 hours",
       platform: "Online",
       tags: ["Web Development", "Deployment", "DevOps"],
     },
@@ -183,7 +183,7 @@ const Workshops = () => {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-4">
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">100+</div>
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">500+</div>
               <div className="text-foreground/70 text-sm">Workshop Participants</div>
             </div>
             <div className="p-4">

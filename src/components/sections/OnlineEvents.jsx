@@ -14,12 +14,12 @@ const OnlineEvents = () => {
       highlights: [
         "Multiple Technical Domains",
         "Expert Panel Judging",
-        "Published Proceedings",
+        "ISBN Published Proceedings",
         "Best Paper Awards"
       ],
       duration: "20 mins presentation + 10 mins Q&A",
-      platform: "Online via Zoom",
-      prizes: "₹15,000 Prize Pool",
+      platform: "Online ",
+      prizes: "₹35,000 Prize Pool",
       color: "from-primary/20 to-accent/10",
       featured: true
     },
@@ -36,8 +36,8 @@ const OnlineEvents = () => {
         "Startup Guidance"
       ],
       duration: "15 mins pitch + 10 mins Q&A",
-      platform: "Online via Microsoft Teams",
-      prizes: "₹20,000 Prize Pool",
+      platform: "Online",
+      prizes: "₹35,000 Prize Pool",
       color: "from-accent/20 to-primary/10",
       featured: true
     }
@@ -150,12 +150,10 @@ const OnlineEvents = () => {
 
                     {/* Action Buttons */}
                     <div className="flex gap-3">
-                      <button className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                      <button onClick={() => window.location.href = '/login'} className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                         Register Now
                       </button>
-                      <button className="px-4 py-3 bg-card hover:bg-accent/10 text-foreground border-2 border-primary/30 hover:border-primary rounded-lg font-medium transition-all duration-300">
-                        Details
-                      </button>
+                      
                     </div>
                   </div>
                 </div>
