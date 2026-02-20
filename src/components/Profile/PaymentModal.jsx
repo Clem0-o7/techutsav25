@@ -124,17 +124,17 @@ export function PaymentModal({ isOpen, passType, onClose, onSubmit }) {
                   <li>Upload the screenshot and submit</li>
                 </ol>
                 <Button
-                  type="button"
-                  variant="link"
-                  className="mt-2 p-0 h-auto text-primary"
-                  onClick={() =>
-                  window.open(
-                    "https://docs.google.com/document/d/1EDiuO0aRdf_rsBwmFYqepbbteHksEdLELRRVZWkl2Ws"
-                  )
-                  }
-                >
-                  View Payment Details
-                </Button>
+              type="button"
+              className="w-full mt-4 text-lg font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 py-6 rounded-lg"
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/document/d/1EDiuO0aRdf_rsBwmFYqepbbteHksEdLELRRVZWkl2Ws",
+                  "_blank"
+                )
+              }
+            >
+              💳 Pay Now
+            </Button>
                 </div>
 
                 {/* Transaction ID Input */}

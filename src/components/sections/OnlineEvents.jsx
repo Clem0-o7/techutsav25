@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { FileText, Lightbulb, Users, Clock, Trophy, Star } from "lucide-react";
+import Link from "next/link";
 
 const OnlineEvents = () => {
   const onlineEvents = [
@@ -95,9 +96,21 @@ const OnlineEvents = () => {
                     </div>
                     
                     <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
-                        {event.name}
-                      </span>
+                      {event.name === "Paper Presentation" ? (
+                        <Link href="/paper-presentation" className="hover:opacity-80 transition-opacity cursor-pointer">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+                            {event.name}
+                          </span>
+                        </Link>                      ) : event.name === "Ideathon" ? (
+                        <Link href="/ideathon" className="hover:opacity-80 transition-opacity cursor-pointer">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+                            {event.name}
+                          </span>
+                        </Link>                      ) : (
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
+                          {event.name}
+                        </span>
+                      )}
                     </h2>
                     <p className="text-primary text-lg font-semibold mb-4">
                       {event.subtitle}
@@ -141,18 +154,27 @@ const OnlineEvents = () => {
                     </div>
 
                     {/* Prize Section */}
-                    <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 mb-6">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-foreground">Total Prizes:</span>
-                        <span className="text-lg font-bold text-primary">{event.prizes}</span>
-                      </div>
-                    </div>
+                    
 
                     {/* Action Buttons */}
                     <div className="flex gap-3">
-                      <button onClick={() => window.location.href = '/login'} className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                      <button onClick={() => window.location.href = '/profile'} className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                         Register Now
                       </button>
+                      {event.name === "Paper Presentation" && (
+                        <Link href="/paper-presentation" className="flex-1">
+                          <button className="w-full px-4 py-3 bg-card border-2 border-primary hover:bg-primary/10 text-primary font-bold rounded-lg transition-all duration-300 hover:scale-105">
+                            View Details
+                          </button>
+                        </Link>
+                      )}
+                      {event.name === "Ideathon" && (
+                        <Link href="/ideathon" className="flex-1">
+                          <button className="w-full px-4 py-3 bg-card border-2 border-accent hover:bg-accent/10 text-accent font-bold rounded-lg transition-all duration-300 hover:scale-105">
+                            View Details
+                          </button>
+                        </Link>
+                      )}
                       
                     </div>
                   </div>

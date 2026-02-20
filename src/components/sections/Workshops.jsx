@@ -13,7 +13,7 @@ const Workshops = () => {
     date: "27th February 2026",
     time: "9:00 AM - 12: PM",
     location: "TCE Auditorium",
-    fee: "₹354 (Included in PASS 1)",
+    fee: "₹354 (PASS 1 Workshop + 15 Events Access)",
   };
 
   const onlineWorkshops = [
@@ -92,7 +92,7 @@ const Workshops = () => {
                   </div>
                 </div>
 
-                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                <button onClick={() => window.location.href = '/profile'} className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
               Register Now
             </button>
               </div>

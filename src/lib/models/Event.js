@@ -17,7 +17,7 @@ const EventSchema = new mongoose.Schema({
   },
   eventTiming: {
     type: String,
-    default: "",
+    default: "To Be Announced",
   },
   eventAbstract: {
     type: String,
@@ -27,11 +27,7 @@ const EventSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  flagship: {
-    type: Boolean,
-    default: false,
-  },
-  incharge: {
+  /*Multiple With Phone Number*/incharge: { 
     type: String,
     default: "",
   },
@@ -44,3 +40,4 @@ const EventSchema = new mongoose.Schema({
 // Prevent model overwrite during development
 const Event = mongoose.models.Event || mongoose.model("Event", EventSchema);
 export default Event;
+
