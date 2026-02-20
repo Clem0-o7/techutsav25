@@ -7,61 +7,59 @@ import Link from "next/link";
 
 export default function PaperPresentationPage() {
   const topics = [
-    "Artificial Intelligence & Machine Learning",
-    "Internet of Things (IoT)",
-    "Blockchain & Cryptocurrency",
-    "Cybersecurity",
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Data Science",
+    "Cyber Security",
     "Cloud Computing",
-    "Data Science & Big Data",
+    "Internet of Things (IoT)",
+    "Blockchain",
     "Software Engineering",
-    "Web & Mobile Development",
-    "Computer Networks",
-    "Emerging Technologies"
+    "Any relevant emerging CSE domain"
   ];
 
   const guidelines = [
     {
-      title: "Paper Format",
+      title: "Submission Guidelines",
       points: [
-        "Must be original and unpublished work",
-        "4-6 pages in IEEE format",
-        "Abstract: 150-250 words",
-        "Include keywords and references"
+        "Manuscripts must be prepared strictly in IEEE format",
+        "Submissions must be original and free from plagiarism",
+        "Include Title, Abstract, Keywords, Introduction, Methodology, Results/Discussion, Conclusion, and References (IEEE citation style)",
+        "All submissions will undergo technical review by the Review Committee"
       ]
     },
     {
-      title: "Presentation",
+      title: "Round 1: Paper Shortlisting",
       points: [
-        "20 minutes presentation time",
-        "10 minutes Q&A session",
-        "Use clear and concise slides",
-        "Professional attire recommended"
+        "Evaluated based on originality and technical quality",
+        "Relevance to theme and clarity",
+        "Research contribution and innovation",
+        "Technical review by Review Committee"
       ]
     },
     {
-      title: "Evaluation Criteria",
+      title: "Round 2: Online Presentation",
       points: [
-        "Innovation and originality (30%)",
-        "Technical depth (25%)",
-        "Presentation quality (25%)",
-        "Practical applicability (20%)"
+        "Presentation Duration: 8–10 minutes",
+        "Question & Answer Session: 3–5 minutes",
+        "Prepare a PowerPoint presentation",
+        "Judges' decision will be final and binding"
       ]
     }
   ];
 
   const importantDates = [
-    { event: "Abstract Submission Opens", date: "February 1, 2026" },
-    { event: "Abstract Submission Deadline", date: "February 20, 2026" },
-    { event: "Acceptance Notification", date: "February 22, 2026" },
-    { event: "Full Paper Submission", date: "February 24, 2026" },
-    { event: "Event Date", date: "February 27, 2026" }
+    { event: "Paper Submission Opens", date: "February 1, 2026" },
+    { event: "Paper Submission Deadline", date: "February 25, 2026" },
+    { event: "Shortlist Notification", date: "February 26, 2026" },
+    { event: "Online Presentation Event", date: "February 27, 2026" }
   ];
 
-  const prizes = [
-    { place: "1st Prize", amount: "₹15,000", color: "from-yellow-500 to-orange-500" },
-    { place: "2nd Prize", amount: "₹10,000", color: "from-gray-400 to-gray-500" },
-    { place: "3rd Prize", amount: "₹5,000", color: "from-amber-600 to-amber-700" },
-    { place: "Best Paper", amount: "₹5,000", color: "from-primary to-accent" }
+  const benefits = [
+    { title: "ISBN Publication", description: "Selected papers published in official Conference Proceedings", icon: BookOpen },
+    { title: "E-Certificates", description: "Provided to all registered participants", icon: Award },
+    { title: "Merit Certificates", description: "Awarded to top performers", icon: Target },
+    { title: "Online Mode", description: "Participate from anywhere with stable internet", icon: Users }
   ];
 
   return (
@@ -102,12 +100,12 @@ export default function PaperPresentationPage() {
             </h1>
             
             <p className="text-xl sm:text-2xl text-primary font-semibold mb-4">
-              Share Your Research. Inspire Innovation.
+              Call for Papers - CSE Domain
             </p>
             
             <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-base sm:text-lg leading-relaxed">
-              Present your groundbreaking research and technical findings to a panel of expert judges. 
-              Showcase your academic excellence and contribute to the knowledge pool with cutting-edge ideas and solutions.
+              The Organizing Committee cordially invites prospective authors to submit original research manuscripts for the Online Paper Presentation event. 
+              This platform aims to encourage innovation, research excellence, and technical knowledge sharing in the field of Computer Science and Engineering.
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center mb-8">
@@ -128,20 +126,20 @@ export default function PaperPresentationPage() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-primary">₹35,000</div>
-                <div className="text-sm text-foreground/70">Prize Pool</div>
+                <div className="text-2xl font-bold text-primary">₹118</div>
+                <div className="text-sm text-foreground/70">Registration Fee</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-primary">Pan-India</div>
-                <div className="text-sm text-foreground/70">Participation</div>
+                <div className="text-2xl font-bold text-primary">CSE</div>
+                <div className="text-sm text-foreground/70">Domain Focus</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
                 <div className="text-2xl font-bold text-primary">ISBN</div>
                 <div className="text-sm text-foreground/70">Publication</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-primary">Expert</div>
-                <div className="text-sm text-foreground/70">Panel</div>
+                <div className="text-2xl font-bold text-primary">Online</div>
+                <div className="text-sm text-foreground/70">Conference</div>
               </div>
             </div>
           </motion.div>
@@ -164,7 +162,7 @@ export default function PaperPresentationPage() {
                 </span>
               </h2>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Choose from a wide range of technical domains for your research paper
+                Papers are invited in the broad areas of Computer Science and Engineering
               </p>
             </div>
 
@@ -290,7 +288,7 @@ export default function PaperPresentationPage() {
         </div>
       </section>
 
-      {/* Prizes Section */}
+      {/* Publication & Certification */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -302,40 +300,46 @@ export default function PaperPresentationPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
-                  Prizes & Recognition
+                  Publication & Recognition
                 </span>
               </h2>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Compete for exciting prizes and recognition
+                Get published and recognized for your research contributions
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {prizes.map((prize, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative group"
-                >
-                  <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div className="mb-4">
-                      <Award className="w-12 h-12 mx-auto text-primary group-hover:scale-110 transition-transform" />
+              {benefits.map((benefit, index) => {
+                const IconComponent = benefit.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="relative group"
+                  >
+                    <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full">
+                      <div className="mb-4">
+                        <IconComponent className="w-12 h-12 mx-auto text-primary group-hover:scale-110 transition-transform" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 text-foreground">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-foreground/70 text-sm">{benefit.description}</p>
                     </div>
-                    <h3 className={`text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r ${prize.color}`}>
-                      {prize.amount}
-                    </h3>
-                    <p className="text-foreground/70 font-medium">{prize.place}</p>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
 
-            <div className="mt-12 text-center">
+            <div className="mt-12 text-center space-y-3">
+              <p className="text-foreground/80 font-medium">
+                Registration Fee: ₹118 per author (inclusive of GST)
+              </p>
               <p className="text-foreground/60 text-sm">
-                Plus certificates for all participants and publication opportunities in ISBN proceedings
+                * Non-refundable • Selected papers will be published in Conference Proceedings with ISBN
               </p>
             </div>
           </motion.div>

@@ -6,94 +6,112 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function IdeathonPage() {
-  const categories = [
-    "Healthcare & Medical Innovation",
-    "Sustainable Technology & Green Solutions",
-    "FinTech & Digital Banking",
-    "EdTech & Online Learning",
-    "Smart Cities & Urban Planning",
-    "AgriTech & Food Security",
-    "Social Impact & Community Development",
-    "E-commerce & Retail Innovation",
-    "Entertainment & Media Tech",
-    "Emerging Technologies & Futuristic Concepts"
+  const problemStatements = [
+    {
+      title: "Silent Mental Health Crisis in Students",
+      sdg: "SDG 3 – Good Health & Well-being",
+      description: "A large number of students experience stress, anxiety, loneliness, and burnout, but avoid professional help due to stigma, fear of being judged, or lack of awareness. Most educational institutions only identify the problem after academic performance drops or serious incidents occur."
+    },
+    {
+      title: "Waste That Travels",
+      sdg: "SDG 12 – Responsible Consumption & Production",
+      description: "Citizens segregate waste at home, but during collection and transportation, different types of waste are mixed again. This destroys public trust and discourages participation in sustainable waste practices."
+    },
+    {
+      title: "Digital Benefits, Analog People",
+      sdg: "SDG 10 – Reduced Inequalities",
+      description: "Many essential services are digital, but elderly and low-literacy citizens cannot access them due to complex interfaces, language barriers, and lack of digital skills."
+    },
+    {
+      title: "Pre-Crisis Infrastructure Intelligence System",
+      sdg: "SDGs 3, 9, 11, 13, 16",
+      description: "Global systems such as health, food, energy, climate, and finance operate in isolation and respond only after visible failure. There is no unified early-warning system capable of detecting cascading risks across sectors before they escalate into large-scale crises.",
+      theme: "Global Systems Resilience & Governance"
+    },
+    {
+      title: "Global Climate Migration Governance Protocol",
+      sdg: "SDGs 1, 10, 13, 16, 17",
+      description: "Climate change is expected to displace over 200 million people by 2050, yet current international law does not formally recognize climate migrants. There is no structured global framework to manage identity, employment, housing, and rights for displaced populations.",
+      theme: "Climate Migration & Global Governance"
+    },
+    {
+      title: "Space Debris Accountability Protocol",
+      sdg: "SDGs 9, 12, 17",
+      description: "Low Earth Orbit is increasingly congested with satellites and space debris. Existing international regulations lack enforceable accountability, clear liability mechanisms, and incentives for debris removal.",
+      theme: "Planetary Technology Governance"
+    }
   ];
 
   const guidelines = [
     {
-      title: "Idea Submission",
+      title: "Idea Submission Format",
       points: [
-        "Original and innovative concept",
-        "Clear problem statement",
-        "Practical and scalable solution",
-        "Market potential analysis"
+        "Format: PPT (PowerPoint Presentation)",
+        "Must include: Problem Statement, Proposed Solution, Tech-stack, Innovation/Uniqueness, Feasibility & Impact",
+        "Only one idea per team/individual",
+        "Plagiarism will result in immediate disqualification"
       ]
     },
     {
-      title: "Pitch Presentation",
+      title: "Team & Registration",
       points: [
-        "15 minutes pitch duration",
-        "10 minutes Q&A session",
-        "Professional pitch deck required",
-        "Demonstrate feasibility and impact"
+        "Individual or Team of 2 members",
+        "Registration Fee: ₹118 per team (inclusive of GST)",
+        "Open to all UG and PG students",
+        "Accurate participant details required; incomplete registrations will be rejected"
       ]
     },
     {
       title: "Evaluation Criteria",
       points: [
-        "Innovation & Uniqueness (30%)",
-        "Market viability (25%)",
-        "Implementation plan (25%)",
-        "Social/Business impact (20%)"
+        "Innovation & Creativity",
+        "Problem Relevance",
+        "Feasibility & Practicality",
+        "Impact & Usefulness",
+        "Presentation Quality"
       ]
     }
   ];
 
   const importantDates = [
     { event: "Idea Submission Opens", date: "February 1, 2026" },
-    { event: "Idea Submission Deadline", date: "February 20, 2026" },
-    { event: "Shortlist Notification", date: "February 22, 2026" },
-    { event: "Pitch Deck Submission", date: "February 24, 2026" },
-    { event: "Final Pitch Event", date: "February 27, 2026" }
+    { event: "Round 1: Idea Submission Deadline", date: "February 24, 2026" },
+    { event: "Shortlist Notification", date: "February 25, 2026" },
+    { event: "Round 2: Online Idea Presentation", date: "February 28, 2026" }
   ];
 
-  const prizes = [
-    { place: "Winner", amount: "₹15,000", color: "from-yellow-500 to-orange-500" },
-    { place: "1st Runner-Up", amount: "₹10,000", color: "from-gray-400 to-gray-500" },
-    { place: "2nd Runner-Up", amount: "₹5,000", color: "from-amber-600 to-amber-700" },
-    { place: "Most Innovative", amount: "₹5,000", color: "from-primary to-accent" }
+  const benefits = [
+    { title: "E-Certificates", description: "Provided to all eligible participants", icon: Award },
+    { title: "Cash Prizes", description: "Cash prizes and certificates for winners", icon: Target },
+    { title: "Online Mode", description: "Participate from anywhere with stable internet", icon: Users },
+    { title: "Recognition", description: "Certificate of merit for top performers", icon: TrendingUp }
   ];
 
   const pitchComponents = [
     {
       title: "Problem Statement",
-      description: "Clearly define the problem you're solving",
+      description: "Clearly identify and explain the problem you're addressing",
       icon: Target
     },
     {
-      title: "Solution Overview",
-      description: "Present your innovative solution approach",
+      title: "Proposed Solution",
+      description: "Present your innovative approach to solve the problem",
       icon: Lightbulb
     },
     {
-      title: "Market Analysis",
-      description: "Demonstrate market need and opportunity",
-      icon: TrendingUp
-    },
-    {
-      title: "Implementation Plan",
-      description: "Show how you'll bring it to life",
-      icon: Rocket
-    },
-    {
-      title: "Business Model",
-      description: "Explain revenue generation strategy",
+      title: "Tech-stack",
+      description: "Detail the technologies and tools you'll use",
       icon: Brain
     },
     {
-      title: "Impact & Scalability",
-      description: "Showcase potential reach and growth",
+      title: "Innovation / Uniqueness",
+      description: "Highlight what makes your solution stand out",
       icon: Zap
+    },
+    {
+      title: "Feasibility & Impact",
+      description: "Demonstrate practicality and potential real-world impact",
+      icon: Rocket
     }
   ];
 
@@ -135,12 +153,13 @@ export default function IdeathonPage() {
             </h1>
             
             <p className="text-xl sm:text-2xl text-accent font-semibold mb-4">
-              Innovate. Pitch. Win.
+              Idea Pitching Event
             </p>
             
             <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-base sm:text-lg leading-relaxed">
-              Transform your groundbreaking ideas into reality! Pitch your innovative solutions to real-world problems 
-              and compete with creative minds from across the nation. Best idea awards await.
+              Ideathon aims to encourage innovative and practical ideas that address real-world problems using 
+              emerging technologies and interdisciplinary approaches. Pitch your solutions to tackle critical challenges 
+              aligned with the UN Sustainable Development Goals.
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center mb-8">
@@ -161,27 +180,27 @@ export default function IdeathonPage() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-accent">₹35,000</div>
-                <div className="text-sm text-foreground/70">Prize Pool</div>
+                <div className="text-2xl font-bold text-accent">₹118</div>
+                <div className="text-sm text-foreground/70">Per Team</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-accent">Pan-India</div>
-                <div className="text-sm text-foreground/70">Participation</div>
+                <div className="text-2xl font-bold text-accent">1-2</div>
+                <div className="text-sm text-foreground/70">Team Size</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-accent">Mentorship</div>
-                <div className="text-sm text-foreground/70">Opportunities</div>
+                <div className="text-2xl font-bold text-accent">6</div>
+                <div className="text-sm text-foreground/70">Problem Statements</div>
               </div>
               <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-accent">Investor</div>
-                <div className="text-sm text-foreground/70">Pitch Format</div>
+                <div className="text-2xl font-bold text-accent">Online</div>
+                <div className="text-sm text-foreground/70">Event Mode</div>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* Problem Statements Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -193,26 +212,35 @@ export default function IdeathonPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-accent to-foreground">
-                  Innovation Categories
+                  Problem Statements
                 </span>
               </h2>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Choose from diverse categories to showcase your innovative solution
+                Choose one of these real-world challenges aligned with UN Sustainable Development Goals
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map((category, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {problemStatements.map((problem, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   viewport={{ once: true }}
-                  className="flex items-center gap-3 bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4 hover:border-accent/40 hover:shadow-lg transition-all group"
+                  className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 hover:border-accent/40 hover:shadow-lg transition-all group"
                 >
-                  <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="text-foreground/80 font-medium">{category}</span>
+                  <div className="flex items-start gap-3 mb-3">
+                    <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground mb-2">{problem.title}</h3>
+                      <p className="text-sm text-primary font-semibold mb-2">{problem.sdg}</p>
+                      {problem.theme && (
+                        <p className="text-xs text-accent font-medium mb-2">Theme: {problem.theme}</p>
+                      )}
+                      <p className="text-foreground/70 text-sm leading-relaxed">{problem.description}</p>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -220,7 +248,7 @@ export default function IdeathonPage() {
         </div>
       </section>
 
-      {/* What Makes a Great Pitch */}
+      {/* PPT Submission Requirements */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -232,11 +260,11 @@ export default function IdeathonPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-accent to-foreground">
-                  What Makes a Great Pitch?
+                  PPT Submission Requirements
                 </span>
               </h2>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Your pitch should include these essential components
+                Your presentation must include these essential components
               </p>
             </div>
 
@@ -318,8 +346,9 @@ export default function IdeathonPage() {
               <div>
                 <h4 className="font-bold text-primary mb-2">Important Note</h4>
                 <p className="text-foreground/70 text-sm">
-                  Ideas must be original and not previously pitched in other competitions. Teams can have 2 members. 
-                  Pitch decks should be professional and concise. Focus on problem-solution fit and market validation.
+                  Teams must provide accurate participant details; incomplete registrations will be rejected. 
+                  Participants can register individually or as a team of two. Ideas must be original and plagiarism will 
+                  result in immediate disqualification.
                 </p>
               </div>
             </div>
@@ -369,7 +398,7 @@ export default function IdeathonPage() {
         </div>
       </section>
 
-      {/* Prizes Section */}
+      {/* Certificates & Benefits */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -381,45 +410,47 @@ export default function IdeathonPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-accent to-foreground">
-                  Prizes & Opportunities
+                  Certificates & Recognition
                 </span>
               </h2>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Win exciting prizes and get access to mentorship opportunities
+                Get recognized for your innovative ideas and solutions
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {prizes.map((prize, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative group"
-                >
-                  <div className="bg-card/50 backdrop-blur-sm border-2 border-accent/30 rounded-xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div className="mb-4">
-                      <Award className="w-12 h-12 mx-auto text-accent group-hover:scale-110 transition-transform" />
+              {benefits.map((benefit, index) => {
+                const IconComponent = benefit.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="relative group"
+                  >
+                    <div className="bg-card/50 backdrop-blur-sm border-2 border-accent/30 rounded-xl p-6 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full">
+                      <div className="mb-4">
+                        <IconComponent className="w-12 h-12 mx-auto text-accent group-hover:scale-110 transition-transform" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 text-foreground">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-foreground/70 text-sm">{benefit.description}</p>
                     </div>
-                    <h3 className={`text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r ${prize.color}`}>
-                      {prize.amount}
-                    </h3>
-                    <p className="text-foreground/70 font-medium">{prize.place}</p>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
 
-            <div className="mt-12 text-center">
-              <p className="text-foreground/60 text-sm mb-4">
-                Plus certificates for all participants and mentorship opportunities from industry experts
+            <div className="mt-12 text-center space-y-3">
+              <p className="text-foreground/80 font-medium">
+                Registration Fee: ₹118 per team (inclusive of GST)
               </p>
-              <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 rounded-full px-6 py-3">
-                <Rocket className="w-5 h-5 text-accent" />
-                <span className="text-accent font-semibold">Top ideas get startup guidance and potential funding</span>
-              </div>
+              <p className="text-foreground/60 text-sm">
+                * Non-refundable • Open to all UG and PG students
+              </p>
             </div>
           </motion.div>
         </div>
