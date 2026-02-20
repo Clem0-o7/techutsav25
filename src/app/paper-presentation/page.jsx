@@ -50,9 +50,9 @@ export default function PaperPresentationPage() {
 
   const importantDates = [
     { event: "Paper Submission Opens", date: "February 1, 2026" },
-    { event: "Paper Submission Deadline", date: "February 25, 2026" },
-    { event: "Shortlist Notification", date: "February 26, 2026" },
-    { event: "Online Presentation Event", date: "February 27, 2026" }
+    { event: "Paper Submission Deadline", date: "February 26, 2026" },
+    { event: "Shortlist Notification", date: "February 27, 2026" },
+    { event: "Online Presentation Event", date: "February 28, 2026" }
   ];
 
   const benefits = [
