@@ -34,7 +34,8 @@ export async function GET(request) {
       year: user.year,
       isEmailVerified: user.isEmailVerified,
       onboardingCompleted: user.onboardingCompleted,
-      passes: user.passes || []
+      passes: user.passes || [],
+      submissions: user.submissions || []
     };
     
     return new Response(

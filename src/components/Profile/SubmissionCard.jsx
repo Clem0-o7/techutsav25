@@ -4,14 +4,15 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileUpload } from "./FileUpload"
-import { Upload, CheckCircle, Clock, AlertCircle, FileText } from "lucide-react"
+import { Upload, CheckCircle, Clock, AlertCircle, FileText, ExternalLink, Download, Users } from "lucide-react"
 
 const STATUS_ICONS = {
   draft: Clock,
   submitted: CheckCircle,
   reviewed: Clock,
   accepted: CheckCircle,
-  rejected: AlertCircle
+  rejected: AlertCircle,
+  overridden: AlertCircle
 }
 
 const STATUS_COLORS = {
@@ -19,7 +20,8 @@ const STATUS_COLORS = {
   submitted: "text-blue-500", 
   reviewed: "text-purple-500",
   accepted: "text-green-500",
-  rejected: "text-red-500"
+  rejected: "text-red-500",
+  overridden: "text-gray-500"
 }
 
 export function SubmissionCard({ 
@@ -28,16 +30,46 @@ export function SubmissionCard({
   hasRequiredPass, 
   submission, 
   user,
-  onSubmissionUpdate 
+  onSubmissionUpdate,
+  loading: parentLoading = false
 }) {
   const [showUpload, setShowUpload] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  // Debug logging for submission data
+  console.log(`[${eventType}] Submission data:`, submission)
+
   const StatusIcon = submission ? STATUS_ICONS[submission.status] : Upload
 
-  const handleSubmissionSuccess = () => {
+  // Helper function to download file
+  const handleFileDownload = (fileUrl, fileName) => {
+    try {
+      const link = document.createElement('a')
+      link.href = fileUrl
+      link.download = fileName || 'submission'
+      link.target = '_blank'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Download failed:', error)
+      // Fallback: open in new tab
+      window.open(fileUrl, '_blank')
+    }
+  }
+
+  const handleSubmissionSuccess = async (result) => {
     setShowUpload(false)
-    onSubmissionUpdate()
+    console.log('Submission successful:', result)
+    await onSubmissionUpdate() // Wait for the data refresh
+    
+    // Show success feedback
+    if (result?.submission?.status === 'submitted') {
+      // Optional: Add toast notification here if you have a toast system
+      console.log('Submission completed successfully!')
+    } else if (result?.submission?.status === 'draft') {
+      console.log('Draft saved successfully!')
+    }
   }
 
   const handleWithdraw = async () => {
@@ -109,16 +141,41 @@ export function SubmissionCard({
               <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-foreground">Current Submission:</span>
-                  <span className={`text-sm ${STATUS_COLORS[submission.status]} capitalize`}>
-                    {submission.status}
+                  <span className={`text-sm ${STATUS_COLORS[submission.status]} capitalize font-medium flex items-center gap-1`}>
+                    <StatusIcon className="w-4 h-4" />
+                    {submission.status === 'draft' ? 'Draft Saved' : submission.status}
                   </span>
                 </div>
                 
-                {submission.fileName && (
+                {submission.fileName && submission.fileUrl ? (
+                  <div className="text-sm space-y-2">
+                    <div className="text-muted-foreground">
+                      <span className="font-medium">File: </span>
+                      <span className="text-foreground">{submission.fileName}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => window.open(submission.fileUrl, '_blank')}
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        View File
+                      </button>
+                      <button 
+                        onClick={() => handleFileDownload(submission.fileUrl, submission.fileName)}
+                        className="text-xs text-green-600 hover:text-green-800 hover:underline inline-flex items-center gap-1 px-2 py-1 rounded border border-green-200 hover:bg-green-50"
+                      >
+                        <Download className="w-3 h-3" />
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                ) : submission.fileName ? (
                   <div className="text-sm text-muted-foreground">
                     <span className="font-medium">File:</span> {submission.fileName}
+                    <span className="text-xs text-red-500 ml-2">(File not accessible)</span>
                   </div>
-                )}
+                ) : null}
                 
                 {submission.title && (
                   <div className="text-sm text-muted-foreground">
@@ -126,9 +183,74 @@ export function SubmissionCard({
                   </div>
                 )}
                 
+                {submission.abstract && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium">Abstract:</span> 
+                    <p className="mt-1 text-xs bg-muted p-2 rounded">
+                      {submission.abstract.length > 150 
+                        ? `${submission.abstract.substring(0, 150)}...` 
+                        : submission.abstract
+                      }
+                    </p>
+                  </div>
+                )}
+                
                 {submission.submittedDate && (
                   <div className="text-sm text-muted-foreground">
-                    <span className="font-medium">Submitted:</span> {new Date(submission.submittedDate).toLocaleDateString()}
+                    <span className="font-medium">Submitted:</span> {new Date(submission.submittedDate).toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
+                  </div>
+                )}
+                
+                {submission.reviews && submission.reviews.length > 0 && (
+                  <div className="space-y-2">
+                    <span className="font-medium text-sm">Reviews:</span>
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {submission.reviews.map((review, index) => (
+                        <div key={index} className="bg-muted/50 p-2 rounded text-xs">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-medium">{review.reviewerName || 'Reviewer'}</span>
+                            <span className="text-primary">Score: {review.score}/10</span>
+                          </div>
+                          {review.comments && (
+                            <p className="text-muted-foreground">
+                              {review.comments.length > 100 
+                                ? `${review.comments.substring(0, 100)}...` 
+                                : review.comments
+                              }
+                            </p>
+                          )}
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(review.reviewDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {submission.isTeamSubmission && (
+                  <div className="space-y-2">
+                    <div className="text-sm text-blue-600 bg-blue-50 p-2 rounded">
+                      <span className="font-medium flex items-center gap-1">
+                        <Users className="w-4 h-4" />
+                        Team Submission
+                      </span>
+                      {submission.teamId && (
+                        <p className="text-xs text-blue-500 mt-1">
+                          Team ID: {submission.teamId}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {submission.status === 'overridden' && (
+                  <div className="text-sm text-orange-600 bg-orange-50 p-2 rounded">
+                    <span className="font-medium">⚠ Overridden by team submission</span>
                   </div>
                 )}
 
@@ -138,30 +260,45 @@ export function SubmissionCard({
                       onClick={() => setShowUpload(true)} 
                       size="sm" 
                       className="flex-1"
+                      disabled={loading || parentLoading}
                     >
-                      Update Submission
+                      {parentLoading ? "Refreshing..." : "Complete & Submit"}
                     </Button>
                   )}
                   
-                  <Button 
-                    onClick={handleWithdraw} 
-                    variant="outline" 
-                    size="sm" 
-                    disabled={loading}
-                    className="text-red-600 border-red-200 hover:bg-red-50"
-                  >
-                    {loading ? "Withdrawing..." : "Withdraw"}
-                  </Button>
+                  {submission.status === "submitted" && (
+                    <Button 
+                      onClick={() => setShowUpload(true)} 
+                      size="sm" 
+                      variant="outline"
+                      className="flex-1"
+                      disabled={loading || parentLoading}
+                    >
+                      {parentLoading ? "Refreshing..." : "Update Submission"}
+                    </Button>
+                  )}
+                  
+                  {submission.status !== "overridden" && (
+                    <Button 
+                      onClick={handleWithdraw} 
+                      variant="outline" 
+                      size="sm" 
+                      disabled={loading || parentLoading || !["draft", "submitted"].includes(submission.status)}
+                      className="text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      {loading ? "Withdrawing..." : "Withdraw"}
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : (
               <Button 
                 onClick={() => setShowUpload(true)} 
                 className="w-full"
-                disabled={loading}
+                disabled={loading || parentLoading}
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Submit {details.title}
+                {parentLoading ? "Loading..." : `Submit ${details.title}`}
               </Button>
             )}
 

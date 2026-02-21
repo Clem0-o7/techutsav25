@@ -51,11 +51,18 @@ export async function POST(request) {
     const eventType = formData.get("eventType");
     const title = formData.get("title");
     const description = formData.get("description");
+    const abstract = formData.get("abstract"); // For paper presentations
     const submissionId = formData.get("submissionId"); // For updates
+    const isDraft = formData.get("isDraft") === "true"; // Save as draft or submit
 
     // Validate required fields
     if (!eventType || !title) {
       return NextResponse.json({ message: "Event type and title are required" }, { status: 400 });
+    }
+
+    // Validate abstract for paper presentations
+    if (eventType === "paper-presentation" && !abstract) {
+      return NextResponse.json({ message: "Abstract is required for paper presentations" }, { status: 400 });
     }
 
     // Check if user has required pass
@@ -120,6 +127,12 @@ export async function POST(request) {
 
         fileUrl = blockBlobClient.url;
         fileName = file.name;
+        
+        console.log('File upload successful:', {
+          fileName: file.name,
+          fileUrl: blockBlobClient.url,
+          blobName
+        })
 
       } catch (error) {
         console.error("Azure upload error:", error);
@@ -129,13 +142,77 @@ export async function POST(request) {
       }
     }
 
+    // Helper function to handle team override logic
+    const handleTeamOverride = async (user, eventType, teamId = null) => {
+      if (!teamId) return; // Individual submission, no override needed
+      
+      const mongoose = require('mongoose');
+      const Team = mongoose.models.Team;
+      if (!Team) return;
+      
+      const team = await Team.findById(teamId).populate('members.userId');
+      if (!team) return;
+      
+      // Override individual submissions of team members with team submission
+      for (const member of team.members) {
+        if (member.userId.toString() === user._id.toString()) continue; // Skip current user
+        
+        const memberUser = await User.findById(member.userId);
+        if (!memberUser || !memberUser.submissions) continue;
+        
+        // Mark member's individual submissions as overridden
+        memberUser.submissions.forEach(submission => {
+          if (submission.type === eventType && !submission.isTeamSubmission) {
+            submission.finalSubmission = false; // Mark as not final/active 
+            submission.status = "overridden";
+          }
+        });
+        
+        await memberUser.save();
+      }
+    };
+    
+    // Check if user is part of a team for this event type
+    const mongoose = require('mongoose');
+    const Team = mongoose.models.Team;
+    let userTeam = null;
+    
+    if (Team) {
+      userTeam = await Team.findOne({
+        eventType,
+        "members.userId": user._id,
+        isActive: true
+      }).populate('members.userId', 'name email');
+    }
+    
+    // Determine submission status and team info
+    const submissionStatus = isDraft ? "draft" : "submitted";
+    const isUserTeamLeader = userTeam && userTeam.leaderId.toString() === user._id.toString();
+    const isInTeam = !!userTeam;
+    
+    console.log('Team status:', {
+      hasTeam: isInTeam,
+      isLeader: isUserTeamLeader,
+      teamId: userTeam?._id,
+      eventType
+    });
+    
+    // Initialize submissions array if it doesn't exist
+    if (!user.submissions) {
+      user.submissions = [];
+    }
+    
+    // Handle one active submission per event type logic
+    const existingSubmissions = user.submissions.filter(sub => sub.type === eventType);
+    if (existingSubmissions.length > 0) {
+      // Mark all existing submissions as not final
+      existingSubmissions.forEach(submission => {
+        submission.finalSubmission = false;
+      });
+    }
+
     // Update or create submission
     if (submissionId) {
-      // Initialize submissions array if it doesn't exist
-      if (!user.submissions) {
-        user.submissions = [];
-      }
-      
       // Update existing submission
       const existingSubmission = user.submissions.id(submissionId);
       if (!existingSubmission) {
@@ -144,54 +221,126 @@ export async function POST(request) {
 
       existingSubmission.title = title;
       existingSubmission.description = description;
+      if (eventType === "paper-presentation" && abstract) {
+        existingSubmission.abstract = abstract;
+      }
       if (fileUrl) {
         existingSubmission.fileUrl = fileUrl;
         existingSubmission.fileName = fileName;
       }
-      existingSubmission.status = "submitted";
-      existingSubmission.submittedDate = new Date();
+      existingSubmission.status = submissionStatus;
+      existingSubmission.finalSubmission = true; // Mark as active submission
+      existingSubmission.isTeamSubmission = isInTeam;
+      existingSubmission.teamId = userTeam?._id || existingSubmission.teamId; // Preserve or update team ID
+      if (!isDraft) {
+        existingSubmission.submittedDate = new Date();
+      }
 
     } else {
-      // Initialize submissions array if it doesn't exist
-      if (!user.submissions) {
-        user.submissions = [];
-      }
-      
       // Check if submission already exists for this event type
-      const existingSubmission = user.submissions.find(sub => sub.type === eventType);
+      const existingSubmission = user.submissions.find(sub => sub.type === eventType && sub.finalSubmission);
       
       if (existingSubmission) {
-        // Update existing submission instead of blocking
+        // Update existing submission instead of creating new one
         existingSubmission.title = title;
         existingSubmission.description = description;
+        if (eventType === "paper-presentation" && abstract) {
+          existingSubmission.abstract = abstract;
+        }
         if (fileUrl) {
           existingSubmission.fileUrl = fileUrl;
           existingSubmission.fileName = fileName;
         }
-        existingSubmission.status = "submitted";
-        existingSubmission.submittedDate = new Date();
+        existingSubmission.status = submissionStatus;
+        existingSubmission.isTeamSubmission = isInTeam;
+        existingSubmission.teamId = userTeam?._id || existingSubmission.teamId; // Preserve or update team ID
+        if (!isDraft) {
+          existingSubmission.submittedDate = new Date();
+        }
       } else {
         // Create new submission
-        if (!fileUrl) {
-          return NextResponse.json({ message: "File is required for new submissions" }, { status: 400 });
+        if (!fileUrl && !isDraft) {
+          return NextResponse.json({ message: "File is required for final submissions" }, { status: 400 });
         }
 
-        user.submissions.push({
+        const newSubmission = {
           type: eventType,
-          status: "submitted",
-          fileUrl,
-          fileName,
+          status: submissionStatus,
           title,
           description,
-          submittedDate: new Date()
-        });
+          finalSubmission: true,
+          isTeamSubmission: isInTeam,
+          teamId: userTeam?._id || null
+        };
+        
+        if (fileUrl) {
+          newSubmission.fileUrl = fileUrl;
+          newSubmission.fileName = fileName;
+        }
+        
+        if (eventType === "paper-presentation" && abstract) {
+          newSubmission.abstract = abstract;
+        }
+        
+        if (!isDraft) {
+          newSubmission.submittedDate = new Date();
+        }
+
+        user.submissions.push(newSubmission);
+        
+        // If user is in a team but not the leader, mark individual submissions as overridden
+        if (isInTeam && !isUserTeamLeader) {
+          // Override any personal submissions if joining a team
+          user.submissions.forEach(sub => {
+            if (sub.type === eventType && !sub.isTeamSubmission && sub._id.toString() !== newSubmission._id) {
+              sub.finalSubmission = false;
+              sub.status = "overridden";
+            }
+          });
+        }
       }
     }
 
     await user.save();
 
-    const currentSubmission = user.submissions.find(sub => sub.type === eventType);
-    const isUpdate = submissionId || user.submissions.find(sub => sub.type === eventType && sub.submittedDate);
+    // Handle team override logic if needed
+    const currentSubmission = user.submissions.find(sub => sub.type === eventType && sub.finalSubmission);
+    
+    // Enhanced team logic: if user is team leader and has active submission, override all member submissions
+    if (currentSubmission && isUserTeamLeader && userTeam) {
+      console.log(`Processing team override for leader submission in team ${userTeam._id}`);
+      
+      for (const member of userTeam.members) {
+        if (member.userId._id.toString() === user._id.toString()) continue; // Skip current user(leader)
+        
+        const memberUser = await User.findById(member.userId._id);
+        if (!memberUser || !memberUser.submissions) continue;
+        
+        // Mark member's individual submissions as overridden by team leader submission
+        let memberUpdated = false;
+        memberUser.submissions.forEach(submission => {
+          if (submission.type === eventType && submission.finalSubmission && !submission.isTeamSubmission) {
+            submission.finalSubmission = false;
+            submission.status = "overridden";
+            memberUpdated = true;
+            console.log(`Marked submission ${submission._id} as overridden for member ${memberUser.name}`);
+          }
+        });
+        
+        if (memberUpdated) {
+          await memberUser.save();
+        }
+      }
+    }
+
+    console.log('Final submission saved:', {
+      type: currentSubmission?.type,
+      fileName: currentSubmission?.fileName,
+      fileUrl: currentSubmission?.fileUrl,
+      status: currentSubmission?.status
+    })
+
+    const isUpdate = submissionId || user.submissions.filter(sub => sub.type === eventType).length > 1;
 
     return NextResponse.json({ 
       message: isUpdate ? "Submission updated successfully" : "Submission uploaded successfully",

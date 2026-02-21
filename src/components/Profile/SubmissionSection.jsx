@@ -27,8 +27,8 @@ const SUBMISSION_DETAILS = {
   }
 };
 
-export function SubmissionSection({ user }) {
-  const [refreshKey, setRefreshKey] = useState(0)
+export function SubmissionSection({ user, onDataRefresh }) {
+  const [loading, setLoading] = useState(false)
 
   // Get verified passes
   const verifiedPasses = user?.passes?.filter(p => p.status === "verified") || []
@@ -39,17 +39,30 @@ export function SubmissionSection({ user }) {
     return verifiedPasses.some(pass => requiredPasses.includes(pass.passType))
   }
 
-  // Get user's submission for specific event type
+  // Get user's submission for specific event type (only final/active submissions)
   const getSubmission = (eventType) => {
     // Handle users without submissions field (backward compatibility)
     if (!user?.submissions || !Array.isArray(user.submissions)) {
       return null;
     }
-    return user.submissions.find(sub => sub.type === eventType)
+    // Return only final/active submissions to show the current state
+    return user.submissions.find(sub => 
+      sub.type === eventType && 
+      (sub.finalSubmission === true || sub.finalSubmission === undefined) // Backward compatibility
+    )
   }
 
-  const refreshData = () => {
-    setRefreshKey(prev => prev + 1)
+  const refreshData = async () => {
+    if (onDataRefresh) {
+      setLoading(true)
+      try {
+        await onDataRefresh()
+      } catch (error) {
+        console.error('Failed to refresh data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
   }
 
   return (
@@ -68,13 +81,14 @@ export function SubmissionSection({ user }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {Object.entries(SUBMISSION_DETAILS).map(([eventType, details]) => (
           <SubmissionCard
-            key={`${eventType}-${refreshKey}`}
+            key={eventType}
             eventType={eventType}
             details={details}
             hasRequiredPass={hasPassFor(eventType)}
             submission={getSubmission(eventType)}
             user={user}
             onSubmissionUpdate={refreshData}
+            loading={loading}
           />
         ))}
       </div>

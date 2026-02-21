@@ -105,6 +105,20 @@ export async function POST(request) {
 
     await team.save();
 
+    // Handle existing individual submissions - mark as overridden by team
+    if (user.submissions && user.submissions.length > 0) {
+      const userSubmission = user.submissions.find(
+        sub => sub.type === team.eventType && sub.finalSubmission !== false
+      );
+      
+      if (userSubmission) {
+        userSubmission.finalSubmission = false;
+        userSubmission.status = "overridden";
+        await user.save();
+        console.log(`Marked user's individual submission as overridden when joining team ${team._id}`);
+      }
+    }
+
     return NextResponse.json({ 
       message: "Successfully joined team",
       team: {

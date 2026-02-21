@@ -75,6 +75,31 @@ export async function POST(request) {
     }
 
     await team.save();
+    
+    // Handle submissions when leaving team
+    // If user was a team member, restore their individual submission ability
+    if (user.submissions && user.submissions.length > 0) {
+      const teamSubmission = user.submissions.find(
+        sub => sub.type === team.eventType && sub.status === "overridden"
+      );
+      
+      if (teamSubmission) {
+        teamSubmission.finalSubmission = true;
+        teamSubmission.status = "draft"; // Allow them to complete it
+        teamSubmission.isTeamSubmission = false;
+        teamSubmission.teamId = null;
+        await user.save();
+        console.log(`Restored user's submission after leaving team ${teamId}`);
+      }
+    }
+
+    // If leader left and transferred leadership, update team submission ownership
+    if (member.role === "leader" && team.members.length > 0) {
+      const newLeader = team.members.find(m => m.role === "leader");
+      if (newLeader) {
+        console.log(`Leadership transferred to ${newLeader.name} for team ${teamId}`);
+      }
+    }
 
     return NextResponse.json({ 
       message: "Successfully left the team" 

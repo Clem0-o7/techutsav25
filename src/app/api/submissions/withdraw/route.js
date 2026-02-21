@@ -33,17 +33,24 @@ export async function POST(request) {
       user.submissions = [];
     }
 
-    // Find and remove submission
-    const submissionIndex = user.submissions.findIndex(sub => sub.type === eventType);
+    // Find and validate submission
+    const submissionIndex = user.submissions.findIndex(sub => sub.type === eventType && sub.finalSubmission === true);
     if (submissionIndex === -1) {
-      return NextResponse.json({ message: "No submission found for this event" }, { status: 404 });
+      return NextResponse.json({ message: "No active submission found for this event" }, { status: 404 });
     }
 
     // Check if submission can be withdrawn (only draft and submitted status)
     const submission = user.submissions[submissionIndex];
-    if (!["draft", "submitted"].includes(submission.status)) {
+    if (!submission || !["draft", "submitted"].includes(submission.status)) {
       return NextResponse.json({ 
         message: "Submission cannot be withdrawn at this stage" 
+      }, { status: 400 });
+    }
+    
+    // Check if submission is overridden
+    if (submission.status === "overridden") {
+      return NextResponse.json({ 
+        message: "Cannot withdraw overridden submissions" 
       }, { status: 400 });
     }
 

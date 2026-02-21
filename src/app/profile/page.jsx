@@ -113,7 +113,7 @@ export default function ProfilePage() {
           <ProfileInfo user={user} />
           <ProfileQRCode userId={user.id} passes={user.passes} userName={user.name} />
           <PaymentSection user={user} onPaymentSubmit={handlePaymentSubmit} />
-          <SubmissionSection user={user} />
+          <SubmissionSection user={user} onDataRefresh={fetchProfile} />
         </div>
 
         {/* Additional Info Section */}

@@ -17,10 +17,13 @@ export function FileUpload({
   const [file, setFile] = useState(null)
   const [title, setTitle] = useState(existingSubmission?.title || "")
   const [description, setDescription] = useState(existingSubmission?.description || "")
+  const [abstract, setAbstract] = useState(existingSubmission?.abstract || "") // New field for papers
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState("")
   const fileInputRef = useRef(null)
+
+  const isPaperPresentation = eventType === "paper-presentation"
 
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0]
@@ -52,7 +55,7 @@ export function FileUpload({
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, isDraft = false) => {
     e.preventDefault()
     
     if (!title.trim()) {
@@ -60,8 +63,13 @@ export function FileUpload({
       return
     }
 
-    if (!file && !existingSubmission) {
-      setError("Please select a file")
+    if (isPaperPresentation && !abstract.trim()) {
+      setError("Please provide an abstract for paper presentation")
+      return
+    }
+
+    if (!isDraft && !file && !existingSubmission) {
+      setError("Please select a file for final submission")
       return
     }
 
@@ -72,11 +80,16 @@ export function FileUpload({
     try {
       const formData = new FormData()
       if (file) {
+        console.log('File being uploaded:', file.name, file.size, file.type)
         formData.append("file", file)
       }
       formData.append("eventType", eventType)
       formData.append("title", title.trim())
       formData.append("description", description.trim())
+      if (isPaperPresentation) {
+        formData.append("abstract", abstract.trim())
+      }
+      formData.append("isDraft", isDraft.toString())
       if (existingSubmission) {
         formData.append("submissionId", existingSubmission._id)
       }
@@ -98,6 +111,7 @@ export function FileUpload({
       
       // Small delay to show completion
       setTimeout(() => {
+        console.log('Submission successful:', result)
         onSuccess(result)
       }, 500)
 
@@ -157,10 +171,29 @@ export function FileUpload({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of your submission"
-                className="w-full min-h-[80px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
+                className="w-full min-h-[60px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
                 disabled={uploading}
               />
             </div>
+
+            {/* Abstract Input - Only for Paper Presentations */}
+            {isPaperPresentation && (
+              <div className="space-y-2">
+                <Label htmlFor="abstract">Abstract *</Label>
+                <textarea
+                  id="abstract"
+                  value={abstract}
+                  onChange={(e) => setAbstract(e.target.value)}
+                  placeholder="Enter your paper abstract (research objectives, methodology, key findings)"
+                  className="w-full min-h-[120px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
+                  disabled={uploading}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  💡 Include research objectives, methodology, and key findings
+                </p>
+              </div>
+            )}
 
             {/* File Upload */}
             <div className="space-y-2">
@@ -248,12 +281,26 @@ export function FileUpload({
               >
                 Cancel
               </Button>
+              
+              {/* Save Draft Button */}
               <Button
-                type="submit"
-                disabled={uploading || !title.trim() || (!existingSubmission && !file)}
+                type="button"
+                variant="secondary"
+                onClick={(e) => handleSubmit(e, true)}
+                disabled={uploading || !title.trim() || (isPaperPresentation && !abstract.trim())}
                 className="flex-1"
               >
-                {uploading ? "Uploading..." : (existingSubmission ? "Update" : "Submit")}
+                {uploading ? "Saving..." : "Save Draft"}
+              </Button>
+              
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                onClick={(e) => handleSubmit(e, false)}
+                disabled={uploading || !title.trim() || (isPaperPresentation && !abstract.trim()) || (!existingSubmission && !file)}
+                className="flex-1"
+              >
+                {uploading ? "Submitting..." : (existingSubmission ? "Update" : "Submit")}
               </Button>
             </div>
           </form>

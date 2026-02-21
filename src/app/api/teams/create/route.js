@@ -81,6 +81,20 @@ export async function POST(request) {
       teamName.trim()
     );
 
+    // Handle existing individual submissions - convert leader's submission to team submission
+    if (user.submissions && user.submissions.length > 0) {
+      const existingSubmission = user.submissions.find(
+        sub => sub.type === eventType && sub.finalSubmission !== false
+      );
+      
+      if (existingSubmission) {
+        existingSubmission.isTeamSubmission = true;
+        existingSubmission.teamId = team._id;
+        await user.save();
+        console.log(`Converted leader's individual submission to team submission for team ${team._id}`);
+      }
+    }
+
     // Populate team details for response
     await team.populate('members.userId', 'name email');
 

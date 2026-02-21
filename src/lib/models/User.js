@@ -59,7 +59,19 @@ const userSchema = new Schema(
         submittedDate: Date,
         teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team" },
         title: String,
-        description: String
+        description: String,
+        abstract: String, // For paper presentations only
+        reviews: {
+          type: [{
+            reviewerName: String,
+            score: Number, // 1-10 scale
+            comments: String,
+            reviewDate: { type: Date, default: Date.now }
+          }],
+          default: []
+        },
+        isTeamSubmission: { type: Boolean, default: false },
+        finalSubmission: { type: Boolean, default: false } // Mark as final/active submission
       }],
       default: []
     },
