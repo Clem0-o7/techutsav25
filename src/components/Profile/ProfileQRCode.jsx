@@ -147,15 +147,7 @@ const downloadDigitalPass = async () => {
                   Generating QR Code...
                 </Button>
               )}
-              {qrGenerated && (
-                <Button 
-                  onClick={downloadQR} 
-                  variant="outline"
-                  className="flex-1"
-                >
-                  📱 Download QR Only
-                </Button>
-              )}
+              
             </div>
             
             <div className="bg-accent border border-border rounded-lg p-4 w-full max-w-md">

@@ -23,7 +23,7 @@ const DigitalPassTemplate = forwardRef(
             className="text-[10px] tracking-[0.25em] uppercase leading-relaxed"
             style={{ color: "#6b7280" }}
           >
-            PROPERTY OF SECTOR 7 • AUTHORIZED PERSONNEL ONLY
+            PROPERTY OF SECTOR 7 < br/> AUTHORIZED PERSONNEL ONLY
           </p>
 
           <h1 className="mt-4 text-3xl font-bold tracking-wide leading-none">
