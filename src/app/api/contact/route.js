@@ -35,7 +35,7 @@ export async function POST(request) {
 
     // Send the email
     const info = await transporter.sendMail(mailOptions);
-    console.log("Contact email sent:", info.messageId);
+    //console.log("Contact email sent:", info.messageId);
 
     return new Response(JSON.stringify({ message: "Message sent successfully" }), { status: 200 });
   } catch (error) {

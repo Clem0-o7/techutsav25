@@ -20,7 +20,7 @@ const Contact = () => {
         }),
       });
       if (!res.ok) throw new Error("Failed to send message");
-      console.log("Message sent successfully");
+      //console.log("Message sent successfully");
     } catch (error) {
       console.error("Error sending message:", error.message);
     }

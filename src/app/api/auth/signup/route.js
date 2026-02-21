@@ -8,15 +8,15 @@ import User from "@/lib/models/User";
 import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req) {
-  console.log("[SIGNUP] Request received at:", new Date().toISOString());
+  //console.log("[SIGNUP] Request received at:", new Date().toISOString());
   
   try {
     // Check critical environment variables first
-    console.log("[SIGNUP] Checking environment variables...");
-    console.log("[SIGNUP] MONGODB_URI exists:", !!process.env.MONGODB_URI);
-    console.log("[SIGNUP] EMAIL_SERVER_HOST exists:", !!process.env.EMAIL_SERVER_HOST);
-    console.log("[SIGNUP] EMAIL_SERVER_USER exists:", !!process.env.EMAIL_SERVER_USER);
-    console.log("[SIGNUP] JWT_SECRET exists:", !!process.env.JWT_SECRET);
+    //console.log("[SIGNUP] Checking environment variables...");
+    //console.log("[SIGNUP] MONGODB_URI exists:", !!process.env.MONGODB_URI);
+    //console.log("[SIGNUP] EMAIL_SERVER_HOST exists:", !!process.env.EMAIL_SERVER_HOST);
+    //console.log("[SIGNUP] EMAIL_SERVER_USER exists:", !!process.env.EMAIL_SERVER_USER);
+    //console.log("[SIGNUP] JWT_SECRET exists:", !!process.env.JWT_SECRET);
     
     if (!process.env.MONGODB_URI) {
       console.error("[SIGNUP ERROR] MONGODB_URI not set");
@@ -36,14 +36,14 @@ export async function POST(req) {
       );
     }
     
-    console.log("[SIGNUP] All environment variables present");
+    //console.log("[SIGNUP] All environment variables present");
 
     //  Parse JSON safely
     let body;
     try {
-      console.log("[SIGNUP] Parsing request body...");
+      //console.log("[SIGNUP] Parsing request body...");
       body = await req.json();
-      console.log("[SIGNUP] Body parsed successfully. Email:", body.email);
+      //console.log("[SIGNUP] Body parsed successfully. Email:", body.email);
     } catch (err) {
       console.error("[SIGNUP] Failed to parse JSON:", err);
       return NextResponse.json(
@@ -94,9 +94,9 @@ export async function POST(req) {
     //  Connect to MongoDB
     let connection;
     try {
-      console.log("[SIGNUP] Attempting database connection...");
+      //console.log("[SIGNUP] Attempting database connection...");
       connection = await connectToDatabase();
-      console.log("[SIGNUP] Database connected successfully");
+      //console.log("[SIGNUP] Database connected successfully");
     } catch (dbError) {
       console.error("[SIGNUP ERROR] Database connection failed:", dbError);
       console.error("[SIGNUP ERROR] Error name:", dbError.name);
@@ -108,28 +108,28 @@ export async function POST(req) {
     }
 
     //  Check if email already exists
-    console.log("[SIGNUP] Checking for existing user...");
+    //console.log("[SIGNUP] Checking for existing user...");
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      console.log("[SIGNUP] Email already registered:", email);
+      //console.log("[SIGNUP] Email already registered:", email);
       return NextResponse.json(
         { error: "Email already registered" },
         { status: 400 }
       );
     }
-    console.log("[SIGNUP] Email is available");
+    //console.log("[SIGNUP] Email is available");
 
     //  Hash password
-    console.log("[SIGNUP] Hashing password...");
+    //console.log("[SIGNUP] Hashing password...");
     const hashed = await bcrypt.hash(password, 12);
-    console.log("[SIGNUP] Password hashed successfully");
+    //console.log("[SIGNUP] Password hashed successfully");
 
     //  Generate email verification token
-    console.log("[SIGNUP] Generating verification token...");
+    //console.log("[SIGNUP] Generating verification token...");
     const token = crypto.randomBytes(32).toString("hex");
 
     //  Create user
-    console.log("[SIGNUP] Creating user in database...");
+    //console.log("[SIGNUP] Creating user in database...");
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -139,12 +139,12 @@ export async function POST(req) {
       isEmailVerified: false,
     });
 
-    console.log(`[SIGNUP] User created successfully: ${email}, ID: ${user._id}`);
+    //console.log(`[SIGNUP] User created successfully: ${email}, ID: ${user._id}`);
 
     //  Send verification email
     try {
       await sendVerificationEmail(email, token);
-      console.log(`[SIGNUP] Verification email sent to: ${email}`);
+      //console.log(`[SIGNUP] Verification email sent to: ${email}`);
     } catch (emailErr) {
       console.error(`[SIGNUP ERROR] Failed to send verification email:`, emailErr);
 

@@ -6,6 +6,7 @@ import { ProfileHeader } from "@/components/Profile/ProfileHeader"
 import { ProfileInfo } from "@/components/Profile/ProfileInfo"
 import { ProfileQRCode } from "@/components/Profile/ProfileQRCode"
 import { PaymentSection } from "@/components/Profile/PaymentSection"
+import { SubmissionSection } from "@/components/Profile/SubmissionSection"
 import MainLoader from "@/components/MainLoader"
 import { SnackbarComponent } from "@/components/SnackbarComponent"
 
@@ -108,44 +109,42 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <ProfileHeader />
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Left column - Main Info */}
-          <div className="xl:col-span-2 space-y-6">
-            <ProfileInfo user={user} />
-            <PaymentSection user={user} onPaymentSubmit={handlePaymentSubmit} />
-          </div>
-
-          {/* Right column - QR Code */}
-          <div className="xl:col-span-1">
-            <ProfileQRCode userId={user.id} userName={user.name} passes={user.passes} />
-          </div>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <ProfileInfo user={user} />
+          <ProfileQRCode userId={user.id} passes={user.passes} userName={user.name} />
+          <PaymentSection user={user} onPaymentSubmit={handlePaymentSubmit} />
+          <SubmissionSection user={user} />
         </div>
 
         {/* Additional Info Section */}
-        <div className="mt-8 p-6 bg-card border border-border rounded-lg">
+        <div className="max-w-4xl mx-auto mt-8 p-6 bg-card border border-border rounded-lg">
           <h3 className="text-xl font-semibold text-card-foreground mb-4">
             Important Information
           </h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start">
               <span className="text-primary mr-2">•</span>
-              <span>You can purchase multiple passes - each pass can be bought only once</span>
+              <span>QR code is generated only after pass verification - use it for event check-ins</span>
             </li>
             <li className="flex items-start">
               <span className="text-primary mr-2">•</span>
-              <span>Pass 3 (Idea Pitching) is per team - team formation happens after payment verification</span>
+              <span>Paper Presentation requires Pass 2, Ideathon requires Pass 3 for submissions</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>Teams: Ideathon max 2 members, Paper Presentation allows multiple authors</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>File limits: Paper (10MB, PDF/DOC), Ideathon (20MB, PDF/PPT)</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              <span>Submission deadlines: Papers Feb 25, Ideathon Feb 24</span>
             </li>
             <li className="flex items-start">
               <span className="text-primary mr-2">•</span>
               <span>Payment verification typically takes 24-36 hours</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-primary mr-2">•</span>
-              <span>Keep your QR code handy for event check-ins</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-primary mr-2">•</span>
-              <span>For any issues, contact us through the main website</span>
             </li>
             <li className="flex items-start">
               <span className="text-primary mr-2">•</span>

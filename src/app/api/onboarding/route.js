@@ -46,7 +46,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    console.log(`[ONBOARDING] User ${user.email} completed onboarding successfully`)
+    //console.log(`[ONBOARDING] User ${user.email} completed onboarding successfully`)
 
     return NextResponse.json({ 
       success: true, 

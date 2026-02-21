@@ -112,20 +112,12 @@ export function PaymentModal({ isOpen, passType, onClose, onSubmit }) {
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Payment Instructions */}
-                <div className="p-4 bg-accent/20 border border-border rounded-lg">
-                <h4 className="font-semibold text-foreground mb-2">
-                  Payment Instructions:
-                </h4>
-                <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-                  <li>Pay the amount to the account details provided</li>
-                  <li>Note down your transaction ID</li>
-                  <li>Take a screenshot of the payment confirmation</li>
-                  <li>Enter the transaction ID below</li>
-                  <li>Upload the screenshot and submit</li>
-                </ol>
-                <Button
+          <div className="p-4 bg-accent/20 border border-border rounded-lg">
+            <h4 className="font-semibold text-foreground mb-3">Payment Guide</h4>
+            <Button
               type="button"
-              className="w-full mt-4 text-lg font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 py-6 rounded-lg"
+              variant="outline"
+              className="w-full justify-center gap-2"
               onClick={() =>
                 window.open(
                   "https://docs.google.com/document/d/1EDiuO0aRdf_rsBwmFYqepbbteHksEdLELRRVZWkl2Ws",
@@ -133,11 +125,22 @@ export function PaymentModal({ isOpen, passType, onClose, onSubmit }) {
                 )
               }
             >
-              💳 Pay Now
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              View Payment Instructions
             </Button>
-                </div>
-
-                {/* Transaction ID Input */}
+          </div>
           <div className="space-y-2">
             <Label htmlFor="transactionId">Transaction ID *</Label>
             <Input

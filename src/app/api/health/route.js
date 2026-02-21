@@ -42,7 +42,7 @@ export async function GET(req) {
 
   // Test database connection
   try {
-    console.log("[HEALTH] Attempting database connection...");
+    //console.log("[HEALTH] Attempting database connection...");
     const startTime = Date.now();
     const conn = await connectToDatabase();
     const endTime = Date.now();
@@ -56,7 +56,7 @@ export async function GET(req) {
       dbName: mongoose.connection.name || "Unknown",
       models: Object.keys(mongoose.connection.models).length,
     };
-    console.log("[HEALTH] Database connected successfully");
+    //console.log("[HEALTH] Database connected successfully");
   } catch (error) {
     console.error("[HEALTH] Database connection failed:", error);
     checks.checks.database_connection = "✗ Failed";

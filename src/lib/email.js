@@ -44,7 +44,7 @@ function getEmailTransporter() {
     };
   }
 
-  console.log(`[EMAIL CONFIG] Host: ${config.host}, Port: ${config.port}, Secure: ${config.secure}, User: ${config.auth.user}`);
+  //console.log(`[EMAIL CONFIG] Host: ${config.host}, Port: ${config.port}, Secure: ${config.secure}, User: ${config.auth.user}`);
 
   return nodemailer.createTransport(config);
 }
@@ -136,13 +136,13 @@ export async function sendVerificationEmail(email, token) {
     const verificationUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
     
     // Log for monitoring (even in production)
-    console.log(`[EMAIL] Sending verification email to: ${email}`);
+    //console.log(`[EMAIL] Sending verification email to: ${email}`);
     
     const transporter = getEmailTransporter();
     const htmlContent = getVerificationEmailTemplate(verificationUrl, email);
     
     const fromAddress = getFromAddress();
-    console.log(`[EMAIL] From address: ${fromAddress}`);
+    //console.log(`[EMAIL] From address: ${fromAddress}`);
 
     const info = await transporter.sendMail({
       from: fromAddress,
@@ -152,7 +152,7 @@ export async function sendVerificationEmail(email, token) {
       text: `Welcome to TechUtsav! Please verify your email by clicking this link: ${verificationUrl}. This link will expire in 24 hours.`,
     });
 
-    console.log(`[EMAIL] Verification email sent successfully to ${email}. Message ID: ${info.messageId}`);
+    //console.log(`[EMAIL] Verification email sent successfully to ${email}. Message ID: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error(`[EMAIL ERROR] Failed to send verification email to ${email}:`, error.message);
@@ -232,7 +232,7 @@ export async function sendResetPasswordEmail(email, token) {
   try {
     const resetUrl = `${process.env.NEXTAUTH_URL}/api/auth/reset-password?token=${token}`;
     
-    console.log(`[EMAIL] Sending password reset email to: ${email}`);
+    //console.log(`[EMAIL] Sending password reset email to: ${email}`);
     
     const transporter = getEmailTransporter();
     const htmlContent = getResetPasswordEmailTemplate(resetUrl, email);
@@ -246,7 +246,7 @@ export async function sendResetPasswordEmail(email, token) {
       text: `Reset your TechUtsav password by clicking this link: ${resetUrl}. This link will expire in 1 hour. If you didn't request this, please ignore this email.`,
     });
 
-    console.log(`[EMAIL] Password reset email sent successfully to ${email}. Message ID: ${info.messageId}`);
+    //console.log(`[EMAIL] Password reset email sent successfully to ${email}. Message ID: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error(`[EMAIL ERROR] Failed to send password reset email to ${email}:`, error.message);

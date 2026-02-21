@@ -40,6 +40,29 @@ const userSchema = new Schema(
         verifiedDate: Date,
       },
     ],
+
+    // Submissions system
+    submissions: {
+      type: [{
+        type: {
+          type: String,
+          enum: ["paper-presentation", "ideathon"],
+          required: true
+        },
+        status: {
+          type: String,
+          enum: ["draft", "submitted", "reviewed", "accepted", "rejected"],
+          default: "draft"
+        },
+        fileUrl: String, // Azure Blob URL
+        fileName: String,
+        submittedDate: Date,
+        teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team" },
+        title: String,
+        description: String
+      }],
+      default: []
+    },
   },
   { timestamps: true }
 );

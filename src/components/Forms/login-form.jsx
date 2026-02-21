@@ -54,7 +54,7 @@ export function LoginForm({
       }
 
       // Redirect to coming-soon page on successful login
-      router.push("/coming-soon")
+      router.push("/")
     } catch (err) {
       setError(err.message)
     } finally {
