@@ -14,7 +14,7 @@ export async function GET(req) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("name email isEmailVerified onboardingCompleted");
+    const user = await User.findById(decoded.userId).select("name email isEmailVerified onboardingCompleted passes");
 
     return new Response(JSON.stringify({ user }), { status: 200 });
   } catch (error) {

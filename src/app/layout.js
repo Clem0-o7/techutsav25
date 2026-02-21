@@ -1,7 +1,8 @@
 import "../styles/globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { Poppins } from "next/font/google"
-import { Providers } from "./providers/theme-provider"
+import { Providers } from "@/providers/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const metadata = {
   title: "TechUtsav – National Level Tech Symposium",
@@ -23,7 +24,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
 })
 
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`dark ${poppins.variable}`} suppressHydrationWarning>
@@ -42,7 +42,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
-        <Providers>{children}</Providers>
+        <TooltipProvider>
+          <Providers>{children}</Providers>
+        </TooltipProvider>
         <Analytics />
       </body>
     </html>

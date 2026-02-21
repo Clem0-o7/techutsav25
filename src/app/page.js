@@ -11,7 +11,7 @@ import Contact from '@/components/sections/Contact';
 import Footer from '@/components/Footer';
 import MainLoader from '@/components/MainLoader';
 import { Navbar } from '@/components/Navbar/Navbar';
-import { useAuth } from '@/lib/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 
 export default function LandingPage() {

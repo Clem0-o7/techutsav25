@@ -1,5 +1,6 @@
 // /lib/mongodb.js
 import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
 let MONGODB_URI = process.env.MONGODB_URI;
 
@@ -65,19 +66,12 @@ export async function connectToDatabase() {
       bufferCommands: false,
     };
 
-    ////console.log("[MONGODB] Creating new connection...");
-    ////console.log("[MONGODB] URI Protocol:", MONGODB_URI.split("://")[0]);
-    ////console.log("[MONGODB] URI Host:", MONGODB_URI.split("@")[1]?.split("/")[0] || "Unknown");
-    ////console.log("[MONGODB] Database:", MONGODB_URI.split("/")[3]?.split("?")[0] || "Not specified");
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      ////console.log("[MONGODB] ✓ Connected successfully");
-      ////console.log("[MONGODB] Database Name:", mongoose.connection.name);
-      ////console.log("[MONGODB] Ready State:", mongoose.connection.readyState);
+
       return mongoose;
     }).catch((err) => {
-      //console.error("[MONGODB] ✗ Connection failed:", err.message);
-      //console.error("[MONGODB] Error Code:", err.code);
+
       cached.promise = null; // Reset promise so next attempt will retry
       throw err;
     });
@@ -92,4 +86,17 @@ export async function connectToDatabase() {
 
   return cached.conn;
 }
+
+// For native MongoDB driver (used in API routes)
+let client;
+let clientPromise;
+
+if (!global._mongoClientPromise) {
+  client = new MongoClient(MONGODB_URI);
+  global._mongoClientPromise = client.connect();
+}
+clientPromise = global._mongoClientPromise;
+
+export default clientPromise;
+export { connectToDatabase };
 

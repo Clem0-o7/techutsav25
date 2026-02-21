@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, lazy } from 'react'
-import { useAuth } from '@/lib/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 const Spline = lazy(() => import('@splinetool/react-spline'))
 
 export default function ComingSoonPage() {

@@ -1,125 +1,50 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Code, GamepadIcon, Trophy, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 const Events = () => {
-  const [activeCategory, setActiveCategory] = useState("technical");
+  const [activeCategory, setActiveCategory] = useState("tech");
   const [currentPage, setCurrentPage] = useState(0);
+  const [allEvents, setAllEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const itemsPerPage = 6;
 
-  const technicalEvents = [
-    {
-      id: 1,
-      name: "Code Red: Escape The Mind",
-      description: "Navigate through complex coding puzzles and escape the mind traps using your programming prowess.",
-      icon: Code,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 2,
-      name: "Core Logic Arena",
-      description: "Battle it out with algorithms and data structures in this competitive programming showdown.",
-      icon: Trophy,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 3,
-      name: "Think Like Eleven",
-      description: "Harness your mental powers to solve complex computational problems and logical challenges.",
-      icon: Zap,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 4,
-      name: "Model Matters",
-      description: "Build and showcase innovative technical models demonstrating cutting-edge technology solutions.",
-      icon: GamepadIcon,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 5,
-      name: "Mindflayer.io",
-      description: "Real-time multiplayer coding competition where speed and accuracy determine the victor.",
-      icon: Code,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 6,
-      name: "Hawkins Hack",
-      description: "Intense 24-hour hackathon challenge to develop groundbreaking solutions to real-world problems.",
-      icon: Trophy,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 7,
-      name: "Upside Down Markets",
-      description: "Analyze and predict market trends using data science and machine learning techniques.",
-      icon: Zap,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 8,
-      name: "Stranger Thinks",
-      description: "Tech quiz with unexpected twists covering programming, cybersecurity, and emerging technologies.",
-      icon: GamepadIcon,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 9,
-      name: "Fix & Play (Debugging)",
-      description: "Race against time to debug complex code and get applications running flawlessly.",
-      icon: Code,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 10,
-      name: "Battle of Brains (Tech Puzzle)",
-      description: "Solve intricate technical puzzles that challenge your problem-solving and analytical skills.",
-      icon: Trophy,
-      color: "from-accent/20 to-primary/10"
-    }
-  ];
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/events?sortBy=priority');
+        const data = await response.json();
+        
+        if (data.success) {
+          setAllEvents(data.events);
+        } else {
+          setError('Failed to load events');
+        }
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError('Failed to load events');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const nonTechnicalEvents = [
-    {
-      id: 1,
-      name: "VirtuAct",
-      description: "Showcase your acting talents in this virtual performance competition with digital flair.",
-      icon: GamepadIcon,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 2,
-      name: "Hawkin's Lab",
-      description: "Conduct fascinating science experiments and demonstrations that blur reality and imagination.",
-      icon: Zap,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 3,
-      name: "Survive the Deck",
-      description: "Strategic card-based game where wit and tactics determine who survives till the end.",
-      icon: Trophy,
-      color: "from-primary/20 to-accent/10"
-    },
-    {
-      id: 4,
-      name: "Dungeons and Dragons",
-      description: "Embark on an epic role-playing adventure filled with mystery, magic, and strategic battles.",
-      icon: GamepadIcon,
-      color: "from-accent/20 to-primary/10"
-    },
-    {
-      id: 5,
-      name: "Fun Flicks",
-      description: "Test your movie knowledge with trivia, screenings, and cinematic challenges for film enthusiasts.",
-      icon: Code,
-      color: "from-primary/20 to-accent/10"
-    }
-  ];
+    fetchEvents();
+  }, []);
 
-  const currentEvents = activeCategory === "technical" ? technicalEvents : nonTechnicalEvents;
+  // Filter events by category
+  const currentEvents = allEvents.filter(event => {
+    if (activeCategory === "tech") {
+      return event.category === "tech" || event.category === "technical";
+    } else {
+      return event.category === "non-tech" || event.category === "cultural" || event.category === "non-technical";
+    }
+  });
+
   const totalPages = Math.ceil(currentEvents.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const displayedEvents = currentEvents.slice(startIndex, startIndex + itemsPerPage);
@@ -140,6 +65,39 @@ const Events = () => {
     setActiveCategory(category);
     setCurrentPage(0);
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <section id="events" className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-foreground/70">Loading events...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section id="events" className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <p className="text-destructive">Error: {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="events" className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
@@ -170,9 +128,9 @@ const Events = () => {
           className="flex justify-center gap-4 mb-12"
         >
           <button
-            onClick={() => handleCategoryChange("technical")}
+            onClick={() => handleCategoryChange("tech")}
             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-              activeCategory === "technical"
+              activeCategory === "tech"
                 ? "bg-primary text-white shadow-lg shadow-primary/30"
                 : "bg-card border border-border text-foreground hover:border-primary/40"
             }`}
@@ -180,15 +138,30 @@ const Events = () => {
             Technical Events
           </button>
           <button
-            onClick={() => handleCategoryChange("non-technical")}
+            onClick={() => handleCategoryChange("non-tech")}
             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-              activeCategory === "non-technical"
+              activeCategory === "non-tech"
                 ? "bg-primary text-white shadow-lg shadow-primary/30"
                 : "bg-card border border-border text-foreground hover:border-primary/40"
             }`}
           >
             Non-Technical Events
           </button>
+        </motion.div>
+
+        {/* View All Events Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-center mb-8"
+        >
+          <Link href="/events">
+            <button className="px-8 py-3 bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/25">
+              <ExternalLink className="w-5 h-5 inline mr-2" />
+              View All Events
+            </button>
+          </Link>
         </motion.div>
 
         {/* Events Grid */}
@@ -199,36 +172,54 @@ const Events = () => {
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
         >
-          {displayedEvents.map((event, index) => {
-            const Icon = event.icon;
-            return (
-              <motion.div
-                key={event.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="group bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${event.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className="w-8 h-8 text-primary" />
-                </div>
-                
-                <h3 className="text-lg font-bold mb-3">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary group-hover:from-primary group-hover:to-foreground transition-all">
-                    {event.name}
-                  </span>
-                </h3>
-                
-                <p className="text-foreground/70 text-sm leading-relaxed mb-6 min-h-[4rem]">
-                  {event.description}
-                </p>
-                
-                <button className="w-full px-4 py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/30 hover:border-primary rounded-lg font-medium transition-all duration-300 text-sm group-hover:scale-105">
-                  Details Coming Soon
-                </button>
-              </motion.div>
-            );
-          })}
+          {displayedEvents.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <div className="text-foreground/60 text-lg">
+                No {activeCategory === "tech" ? "technical" : "non-technical"} events available at the moment.
+              </div>
+              <p className="text-foreground/40 text-sm mt-2">
+                Check back soon for exciting events!
+              </p>
+            </div>
+          ) : (
+            displayedEvents.map((event, index) => {
+              return (
+                <Link key={event._id} href={`/events/${event.uniqueName}`}>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="group bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full"
+                  >                
+                    <h3 className="text-lg font-bold mb-3">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary group-hover:from-primary group-hover:to-foreground transition-all">
+                        {event.eventName}
+                      </span>
+                    </h3>
+                    
+                    <p className="text-foreground/70 text-sm leading-relaxed mb-6 min-h-[4rem]">
+                      {event.eventAbstract || event.eventDesp || "Event details coming soon"}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="text-xs text-muted-foreground">
+                        {event.department}
+                      </div>
+                      <div className="text-xs text-muted-foreground capitalize">
+                        {event.eventMode}
+                      </div>
+                    </div>
+                    
+                    <div className="mt-auto">
+                      <span className="inline-block w-full px-4 py-2 bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-border hover:border-primary/30 rounded-lg font-medium transition-all duration-300 text-sm text-center">
+                        View Event Details
+                      </span>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })
+          )}
         </motion.div>
 
         {/* Pagination Controls */}
@@ -295,7 +286,7 @@ const Events = () => {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div className="text-center p-4">
-              <div className="text-4xl sm:text-5xl font-bold text-primary mb-2">15+</div>
+              <div className="text-4xl sm:text-5xl font-bold text-primary mb-2">{allEvents.length}+</div>
               <div className="text-foreground/70 text-sm">Total Events</div>
             </div>
             <div className="text-center p-4">
