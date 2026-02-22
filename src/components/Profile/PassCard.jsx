@@ -82,32 +82,32 @@ export function PassCard({ passType, purchasedPass, onBuyClick }) {
 
     return (
       <div className="space-y-2">
-        <div
-          className={`w-full py-3 px-4 rounded-lg border-2 text-center font-semibold ${config.color}`}
-        >
-          {config.text}
-        </div>
-        {purchasedPass.status === "rejected" && (
-          <>
-            {purchasedPass.rejectionReason && (
-              <p className="text-sm text-red-400 text-center">
-                Reason: {purchasedPass.rejectionReason}
-              </p>
-            )}
-            <Button
-              onClick={() => onBuyClick(passType)}
-              className="w-full"
-              variant="outline"
-            >
-              Resubmit Payment
-            </Button>
-          </>
-        )}
-        {purchasedPass.status === "pending" && (
-          <p className="text-xs text-muted-foreground text-center">
-            Verification typically takes 24-36 hours
+      <div
+        className={`w-full py-3 px-4 rounded-lg border-2 text-center font-semibold ${config.color}`}
+      >
+        {config.text}
+      </div>
+      {purchasedPass.status === "rejected" && (
+        <>
+        {purchasedPass.rejectionReason && (
+          <p className="text-sm text-red-400 text-center break-words overflow-hidden">
+          Reason: {purchasedPass.rejectionReason}
           </p>
         )}
+        <Button
+          onClick={() => onBuyClick(passType)}
+          className="w-full"
+          variant="outline"
+        >
+          Resubmit Payment
+        </Button>
+        </>
+      )}
+      {purchasedPass.status === "pending" && (
+        <p className="text-xs text-muted-foreground text-center">
+        Verification typically takes 24-36 hours
+        </p>
+      )}
       </div>
     )
   }
