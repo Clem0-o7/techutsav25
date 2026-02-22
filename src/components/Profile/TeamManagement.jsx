@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Users, Plus, UserPlus, Copy, ExternalLink } from "lucide-react"
+import { Users, Plus, UserPlus, Copy, Lock } from "lucide-react"
 
 export function TeamManagement({ user, onTeamUpdate }) {
   const [activeTab, setActiveTab] = useState("status")
@@ -16,6 +16,29 @@ export function TeamManagement({ user, onTeamUpdate }) {
     teamName: ""
   })
   const [joinCode, setJoinCode] = useState("")
+
+  // Derive which event types the user has the required pass for
+  const REQUIRED_PASSES = {
+    "paper-presentation": [2],
+    "ideathon": [3],
+  }
+  const hasPassFor = (eventType) =>
+    user?.passes?.some(
+      (p) => REQUIRED_PASSES[eventType].includes(p.passType) && p.status === "verified"
+    ) ?? false
+
+  const canCreatePaper = hasPassFor("paper-presentation")
+  const canCreateIdeathon = hasPassFor("ideathon")
+  const canCreateAny = canCreatePaper || canCreateIdeathon
+
+  // Keep form eventType in sync: if the default option is locked, switch to an available one
+  useEffect(() => {
+    if (!hasPassFor(createForm.eventType)) {
+      if (canCreatePaper) setCreateForm((p) => ({ ...p, eventType: "paper-presentation" }))
+      else if (canCreateIdeathon) setCreateForm((p) => ({ ...p, eventType: "ideathon" }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   // Fetch teams on component mount
   useEffect(() => {
@@ -110,15 +133,61 @@ export function TeamManagement({ user, onTeamUpdate }) {
   }
 
   // Leave team
-  const handleLeaveTeam = async (teamId) => {
-    if (!confirm("Are you sure you want to leave this team?")) return
+  const handleLeaveTeam = async (team) => {
+    const myMember = team.members?.find(
+      (m) => m.userId === user?._id?.toString()
+    )
+    const isLeader = myMember?.role === "leader"
+    const hasTeamSub = user?.submissions?.some(
+      (s) =>
+        s.type === team.eventType &&
+        s.finalSubmission === true &&
+        s.isTeamSubmission === true &&
+        s.teamId?.toString() === team._id?.toString()
+    )
+    const remainingMembers = (team.members?.length ?? 1) - 1
+
+    const nextMemberName =
+      team.members?.find((m) => m.userId !== user?._id?.toString())?.name
+
+    let confirmMessage
+    if (isLeader && hasTeamSub && remainingMembers > 0) {
+      confirmMessage =
+        `⚠ You are the team leader and the current submitter.\n\n` +
+        `Your submission will be transferred to ${nextMemberName ?? "the next member"} ` +
+        `(new leader) — the team's submission stays active.\n\n` +
+        `Are you sure you want to leave?`
+    } else if (isLeader && hasTeamSub && remainingMembers === 0) {
+      confirmMessage =
+        `⚠ You are the only member and the current submitter.\n\n` +
+        `Leaving will dissolve the team and permanently delete your team submission.\n\n` +
+        `Are you sure you want to leave?`
+    } else if (!isLeader && hasTeamSub && remainingMembers > 0) {
+      confirmMessage =
+        `⚠ You are the current submitter for this team.\n\n` +
+        `Your submission will be transferred to the team leader ` +
+        `— the team's submission stays active.\n\n` +
+        `Are you sure you want to leave?`
+    } else if (isLeader && remainingMembers > 0) {
+      confirmMessage =
+        `You are the team leader.\n` +
+        `Leadership will transfer to ${nextMemberName ?? "the next member"}.\n\n` +
+        `Are you sure you want to leave?`
+    } else if (isLeader) {
+      confirmMessage =
+        `You are the only member. Leaving will dissolve the team.\n\nAre you sure?`
+    } else {
+      confirmMessage = "Are you sure you want to leave this team?"
+    }
+
+    if (!confirm(confirmMessage)) return
 
     setLoading(true)
     try {
       const response = await fetch("/api/teams/leave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamId }),
+        body: JSON.stringify({ teamId: team._id }),
         credentials: "include"
       })
 
@@ -127,7 +196,7 @@ export function TeamManagement({ user, onTeamUpdate }) {
         throw new Error(error.message || "Failed to leave team")
       }
 
-      setTeams(prev => prev.filter(t => t._id !== teamId))
+      setTeams(prev => prev.filter(t => t._id !== team._id))
       onTeamUpdate()
     } catch (error) {
       console.error("Leave team error:", error)
@@ -201,16 +270,21 @@ export function TeamManagement({ user, onTeamUpdate }) {
 
                   {/* Team Members */}
                   <div className="space-y-1">
-                    {team.members?.map(member => (
-                      <div key={member._id} className="flex items-center gap-2 text-sm">
-                        <span className="text-muted-foreground">{member.name}</span>
-                        {member.role === "leader" && (
-                          <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
-                            Leader
+                    {team.members?.map(member => {
+                      const isMe = member.userId === user?._id?.toString()
+                      return (
+                        <div key={member._id} className="flex items-center gap-2 text-sm">
+                          <span className={isMe ? "font-semibold text-primary" : "text-muted-foreground"}>
+                            {member.name}{isMe ? " (You)" : ""}
                           </span>
-                        )}
-                      </div>
-                    ))}
+                          {member.role === "leader" && (
+                            <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                              Leader
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
 
                   {/* Team Actions */}
@@ -225,7 +299,7 @@ export function TeamManagement({ user, onTeamUpdate }) {
                       Copy Invite: {team.inviteCode}
                     </Button>
                     <Button
-                      onClick={() => handleLeaveTeam(team._id)}
+                      onClick={() => handleLeaveTeam(team)}
                       variant="outline"
                       size="sm"
                       disabled={loading}
@@ -248,6 +322,19 @@ export function TeamManagement({ user, onTeamUpdate }) {
 
         {activeTab === "create" && (
           <form onSubmit={handleCreateTeam} className="space-y-4">
+            {/* No-pass gate */}
+            {!canCreateAny && (
+              <div className="flex items-start gap-2 rounded-lg border border-dashed p-3 bg-muted/30">
+                <Lock className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium text-muted-foreground">Pass required</p>
+                  <p className="text-xs text-muted-foreground">
+                    You need a verified Pass 2 (Paper Presentation) or Pass 3 (Ideathon) to create a team.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="eventType">Event Type</Label>
               <select
@@ -255,14 +342,20 @@ export function TeamManagement({ user, onTeamUpdate }) {
                 value={createForm.eventType}
                 onChange={(e) => setCreateForm(prev => ({ ...prev, eventType: e.target.value }))}
                 className="w-full px-3 py-2 border border-input rounded-md bg-background"
-                disabled={loading}
+                disabled={loading || !canCreateAny}
               >
-                <option value="paper-presentation">Paper Presentation</option>
-                <option value="ideathon">Ideathon</option>
+                <option value="paper-presentation" disabled={!canCreatePaper}>
+                  Paper Presentation{!canCreatePaper ? " (Pass 2 required)" : ""}
+                </option>
+                <option value="ideathon" disabled={!canCreateIdeathon}>
+                  Ideathon{!canCreateIdeathon ? " (Pass 3 required)" : ""}
+                </option>
               </select>
-              <p className="text-xs text-muted-foreground">
-                Max members: {createForm.eventType === "ideathon" ? "2" : "10"}
-              </p>
+              {hasPassFor(createForm.eventType) && (
+                <p className="text-xs text-muted-foreground">
+                  Max members: {createForm.eventType === "ideathon" ? "2" : "10"}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -272,12 +365,16 @@ export function TeamManagement({ user, onTeamUpdate }) {
                 value={createForm.teamName}
                 onChange={(e) => setCreateForm(prev => ({ ...prev, teamName: e.target.value }))}
                 placeholder="Enter team name"
-                disabled={loading}
+                disabled={loading || !canCreateAny}
                 required
               />
             </div>
 
-            <Button type="submit" disabled={loading || !createForm.teamName.trim()} className="w-full">
+            <Button
+              type="submit"
+              disabled={loading || !createForm.teamName.trim() || !canCreateAny || !hasPassFor(createForm.eventType)}
+              className="w-full"
+            >
               <Plus className="w-4 h-4 mr-2" />
               {loading ? "Creating..." : "Create Team"}
             </Button>
@@ -286,6 +383,30 @@ export function TeamManagement({ user, onTeamUpdate }) {
 
         {activeTab === "join" && (
           <form onSubmit={handleJoinTeam} className="space-y-4">
+            {/* Inform user which events they can join */}
+            {(!canCreatePaper || !canCreateIdeathon) && (
+              <div className="rounded-lg border border-dashed p-3 bg-muted/30 space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pass status</p>
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs flex items-center gap-1 ${
+                    canCreatePaper ? "text-green-600 dark:text-green-400" : "text-muted-foreground"
+                  }`}>
+                    {canCreatePaper ? "✓" : <Lock className="w-3 h-3" />} Paper Presentation (Pass 2)
+                  </span>
+                  <span className={`text-xs flex items-center gap-1 ${
+                    canCreateIdeathon ? "text-green-600 dark:text-green-400" : "text-muted-foreground"
+                  }`}>
+                    {canCreateIdeathon ? "✓" : <Lock className="w-3 h-3" />} Ideathon (Pass 3)
+                  </span>
+                </div>
+                {!canCreatePaper && !canCreateIdeathon && (
+                  <p className="text-xs text-muted-foreground pt-1">
+                    You need a verified pass to join a team for that event.
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="inviteCode">Team Invite Code</Label>
               <Input
@@ -294,7 +415,7 @@ export function TeamManagement({ user, onTeamUpdate }) {
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                 placeholder="Enter 6-character invite code"
                 maxLength={6}
-                disabled={loading}
+                disabled={loading || (!canCreatePaper && !canCreateIdeathon)}
                 required
               />
               <p className="text-xs text-muted-foreground">
@@ -302,7 +423,11 @@ export function TeamManagement({ user, onTeamUpdate }) {
               </p>
             </div>
 
-            <Button type="submit" disabled={loading || !joinCode.trim()} className="w-full">
+            <Button
+              type="submit"
+              disabled={loading || !joinCode.trim() || (!canCreatePaper && !canCreateIdeathon)}
+              className="w-full"
+            >
               <UserPlus className="w-4 h-4 mr-2" />
               {loading ? "Joining..." : "Join Team"}
             </Button>

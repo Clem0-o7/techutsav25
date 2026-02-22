@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Users, Clock, ArrowLeft, Download, Lock, FileText } from "lucide-react"
+import { Calendar, MapPin, Users, Clock, ArrowLeft, Download, Lock, FileText, Phone, Mail, UserCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -100,13 +100,9 @@ export default function EventDetailsPage({ params }) {
   }
 
   const handleRulebookAccess = () => {
-    if (!hasRulebookAccess()) {
-      console.log('Pass 1 required for rulebook access')
-      return
-    }
-    
-    // Here you would typically download or open the rulebook
-    console.log("Opening rulebook...")
+    if (!hasRulebookAccess()) return
+    if (!event?.rulebook) return
+    window.open(event.rulebook, '_blank', 'noopener,noreferrer')
   }
 
   if (loading || authLoading) {
@@ -251,6 +247,73 @@ export default function EventDetailsPage({ params }) {
               </CardContent>
             </Card>
 
+            {/* Contact Cards */}
+            {(event.incharge || (event.coordinators && event.coordinators.length > 0)) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {/* Event Manager / Incharge */}
+                  {event.incharge && (
+                    <div className="flex items-start gap-3 p-3 rounded-lg border bg-muted/40">
+                      <div className="mt-0.5 flex-shrink-0">
+                        <UserCircle className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-0.5">Event Manager</p>
+                        <p className="font-medium truncate">{event.incharge}</p>
+                        {event.inchargeNumber && (
+                          <a
+                            href={`tel:${event.inchargeNumber}`}
+                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline mt-1"
+                          >
+                            <Phone className="h-3.5 w-3.5" />
+                            {event.inchargeNumber}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Coordinators */}
+                  {event.coordinators && event.coordinators.map((coord, idx) => (
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-lg border bg-muted/40">
+                      <div className="mt-0.5 flex-shrink-0">
+                        <UserCircle className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-0.5">
+                          {coord.role || "Coordinator"}
+                        </p>
+                        <p className="font-medium truncate">{coord.name}</p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                          {coord.phone && (
+                            <a
+                              href={`tel:${coord.phone}`}
+                              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                            >
+                              <Phone className="h-3.5 w-3.5" />
+                              {coord.phone}
+                            </a>
+                          )}
+                          {coord.email && (
+                            <a
+                              href={`mailto:${coord.email}`}
+                              className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                            >
+                              <Mail className="h-3.5 w-3.5" />
+                              {coord.email}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Event Resources - Following ProfileQRCode pattern */}
             <Card>
               <CardHeader>
@@ -279,9 +342,10 @@ export default function EventDetailsPage({ params }) {
                         variant="default"
                         size="sm"
                         className="w-full"
+                        disabled={!event.rulebook}
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        Download Rulebook
+                        {event.rulebook ? "Download Rulebook" : "Rulebook Not Available Yet"}
                       </Button>
                     </div>
                     

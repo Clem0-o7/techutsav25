@@ -137,7 +137,7 @@ const downloadDigitalPass = async () => {
                   onClick={downloadDigitalPass} 
                   className="flex-1"
                 >
-                  � Download Pass (PNG)
+                  Download Pass
                 </Button>
               ) : (
                 <Button 
@@ -156,7 +156,7 @@ const downloadDigitalPass = async () => {
                 <div>
                   <h4 className="text-sm font-semibold text-accent-foreground">Pass Verified</h4>
                   <p className="text-xs text-muted-foreground">
-                    Verified on {new Date(verifiedPass1.verifiedDate || verifiedPass1.submittedDate).toLocaleDateString()}
+                    Verified on {new Date(verifiedPass1.verifiedDate || verifiedPass1.submittedDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                   </p>
                 </div>
               </div>

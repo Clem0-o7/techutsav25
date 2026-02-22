@@ -104,8 +104,9 @@ export async function POST(request) {
         ...team.toObject(),
         members: team.members.map(member => ({
           _id: member._id,
-          name: member.name,
-          email: member.email,
+          userId: member.userId?._id?.toString() || null,
+          name: member.userId?.name || member.name,
+          email: member.userId?.email || member.email,
           role: member.role,
           joinedDate: member.joinedDate
         }))

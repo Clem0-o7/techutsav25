@@ -105,18 +105,61 @@ export async function POST(request) {
 
     await team.save();
 
-    // Handle existing individual submissions - mark as overridden by team
-    if (user.submissions && user.submissions.length > 0) {
-      const userSubmission = user.submissions.find(
-        sub => sub.type === team.eventType && sub.finalSubmission !== false
+    // -------------------------------------------------------------------
+    // Submission reconciliation on join
+    // Only override the joiner's individual submission if the team already
+    // has an active submission from one of its existing members.
+    // If the team has no submission yet, the joiner's work is left intact
+    // so they (or anyone) can later submit it as the team's submission.
+    // -------------------------------------------------------------------
+    let teamAlreadyHasSubmission = false;
+    // Check all pre-existing members (before this join was pushed)
+    // team.members already includes the new joiner as the last entry,
+    // so we skip them when searching.
+    for (const m of team.members) {
+      const memberId = m.userId?._id?.toString() ?? m.userId?.toString();
+      if (memberId === user._id.toString()) continue; // skip the new joiner
+
+      const memberDoc = await User.findById(memberId).select("submissions");
+      if (!memberDoc?.submissions) continue;
+
+      const activeSub = memberDoc.submissions.find(
+        (sub) =>
+          sub.type === team.eventType &&
+          sub.finalSubmission === true &&
+          sub.status !== "overridden"
       );
-      
-      if (userSubmission) {
-        userSubmission.finalSubmission = false;
-        userSubmission.status = "overridden";
-        await user.save();
-        console.log(`Marked user's individual submission as overridden when joining team ${team._id}`);
+      if (activeSub) {
+        teamAlreadyHasSubmission = true;
+        break;
       }
+    }
+
+    if (teamAlreadyHasSubmission) {
+      // Team already owns a submission — mark the joiner's individual one as overridden
+      if (user.submissions?.length > 0) {
+        const joinerActiveSub = user.submissions.find(
+          (sub) =>
+            sub.type === team.eventType &&
+            (sub.finalSubmission === true || sub.finalSubmission === undefined) &&
+            sub.status !== "overridden"
+        );
+        if (joinerActiveSub) {
+          joinerActiveSub.finalSubmission = false;
+          joinerActiveSub.status = "overridden";
+          joinerActiveSub.isTeamSubmission = false; // still belongs to them individually
+          await user.save();
+          console.log(
+            `Marked joiner ${user.name}'s individual submission as overridden — team already has a submission`
+          );
+        }
+      }
+    } else {
+      // Team has no submission yet — leave the joiner's submission intact.
+      // It will naturally become the team's if they (or the leader) submit next.
+      console.log(
+        `Team has no active submission yet — keeping joiner ${user.name}'s submission intact`
+      );
     }
 
     return NextResponse.json({ 
@@ -125,8 +168,9 @@ export async function POST(request) {
         ...team.toObject(),
         members: team.members.map(member => ({
           _id: member._id,
-          name: member.name,
-          email: member.email,
+          userId: member.userId?._id?.toString() || member.userId?.toString() || null,
+          name: member.userId?.name || member.name,
+          email: member.userId?.email || member.email,
           role: member.role,
           joinedDate: member.joinedDate
         }))

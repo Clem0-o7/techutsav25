@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileUpload } from "./FileUpload"
@@ -35,9 +35,66 @@ export function SubmissionCard({
 }) {
   const [showUpload, setShowUpload] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [teamInfo, setTeamInfo] = useState(null)
+  const [teamCheckLoading, setTeamCheckLoading] = useState(false)
+  const [showOverrideConfirm, setShowOverrideConfirm] = useState(false)
 
   // Debug logging for submission data
   console.log(`[${eventType}] Submission data:`, submission)
+
+  /** Fetch team info on mount (and whenever the submission changes) so the
+   *  submitter identity and team member list are always visible on the card. */
+  useEffect(() => {
+    if (!hasRequiredPass) return
+    let cancelled = false
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/submissions/team-check?eventType=${eventType}`, {
+          credentials: "include",
+        })
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          setTeamInfo(data)
+        }
+      } catch {
+        // non-fatal – team info is supplementary
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  // Re-run when submission changes (e.g. after join/leave/submit)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventType, hasRequiredPass, submission?.status, submission?.isTeamSubmission])
+
+  /** Fetch team status then decide whether to show override warning or upload form */
+  const handleOpenSubmit = async () => {
+    setTeamCheckLoading(true)
+    try {
+      const res = await fetch(`/api/submissions/team-check?eventType=${eventType}`, {
+        credentials: "include",
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setTeamInfo(data)
+        // Warn only when submitting would overwrite someone else's work
+        if (
+          data.hasTeam &&
+          data.existingSubmission &&
+          !data.existingSubmission.isCurrentUser
+        ) {
+          setShowOverrideConfirm(true)
+        } else {
+          setShowUpload(true)
+        }
+      } else {
+        setShowUpload(true)
+      }
+    } catch {
+      setShowUpload(true)
+    } finally {
+      setTeamCheckLoading(false)
+    }
+  }
 
   const StatusIcon = submission ? STATUS_ICONS[submission.status] : Upload
 
@@ -99,7 +156,9 @@ export function SubmissionCard({
   }
 
   return (
-    <Card className={`${hasRequiredPass ? "" : "opacity-50 bg-gray-50 border-gray-200"} transition-all`}>
+    <Card className={`transition-all ${
+      hasRequiredPass ? "" : "opacity-60 bg-muted/20 border-dashed"
+    }`}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -233,48 +292,132 @@ export function SubmissionCard({
                 )}
                 
                 {submission.isTeamSubmission && (
-                  <div className="space-y-2">
-                    <div className="text-sm text-blue-600 bg-blue-50 p-2 rounded">
-                      <span className="font-medium flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        Team Submission
-                      </span>
-                      {submission.teamId && (
-                        <p className="text-xs text-blue-500 mt-1">
-                          Team ID: {submission.teamId}
-                        </p>
-                      )}
-                    </div>
+                  <div className="text-sm bg-blue-50 border border-blue-100 rounded-lg p-3 dark:bg-blue-900/20 dark:border-blue-800 space-y-2">
+                    {/* Header */}
+                    <span className="font-medium flex items-center gap-1.5 text-blue-700 dark:text-blue-300">
+                      <Users className="w-4 h-4" />
+                      Team Submission
+                    </span>
+
+                    {/* Who submitted */}
+                    {teamInfo?.existingSubmission && (
+                      <div className="text-xs text-blue-700 dark:text-blue-300">
+                        <span className="font-semibold">
+                          {teamInfo.existingSubmission.isCurrentUser
+                            ? "You submitted"
+                            : `${teamInfo.existingSubmission.submitterName} submitted`}
+                        </span>
+                        {teamInfo.existingSubmission.fileName && (
+                          <span className="text-blue-500 dark:text-blue-400">
+                            {" "}— <em>{teamInfo.existingSubmission.fileName}</em>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Team member list */}
+                    {teamInfo?.members && (
+                      <ul className="space-y-0.5 pt-1 border-t border-blue-100 dark:border-blue-800">
+                        {teamInfo.members.map((m) => {
+                          const isSubmitter =
+                            teamInfo.existingSubmission?.submitterId === m._id
+                          return (
+                            <li key={m._id} className="flex items-center gap-1.5 text-xs text-blue-700 dark:text-blue-300">
+                              <span className={m.isCurrentUser ? "font-semibold" : ""}>
+                                {m.name}{m.isCurrentUser ? " (You)" : ""}
+                              </span>
+                              {m.role === "leader" && (
+                                <span className="bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-1 rounded">
+                                  Leader
+                                </span>
+                              )}
+                              {isSubmitter && (
+                                <span className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 px-1 rounded">
+                                  Submitted
+                                </span>
+                              )}
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
                   </div>
                 )}
                 
                 {submission.status === 'overridden' && (
-                  <div className="text-sm text-orange-600 bg-orange-50 p-2 rounded">
-                    <span className="font-medium">⚠ Overridden by team submission</span>
+                  <div className="text-sm bg-orange-50 border border-orange-100 rounded-lg p-3 dark:bg-orange-900/20 dark:border-orange-800 space-y-2">
+                    <span className="font-medium flex items-center gap-1.5 text-orange-700 dark:text-orange-300">
+                      <AlertCircle className="w-4 h-4" />
+                      Overridden by team submission
+                    </span>
+
+                    {/* Show who holds the active team submission */}
+                    {teamInfo?.existingSubmission && (
+                      <div className="text-xs text-orange-700 dark:text-orange-300">
+                        Active submission by{" "}
+                        <span className="font-semibold">
+                          {teamInfo.existingSubmission.isCurrentUser
+                            ? "you"
+                            : teamInfo.existingSubmission.submitterName}
+                        </span>
+                        {teamInfo.existingSubmission.fileName && (
+                          <span className="text-orange-500 dark:text-orange-400">
+                            {" "}— <em>{teamInfo.existingSubmission.fileName}</em>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Team member list */}
+                    {teamInfo?.members && (
+                      <ul className="space-y-0.5 pt-1 border-t border-orange-100 dark:border-orange-800">
+                        {teamInfo.members.map((m) => {
+                          const isSubmitter =
+                            teamInfo.existingSubmission?.submitterId === m._id
+                          return (
+                            <li key={m._id} className="flex items-center gap-1.5 text-xs text-orange-700 dark:text-orange-300">
+                              <span className={m.isCurrentUser ? "font-semibold" : ""}>
+                                {m.name}{m.isCurrentUser ? " (You)" : ""}
+                              </span>
+                              {m.role === "leader" && (
+                                <span className="bg-orange-200 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 px-1 rounded">
+                                  Leader
+                                </span>
+                              )}
+                              {isSubmitter && (
+                                <span className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 px-1 rounded">
+                                  Active submitter
+                                </span>
+                              )}
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
                   </div>
                 )}
 
                 <div className="flex gap-2">
                   {submission.status === "draft" && (
                     <Button 
-                      onClick={() => setShowUpload(true)} 
+                      onClick={handleOpenSubmit} 
                       size="sm" 
                       className="flex-1"
-                      disabled={loading || parentLoading}
+                      disabled={loading || parentLoading || teamCheckLoading}
                     >
-                      {parentLoading ? "Refreshing..." : "Complete & Submit"}
+                      {teamCheckLoading ? "Checking team..." : parentLoading ? "Refreshing..." : "Complete & Submit"}
                     </Button>
                   )}
                   
                   {submission.status === "submitted" && (
                     <Button 
-                      onClick={() => setShowUpload(true)} 
+                      onClick={handleOpenSubmit} 
                       size="sm" 
                       variant="outline"
                       className="flex-1"
-                      disabled={loading || parentLoading}
+                      disabled={loading || parentLoading || teamCheckLoading}
                     >
-                      {parentLoading ? "Refreshing..." : "Update Submission"}
+                      {teamCheckLoading ? "Checking team..." : parentLoading ? "Refreshing..." : "Update Submission"}
                     </Button>
                   )}
                   
@@ -291,15 +434,177 @@ export function SubmissionCard({
                   )}
                 </div>
               </div>
+            ) : teamInfo?.hasTeam && teamInfo?.existingSubmission ? (
+              /* Team has an active submission but this member didn't submit it */
+              <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-foreground">Team Submission</span>
+                  <span className={`text-sm ${STATUS_COLORS[teamInfo.existingSubmission.status] ?? "text-blue-500"} capitalize font-medium flex items-center gap-1`}>
+                    {(() => { const Icon = STATUS_ICONS[teamInfo.existingSubmission.status] ?? CheckCircle; return <Icon className="w-4 h-4" /> })()}
+                    {teamInfo.existingSubmission.status}
+                  </span>
+                </div>
+
+                {teamInfo.existingSubmission.fileUrl && teamInfo.existingSubmission.fileName ? (
+                  <div className="text-sm space-y-2">
+                    <div className="text-muted-foreground">
+                      <span className="font-medium">File: </span>
+                      <span className="text-foreground">{teamInfo.existingSubmission.fileName}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => window.open(teamInfo.existingSubmission.fileUrl, "_blank")}
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        View File
+                      </button>
+                      <button
+                        onClick={() => handleFileDownload(teamInfo.existingSubmission.fileUrl, teamInfo.existingSubmission.fileName)}
+                        className="text-xs text-green-600 hover:text-green-800 hover:underline inline-flex items-center gap-1 px-2 py-1 rounded border border-green-200 hover:bg-green-50"
+                      >
+                        <Download className="w-3 h-3" />
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                ) : teamInfo.existingSubmission.fileName ? (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium">File:</span> {teamInfo.existingSubmission.fileName}
+                  </div>
+                ) : null}
+
+                {teamInfo.existingSubmission.title && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium">Title:</span> {teamInfo.existingSubmission.title}
+                  </div>
+                )}
+
+                {teamInfo.existingSubmission.submittedDate && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-medium">Submitted:</span>{" "}
+                    {new Date(teamInfo.existingSubmission.submittedDate).toLocaleDateString("en-GB", {
+                      day: "2-digit", month: "2-digit", year: "numeric",
+                    })}
+                  </div>
+                )}
+
+                {/* Team submission info panel */}
+                <div className="text-sm bg-blue-50 border border-blue-100 rounded-lg p-3 dark:bg-blue-900/20 dark:border-blue-800 space-y-2">
+                  <span className="font-medium flex items-center gap-1.5 text-blue-700 dark:text-blue-300">
+                    <Users className="w-4 h-4" />
+                    Team Submission
+                  </span>
+                  <div className="text-xs text-blue-700 dark:text-blue-300">
+                    <span className="font-semibold">
+                      {teamInfo.existingSubmission.isCurrentUser
+                        ? "You submitted"
+                        : `${teamInfo.existingSubmission.submitterName} submitted`}
+                    </span>
+                    {teamInfo.existingSubmission.fileName && (
+                      <span className="text-blue-500 dark:text-blue-400">
+                        {" "}— <em>{teamInfo.existingSubmission.fileName}</em>
+                      </span>
+                    )}
+                  </div>
+                  {teamInfo.members && (
+                    <ul className="space-y-0.5 pt-1 border-t border-blue-100 dark:border-blue-800">
+                      {teamInfo.members.map((m) => {
+                        const isSubmitter = teamInfo.existingSubmission?.submitterId === m._id
+                        return (
+                          <li key={m._id} className="flex items-center gap-1.5 text-xs text-blue-700 dark:text-blue-300">
+                            <span className={m.isCurrentUser ? "font-semibold" : ""}>
+                              {m.name}{m.isCurrentUser ? " (You)" : ""}
+                            </span>
+                            {m.role === "leader" && (
+                              <span className="bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-1 rounded">Leader</span>
+                            )}
+                            {isSubmitter && (
+                              <span className="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 px-1 rounded">Submitted</span>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+
+                {/* Override button (submits on behalf of the team, replacing existing) */}
+                <Button
+                  onClick={handleOpenSubmit}
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  disabled={loading || parentLoading || teamCheckLoading}
+                >
+                  {teamCheckLoading ? "Checking team..." : parentLoading ? "Refreshing..." : "Override Team Submission"}
+                </Button>
+              </div>
             ) : (
               <Button 
-                onClick={() => setShowUpload(true)} 
+                onClick={handleOpenSubmit} 
                 className="w-full"
-                disabled={loading || parentLoading}
+                disabled={loading || parentLoading || teamCheckLoading}
               >
                 <Upload className="w-4 h-4 mr-2" />
-                {parentLoading ? "Loading..." : `Submit ${details.title}`}
+                {teamCheckLoading ? "Checking team..." : parentLoading ? "Loading..." : `Submit ${details.title}`}
               </Button>
+            )}
+
+            {/* Override confirmation dialog */}
+            {showOverrideConfirm && teamInfo?.existingSubmission && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-background border rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-foreground">Override team submission?</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        <strong>{teamInfo.existingSubmission.submitterName}</strong> already submitted{" "}
+                        {teamInfo.existingSubmission.fileName
+                          ? <><em>&ldquo;{teamInfo.existingSubmission.fileName}&rdquo;</em>.</>  
+                          : "a file for this event."}{" "}
+                        Your new submission will replace theirs as the team&apos;s active submission.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Team members list */}
+                  {teamInfo.members && (
+                    <div className="bg-muted/40 rounded-lg p-3 space-y-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                        Team: {teamInfo.teamName}
+                      </p>
+                      {teamInfo.members.map((m) => (
+                        <div key={m._id} className="flex items-center gap-2 text-sm">
+                          <span className={m.isCurrentUser ? "font-semibold text-primary" : "text-foreground"}>
+                            {m.name}{m.isCurrentUser ? " (You)" : ""}
+                          </span>
+                          {m.role === "leader" && (
+                            <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">Leader</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => { setShowOverrideConfirm(false); setTeamInfo(null) }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      onClick={() => { setShowOverrideConfirm(false); setShowUpload(true) }}
+                    >
+                      Yes, Override
+                    </Button>
+                  </div>
+                </div>
+              </div>
             )}
 
             {/* File Upload Modal */}
@@ -308,22 +613,23 @@ export function SubmissionCard({
                 eventType={eventType}
                 details={details}
                 onSuccess={handleSubmissionSuccess}
-                onCancel={() => setShowUpload(false)}
+                onCancel={() => { setShowUpload(false); setTeamInfo(null) }}
                 existingSubmission={submission}
+                teamInfo={teamInfo}
               />
             )}
           </div>
         ) : (
           <div className="text-center py-6 space-y-3">
-            <div className="w-12 h-12 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
-              <Upload className="w-6 h-6 text-gray-400" />
+            <div className="w-12 h-12 mx-auto bg-muted rounded-lg flex items-center justify-center">
+              <Upload className="w-6 h-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium text-muted-foreground">
-                Get pass to submit
+                Pass required to submit
               </p>
               <p className="text-xs text-muted-foreground">
-                Purchase Pass {eventType === "paper-presentation" ? "2" : "3"} to unlock submissions
+                Purchase and verify Pass {eventType === "paper-presentation" ? "2" : "3"} to unlock submissions
               </p>
             </div>
           </div>

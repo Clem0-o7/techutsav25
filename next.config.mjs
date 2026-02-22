@@ -9,7 +9,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "clement2004.blob.core.windows.net",
         port: "", // No port needed for standard HTTPS
-        pathname: "/techutsav25/**", // Allow all images in this container
+        pathname: "/techutsav25/**", // Allow all images in this legacy container
       },
       {
         protocol: "https",

@@ -4,12 +4,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
+import Team from "@/lib/models/Team";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { randomUUID } from 'crypto';
 import { verify } from "jsonwebtoken";
 
 const connectionString = process.env.CONNECTIONSTRING;
 const containerName = process.env.CONTAINERNAME; // techutsav26
+
+/** Delete a blob from Azure given its full public URL */
+async function deleteBlobFromUrl(fileUrl) {
+  if (!fileUrl || !connectionString || !containerName) return;
+  try {
+    const url = new URL(fileUrl);
+    const parts = url.pathname.split(`/${containerName}/`);
+    if (parts.length < 2) return;
+    const blobName = decodeURIComponent(parts[1]);
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    await containerClient.getBlockBlobClient(blobName).deleteIfExists();
+    console.log(`Deleted old blob: ${blobName}`);
+  } catch (err) {
+    console.error("Blob deletion error:", err);
+  }
+}
 
 // Folder paths for organized storage
 const SUBMISSION_FOLDERS = {
@@ -142,48 +160,13 @@ export async function POST(request) {
       }
     }
 
-    // Helper function to handle team override logic
-    const handleTeamOverride = async (user, eventType, teamId = null) => {
-      if (!teamId) return; // Individual submission, no override needed
-      
-      const mongoose = require('mongoose');
-      const Team = mongoose.models.Team;
-      if (!Team) return;
-      
-      const team = await Team.findById(teamId).populate('members.userId');
-      if (!team) return;
-      
-      // Override individual submissions of team members with team submission
-      for (const member of team.members) {
-        if (member.userId.toString() === user._id.toString()) continue; // Skip current user
-        
-        const memberUser = await User.findById(member.userId);
-        if (!memberUser || !memberUser.submissions) continue;
-        
-        // Mark member's individual submissions as overridden
-        memberUser.submissions.forEach(submission => {
-          if (submission.type === eventType && !submission.isTeamSubmission) {
-            submission.finalSubmission = false; // Mark as not final/active 
-            submission.status = "overridden";
-          }
-        });
-        
-        await memberUser.save();
-      }
-    };
-    
     // Check if user is part of a team for this event type
-    const mongoose = require('mongoose');
-    const Team = mongoose.models.Team;
     let userTeam = null;
-    
-    if (Team) {
-      userTeam = await Team.findOne({
-        eventType,
-        "members.userId": user._id,
-        isActive: true
-      }).populate('members.userId', 'name email');
-    }
+    userTeam = await Team.findOne({
+      eventType,
+      "members.userId": user._id,
+      isActive: true
+    }).populate('members.userId', 'name email');
     
     // Determine submission status and team info
     const submissionStatus = isDraft ? "draft" : "submitted";
@@ -225,6 +208,8 @@ export async function POST(request) {
         existingSubmission.abstract = abstract;
       }
       if (fileUrl) {
+        // Delete old blob before replacing
+        if (existingSubmission.fileUrl) await deleteBlobFromUrl(existingSubmission.fileUrl);
         existingSubmission.fileUrl = fileUrl;
         existingSubmission.fileName = fileName;
       }
@@ -248,6 +233,8 @@ export async function POST(request) {
           existingSubmission.abstract = abstract;
         }
         if (fileUrl) {
+          // Delete old blob before replacing
+          if (existingSubmission.fileUrl) await deleteBlobFromUrl(existingSubmission.fileUrl);
           existingSubmission.fileUrl = fileUrl;
           existingSubmission.fileName = fileName;
         }
@@ -306,26 +293,35 @@ export async function POST(request) {
     // Handle team override logic if needed
     const currentSubmission = user.submissions.find(sub => sub.type === eventType && sub.finalSubmission);
     
-    // Enhanced team logic: if user is team leader and has active submission, override all member submissions
-    if (currentSubmission && isUserTeamLeader && userTeam) {
-      console.log(`Processing team override for leader submission in team ${userTeam._id}`);
+    // For any team member who just submitted: mark the previous active team submitter's submission as overridden.
+    // (For leaders, also override any remaining individual/non-team submissions.)
+    if (currentSubmission && isInTeam && userTeam) {
+      console.log(`Processing team override for ${isUserTeamLeader ? "leader" : "member"} submission in team ${userTeam._id}`);
       
       for (const member of userTeam.members) {
-        if (member.userId._id.toString() === user._id.toString()) continue; // Skip current user(leader)
+        // Skip self
+        const memberId = member.userId?._id ?? member.userId;
+        if (!memberId) continue;
+        if (memberId.toString() === user._id.toString()) continue;
         
-        const memberUser = await User.findById(member.userId._id);
-        if (!memberUser || !memberUser.submissions) continue;
+        const memberUser = await User.findById(memberId);
+        if (!memberUser?.submissions) continue;
         
-        // Mark member's individual submissions as overridden by team leader submission
         let memberUpdated = false;
-        memberUser.submissions.forEach(submission => {
-          if (submission.type === eventType && submission.finalSubmission && !submission.isTeamSubmission) {
-            submission.finalSubmission = false;
-            submission.status = "overridden";
+        for (const sub of memberUser.submissions) {
+          if (sub.type !== eventType) continue;
+          if (!sub.finalSubmission) continue;
+
+          // Leaders override individual submissions; anyone overrides active team submissions from others
+          const shouldOverride = sub.isTeamSubmission || isUserTeamLeader;
+          if (shouldOverride) {
+            if (sub.fileUrl) await deleteBlobFromUrl(sub.fileUrl);
+            sub.finalSubmission = false;
+            sub.status = "overridden";
             memberUpdated = true;
-            console.log(`Marked submission ${submission._id} as overridden for member ${memberUser.name}`);
+            console.log(`Marked submission ${sub._id} as overridden for member ${memberUser.name}`);
           }
-        });
+        }
         
         if (memberUpdated) {
           await memberUser.save();

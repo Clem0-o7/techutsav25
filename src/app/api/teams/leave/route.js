@@ -5,7 +5,27 @@ import { cookies } from "next/headers";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import Team from "@/lib/models/Team";
+import { BlobServiceClient } from "@azure/storage-blob";
 import { verify } from "jsonwebtoken";
+
+const connectionString = process.env.CONNECTIONSTRING;
+const containerName = process.env.CONTAINERNAME;
+
+async function deleteBlobFromUrl(fileUrl) {
+  if (!fileUrl || !connectionString || !containerName) return;
+  try {
+    const url = new URL(fileUrl);
+    const parts = url.pathname.split(`/${containerName}/`);
+    if (parts.length < 2) return;
+    const blobName = decodeURIComponent(parts[1]);
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    await containerClient.getBlockBlobClient(blobName).deleteIfExists();
+    console.log(`Deleted blob: ${blobName}`);
+  } catch (err) {
+    console.error("Blob deletion error:", err);
+  }
+}
 
 export async function POST(request) {
   try {
@@ -53,16 +73,18 @@ export async function POST(request) {
     }
 
     const member = team.members[memberIndex];
+    const isLeader = member.role === "leader";
 
-    // If user is the leader and there are other members, transfer leadership
-    if (member.role === "leader" && team.members.length > 1) {
-      // Find next member to promote to leader
-      const nextLeader = team.members.find(m => 
-        m.userId.toString() !== user._id.toString()
+    // Transfer leadership before removing the member
+    if (isLeader && team.members.length > 1) {
+      // Pick the next member in array order (skip current leader)
+      const nextLeader = team.members.find(
+        (m) => m.userId.toString() !== user._id.toString()
       );
-      
       if (nextLeader) {
         nextLeader.role = "leader";
+        team.leaderId = nextLeader.userId; // keep leaderId in sync
+        console.log(`Leadership transferred to ${nextLeader.userId} for team ${teamId}`);
       }
     }
 
@@ -76,28 +98,95 @@ export async function POST(request) {
 
     await team.save();
     
-    // Handle submissions when leaving team
-    // If user was a team member, restore their individual submission ability
-    if (user.submissions && user.submissions.length > 0) {
-      const teamSubmission = user.submissions.find(
-        sub => sub.type === team.eventType && sub.status === "overridden"
-      );
-      
-      if (teamSubmission) {
-        teamSubmission.finalSubmission = true;
-        teamSubmission.status = "draft"; // Allow them to complete it
-        teamSubmission.isTeamSubmission = false;
-        teamSubmission.teamId = null;
-        await user.save();
-        console.log(`Restored user's submission after leaving team ${teamId}`);
-      }
-    }
+    // -------------------------------------------------------------------
+    // Submission reconciliation on leave
+    //
+    // A) Leaver IS the active team submitter
+    //    - Team still has members → transfer submission to the new leader
+    //    - Team is now empty     → delete submission + blob (no team to hold it)
+    //
+    // B) Leaver's individual submission was OVERRIDDEN by the team
+    //    → Restore it to draft so they can submit individually again
+    //
+    // C) Leaver had no submission → nothing to do
+    // -------------------------------------------------------------------
+    const eventType = team.eventType;
 
-    // If leader left and transferred leadership, update team submission ownership
-    if (member.role === "leader" && team.members.length > 0) {
-      const newLeader = team.members.find(m => m.role === "leader");
-      if (newLeader) {
-        console.log(`Leadership transferred to ${newLeader.name} for team ${teamId}`);
+    if (user.submissions?.length > 0) {
+      // Case A
+      const teamSubIndex = user.submissions.findIndex(
+        (sub) =>
+          sub.type === eventType &&
+          sub.finalSubmission === true &&
+          sub.isTeamSubmission === true &&
+          sub.teamId?.toString() === teamId
+      );
+
+      if (teamSubIndex !== -1) {
+        const teamSub = user.submissions[teamSubIndex];
+
+        if (team.members.length > 0) {
+          // Team still alive — transfer to the new leader
+          const newLeaderId = team.leaderId;
+          const newLeaderDoc = await User.findById(newLeaderId);
+
+          if (newLeaderDoc) {
+            if (!newLeaderDoc.submissions) newLeaderDoc.submissions = [];
+
+            // Mark any existing active submission for this eventType on the new leader as not-final
+            newLeaderDoc.submissions.forEach((s) => {
+              if (s.type === eventType && s.finalSubmission === true) {
+                s.finalSubmission = false;
+                s.status = "overridden";
+              }
+            });
+
+            // Add the team submission to the new leader's record
+            newLeaderDoc.submissions.push({
+              type: teamSub.type,
+              title: teamSub.title,
+              description: teamSub.description,
+              abstract: teamSub.abstract,
+              fileName: teamSub.fileName,
+              fileUrl: teamSub.fileUrl,
+              status: teamSub.status,
+              finalSubmission: true,
+              isTeamSubmission: true,
+              teamId: teamSub.teamId,
+              submittedDate: teamSub.submittedDate,
+            });
+
+            await newLeaderDoc.save();
+            console.log(
+              `Transferred team submission from ${user.name} to new leader ${newLeaderDoc.name} (team ${teamId})`
+            );
+          }
+        } else {
+          // Team is empty — delete blob and submission record
+          if (teamSub.fileUrl) await deleteBlobFromUrl(teamSub.fileUrl);
+          console.log(
+            `Team ${teamId} dissolved — deleted submission from ${user.name}`
+          );
+        }
+
+        // Remove from leaver's record regardless
+        user.submissions.splice(teamSubIndex, 1);
+        await user.save();
+
+      } else {
+        // Case B: their own submission was overridden by the team → restore as draft
+        const overriddenSub = user.submissions.find(
+          (sub) => sub.type === eventType && sub.status === "overridden"
+        );
+        if (overriddenSub) {
+          overriddenSub.finalSubmission = true;
+          overriddenSub.status = "draft";
+          overriddenSub.isTeamSubmission = false;
+          overriddenSub.teamId = null;
+          await user.save();
+          console.log(`Restored overridden submission for ${user.name} after leaving team ${teamId}`);
+        }
+        // Case C: no submission — nothing to do
       }
     }
 

@@ -5,14 +5,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, X, FileText, AlertCircle } from "lucide-react"
+import { Upload, X, FileText, AlertCircle, Users } from "lucide-react"
 
 export function FileUpload({ 
   eventType, 
   details, 
   onSuccess, 
   onCancel, 
-  existingSubmission 
+  existingSubmission,
+  teamInfo      // { hasTeam, teamName, isLeader, members, existingSubmission } | null
 }) {
   const [file, setFile] = useState(null)
   const [title, setTitle] = useState(existingSubmission?.title || "")
@@ -150,6 +151,35 @@ export function FileUpload({
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Team Members Panel */}
+            {teamInfo?.hasTeam && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 dark:bg-blue-900/20 dark:border-blue-800">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1">
+                  <Users className="w-3.5 h-3.5" />
+                  Team: {teamInfo.teamName}
+                </p>
+                <div className="space-y-1">
+                  {teamInfo.members?.map((m) => (
+                    <div key={m._id} className="flex items-center gap-2 text-xs">
+                      <span className={m.isCurrentUser
+                        ? "font-semibold text-blue-900 dark:text-blue-100"
+                        : "text-blue-700 dark:text-blue-300"
+                      }>
+                        {m.name}{m.isCurrentUser ? " (You)" : ""}
+                      </span>
+                      {m.role === "leader" && (
+                        <span className="bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-1.5 py-0.5 rounded">
+                          Leader
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-blue-500 dark:text-blue-400 mt-2">
+                  This will become your team&apos;s submission.
+                </p>
+              </div>
+            )}
             {/* Title Input */}
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>

@@ -51,7 +51,7 @@ const userSchema = new Schema(
         },
         status: {
           type: String,
-          enum: ["draft", "submitted", "reviewed", "accepted", "rejected"],
+          enum: ["draft", "submitted", "reviewed", "accepted", "rejected", "overridden"],
           default: "draft"
         },
         fileUrl: String, // Azure Blob URL

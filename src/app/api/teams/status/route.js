@@ -46,8 +46,11 @@ export async function GET(request) {
       createdAt: team.createdAt,
       members: team.members.map(member => ({
         _id: member._id,
-        name: member.name,
-        email: member.email,
+        // userId lets the client highlight "you" without storing a hardcoded name
+        userId: member.userId?._id?.toString() || null,
+        // Use live name/email from the populated User doc for dynamic updates
+        name: member.userId?.name || member.name,
+        email: member.userId?.email || member.email,
         role: member.role,
         joinedDate: member.joinedDate
       }))

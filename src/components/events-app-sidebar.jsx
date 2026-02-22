@@ -90,8 +90,7 @@ export function EventsAppSidebar({ filters, onFiltersChange, ...props }) {
         {/* Search */}
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center gap-2">
-            <Search className="size-4" />
-            Search
+      
           </SidebarGroupLabel>
           <div className="px-3 relative">
             <Search className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
