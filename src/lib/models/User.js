@@ -20,6 +20,10 @@ const userSchema = new Schema(
     department: String,
     onboardingCompleted: { type: Boolean, default: false },
 
+    // Profile completion via magic link (set by admin)
+    profileCompletionToken: { type: String, default: null },
+    profileCompletionExpires: { type: Date, default: null },
+
     // Multi-pass payment system
     passes: [
       {
