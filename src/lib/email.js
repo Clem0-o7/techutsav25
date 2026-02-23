@@ -7,10 +7,7 @@ import nodemailer from "nodemailer"
 function getEmailTransporter() {
   // Validate required environment variables
   const requiredEnvVars = {
-    EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
-    EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
-    EMAIL_SERVER_USER: process.env.EMAIL_SERVER_USER,
-    EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
+    ZEPTOMAIL_API_KEY: process.env.ZEPTOMAIL_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
   };
 
@@ -22,27 +19,20 @@ function getEmailTransporter() {
     throw new Error(`Missing required environment variables: ${missingVars.join(", ")}`);
   }
 
-  const port = Number(process.env.EMAIL_SERVER_PORT);
-  const isSecure = port === 465;
-
+  // ZeptoMail SMTP configuration (port 587 / TLS)
   const config = {
-    host: process.env.EMAIL_SERVER_HOST,
-    port: port,
-    secure: isSecure, // true for 465, false for 587
+    host: "smtp.zeptomail.in",
+    port: 587,
+    secure: false, // TLS on port 587
     auth: {
-      user: process.env.EMAIL_SERVER_USER,
-      pass: process.env.EMAIL_SERVER_PASSWORD,
+      user: "emailapikey", // Fixed literal username required by ZeptoMail SMTP
+      pass: process.env.ZEPTOMAIL_API_KEY,
+    },
+    requireTLS: true,
+    tls: {
+      rejectUnauthorized: false,
     },
   };
-
-  // Additional configuration for port 587 (TLS)
-  if (!isSecure) {
-    config.requireTLS = true;
-    config.tls = {
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false
-    };
-  }
 
   //console.log(`[EMAIL CONFIG] Host: ${config.host}, Port: ${config.port}, Secure: ${config.secure}, User: ${config.auth.user}`);
 
@@ -114,15 +104,15 @@ function getVerificationEmailTemplate(verificationUrl, email) {
  */
 function getFromAddress() {
   const emailFrom = process.env.EMAIL_FROM?.replace(/['"]/g, '').trim(); // Remove quotes
-  const emailUser = process.env.EMAIL_SERVER_USER;
-  
-  // If EMAIL_FROM contains @, use it directly, otherwise format as "Name" <email>
+  const defaultSender = "noreply@techutsavtce.tech";
+
+  // If EMAIL_FROM contains @, use it directly, otherwise format as "Name <email>"
   if (emailFrom && emailFrom.includes('@')) {
     return emailFrom;
   } else if (emailFrom) {
-    return `"${emailFrom}" <${emailUser}>`;
+    return `"${emailFrom}" <${defaultSender}>`;
   }
-  return emailUser;
+  return defaultSender;
 }
 
 /**
