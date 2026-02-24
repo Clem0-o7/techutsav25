@@ -21,7 +21,7 @@ const SUBMISSION_DETAILS = {
   "ideathon": {
     title: "Ideathon Submission",
     description: "Upload your presentation (PPT) with idea details",
-    deadline: "February 24, 2026", 
+    deadline: "February 25, 2026", 
     allowedTypes: [".pdf", ".ppt", ".pptx"],
     maxSize: "20MB"
   }
