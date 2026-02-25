@@ -75,8 +75,8 @@ export default function IdeathonPage() {
 
   const importantDates = [
     { event: "Idea Submission Opens", date: "February 1, 2026" },
-    { event: "Round 1: Idea Submission Deadline", date: "February 25, 2026" },
-    { event: "Shortlist Notification", date: "February 26, 2026" },
+    { event: "Round 1: Idea Submission Deadline", date: "February 27, 2026" },
+    { event: "Shortlist Notification", date: "February 27, 2026" },
     { event: "Round 2: Online Idea Presentation", date: "February 28, 2026" }
   ];
 

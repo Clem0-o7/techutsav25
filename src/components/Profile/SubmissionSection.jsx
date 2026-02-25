@@ -14,14 +14,14 @@ const SUBMISSION_DETAILS = {
   "paper-presentation": {
     title: "Paper Presentation",
     description: "Submit your research paper in IEEE format",
-    deadline: "February 25, 2026",
+    deadline: "February 26, 2026",
     allowedTypes: [".pdf", ".doc", ".docx"],
     maxSize: "10MB"
   },
   "ideathon": {
     title: "Ideathon Submission",
     description: "Upload your presentation (PPT) with idea details",
-    deadline: "February 25, 2026", 
+    deadline: "February 27, 2026", 
     allowedTypes: [".pdf", ".ppt", ".pptx"],
     maxSize: "20MB"
   }
