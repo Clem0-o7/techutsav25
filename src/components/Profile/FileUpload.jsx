@@ -7,11 +7,11 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Upload, X, FileText, AlertCircle, Users } from "lucide-react"
 
-export function FileUpload({ 
-  eventType, 
-  details, 
-  onSuccess, 
-  onCancel, 
+export function FileUpload({
+  eventType,
+  details,
+  onSuccess,
+  onCancel,
   existingSubmission,
   teamInfo      // { hasTeam, teamName, isLeader, members, existingSubmission } | null
 }) {
@@ -56,9 +56,23 @@ export function FileUpload({
     }
   }
 
+  const sanitizeFileName = (file) => {
+    // Replace spaces with underscores and remove unsafe chars
+    const sanitizedName = file.name
+      .trim()
+      .replace(/\s+/g, "_")        // spaces → _
+      .replace(/[^a-zA-Z0-9._-]/g, ""); // remove weird chars
+
+    // If name didn’t change, return original file
+    if (sanitizedName === file.name) return file;
+
+    // Create a new File with the sanitized name
+    return new File([file], sanitizedName, { type: file.type });
+  };
+
   const handleSubmit = async (e, isDraft = false) => {
     e.preventDefault()
-    
+
     if (!title.trim()) {
       setError("Please provide a title")
       return
@@ -81,8 +95,16 @@ export function FileUpload({
     try {
       const formData = new FormData()
       if (file) {
-        console.log('File being uploaded:', file.name, file.size, file.type)
-        formData.append("file", file)
+        const sanitizedFile = sanitizeFileName(file)
+
+        console.log(
+          "File being uploaded:",
+          sanitizedFile.name,
+          sanitizedFile.size,
+          sanitizedFile.type
+        )
+
+        formData.append("file", sanitizedFile)
       }
       formData.append("eventType", eventType)
       formData.append("title", title.trim())
@@ -109,7 +131,7 @@ export function FileUpload({
 
       const result = await response.json()
       setUploadProgress(100)
-      
+
       // Small delay to show completion
       setTimeout(() => {
         console.log('Submission successful:', result)
@@ -273,8 +295,8 @@ export function FileUpload({
                 )}
               </div>
             </div>
-              
-            
+
+
 
             {/* Error Message */}
             {error && (
@@ -292,7 +314,7 @@ export function FileUpload({
                   <span>{uploadProgress}%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
@@ -311,7 +333,7 @@ export function FileUpload({
               >
                 Cancel
               </Button>
-              
+
               {/* Save Draft Button */}
               <Button
                 type="button"
@@ -322,7 +344,7 @@ export function FileUpload({
               >
                 {uploading ? "Saving..." : "Save Draft"}
               </Button>
-              
+
               {/* Submit Button */}
               <Button
                 type="submit"
