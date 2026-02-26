@@ -76,7 +76,7 @@ const Home = ({ authenticated, user }) => {
 
           {/* CountdownTimer */}
           <div className="mt-4 sm:mt-6 animate-fade-in">
-            <CountdownTimer targetDate="2026-02-27T00:00:00" />
+            <CountdownTimer targetDate="2026-02-27T10:30:00" />
           </div>
 
           {/* Typed text */}

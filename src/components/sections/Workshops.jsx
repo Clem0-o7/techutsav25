@@ -4,18 +4,21 @@ import "@/styles/button.css";
 
 const Workshops = () => {
   const mainWorkshop = {
-    title: "Future-Proofing IT Careers in the Era of AI",
-    subtitle: "Skills, Systems & Strategy for an AI-Driven World",
-    description:
-      "This session explores how AI is transforming modern IT roles, enterprise workflows, and career paths. Attendees will gain clarity on industry expectations, emerging skill sets, and how to stay relevant as AI becomes deeply embedded in engineering and business systems.",
-    speaker: "Ramanathan R",
-    designation: "Principal Process Engineer",
-    organization: "Kapitus",
-    date: "27th February 2026",
-    time: "9:30 AM – 12:30 PM",
-    location: "TCE Auditorium",
-    fee: "₹354 (PASS 1 Workshop + 15 Events Access)",
-  };
+  title: "Future-Proofing IT Careers in the AI Agents Era",
+  subtitle: "Skills, Systems & Strategies",
+  description:
+    "This offline workshop focuses on how AI agents are reshaping IT careers, enterprise systems, and decision-making workflows. The session offers practical insights into industry expectations, evolving skill sets, and long-term strategies to stay relevant in an AI-driven ecosystem.",
+
+  speaker: "Mr. R. Ramanathan",
+  designation: "Principal Process Engineer",
+  organization: "Kapitus, Chennai -\nAlumnus of TCE IT – 2006 Batch",
+
+  date: "27th February 2026",
+  time: "10:00 AM – 11:30 AM",
+  location: "KK Auditorium",
+
+  fee: "₹354 (PASS 1 Workshop + 15 Events Access)",
+};
 
   const onlineWorkshops = [
     {
