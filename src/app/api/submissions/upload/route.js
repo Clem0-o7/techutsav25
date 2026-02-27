@@ -41,6 +41,16 @@ const SUBMISSION_PASS_REQUIREMENTS = {
   "ideathon": [3]           // Pass 3: Online Idea Pitching
 };
 
+/** Sanitize filename to remove spaces and special characters */
+function sanitizeFileName(filename) {
+  // Remove special characters except dot, dash, underscore
+  // Replace spaces with underscores
+  return filename
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+}
+
 export async function POST(request) {
   try {
     // Check authentication using JWT cookie
@@ -129,7 +139,8 @@ export async function POST(request) {
         // Generate unique blob name with folder structure
         const folder = SUBMISSION_FOLDERS[eventType];
         const fileId = randomUUID();
-        const blobName = `${folder}${user._id}/${fileId}_${file.name}`;
+        const sanitizedFileName = sanitizeFileName(file.name);
+        const blobName = `${folder}${user._id}/${fileId}_${sanitizedFileName}`;
 
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
@@ -144,13 +155,13 @@ export async function POST(request) {
         });
 
         fileUrl = blockBlobClient.url;
-        fileName = file.name;
+        fileName = sanitizedFileName;
         
         console.log('File upload successful:', {
-          fileName: file.name,
+          fileName: sanitizedFileName,
           fileUrl: blockBlobClient.url,
           blobName
-        })
+        });
 
       } catch (error) {
         console.error("Azure upload error:", error);
@@ -293,13 +304,10 @@ export async function POST(request) {
     // Handle team override logic if needed
     const currentSubmission = user.submissions.find(sub => sub.type === eventType && sub.finalSubmission);
     
-    // For any team member who just submitted: mark the previous active team submitter's submission as overridden.
-    // (For leaders, also override any remaining individual/non-team submissions.)
     if (currentSubmission && isInTeam && userTeam) {
       console.log(`Processing team override for ${isUserTeamLeader ? "leader" : "member"} submission in team ${userTeam._id}`);
       
       for (const member of userTeam.members) {
-        // Skip self
         const memberId = member.userId?._id ?? member.userId;
         if (!memberId) continue;
         if (memberId.toString() === user._id.toString()) continue;
@@ -312,7 +320,6 @@ export async function POST(request) {
           if (sub.type !== eventType) continue;
           if (!sub.finalSubmission) continue;
 
-          // Leaders override individual submissions; anyone overrides active team submissions from others
           const shouldOverride = sub.isTeamSubmission || isUserTeamLeader;
           if (shouldOverride) {
             if (sub.fileUrl) await deleteBlobFromUrl(sub.fileUrl);
@@ -334,7 +341,7 @@ export async function POST(request) {
       fileName: currentSubmission?.fileName,
       fileUrl: currentSubmission?.fileUrl,
       status: currentSubmission?.status
-    })
+    });
 
     const isUpdate = submissionId || user.submissions.filter(sub => sub.type === eventType).length > 1;
 
