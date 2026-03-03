@@ -10,12 +10,12 @@ export function proxy(request) {
     // List of paths allowed during teaser mode
     const allowedPaths = [
       "/coming-soon",
-      "/api",          // All API routes (auth, onboarding, etc.)
-      "/signup",       // Signup page
-      "/login",        // Login page
-      "/verify-email", // Email verification page
-      "/onboarding",   // Onboarding form
-      "/profile",      // User profile
+//      "/api",          // All API routes (auth, onboarding, etc.)
+//      "/signup",       // Signup page
+//      "/login",        // Login page
+//      "/verify-email", // Email verification page
+//      "/onboarding",   // Onboarding form
+//      "/profile",      // User profile
       "/u/",           // User profiles after onboarding
       "/_next",        // Next.js internals
       "/favicon",      // favicon

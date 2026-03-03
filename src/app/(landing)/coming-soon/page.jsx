@@ -83,7 +83,7 @@ export default function ComingSoonPage() {
             </svg>
           </a>
 
-          {/* Signup/Profile Button */}
+          {/* Signup/Profile Button
           {authenticated ? (
             <a
               href="/profile"
@@ -120,7 +120,7 @@ export default function ComingSoonPage() {
             >
               Sign Up
             </a>
-          )}
+          )} */}
 
 
 
@@ -129,7 +129,7 @@ export default function ComingSoonPage() {
 
         {/* Follow text */}
         <p className="mt-3 text-xs text-gray-400">
-          Events opening soon <br /> Early registrations get priority access
+          Thank You For Your Participation <br /> Look Forward for next year's edition
         </p>
         <p className="text-xs text-gray-500 mt-3 drop-shadow-lg opacity-80">
           Follow for updates
